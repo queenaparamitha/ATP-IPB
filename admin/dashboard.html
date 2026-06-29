@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Penjadwalan & Capaian</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header-top">
+        <div class="header-container">
+            <div class="header-left">
+                <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="header-logo">
+                    <span class="logo-icon">📊</span>
+                    <span class="logo-text">Dash<span>board </span>Agribusiness <span>and</span> Technology <span>Park</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="menu">
+            <a href="#" class="active" data-page="dashboard">
+                <span class="icon">🏠</span><span class="text">Beranda</span>
+            </a>
+            <a href="#" data-page="jadwal">
+                <span class="icon">📋</span><span class="text">Jadwal Harian</span>
+            </a>
+            <a href="#" data-page="kalender">
+                <span class="icon">📅</span><span class="text">Kalender</span>
+            </a>
+            <a href="#" data-page="capaian">
+                <span class="icon">📈</span><span class="text">Capaian</span>
+            </a>
+            <a href="#" data-page="laporan">
+                <span class="icon">📁</span><span class="text">Laporan</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <p>© 2026 Dashboard</p>
+            <p style="font-size:11px;color:#9fa8da;">ATP-IPB</p>
+        </div>
+    </aside>
+
+    <!-- ===== OVERLAY ===== -->
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <!-- SUB HEADER -->
+        <div class="sub-header">
+            <div>
+                <h1 id="pageTitle">Dashboard</h1>
+                <p id="pageSubtitle">Selamat datang, Admin 👋</p>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- HALAMAN: DASHBOARD -->
+        <!-- ========================================== -->
+        <div id="page-dashboard" class="page-content active">
+            <section class="stats">
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div>
+                        <p class="stat-label">Total Kunjungan</p>
+                        <p class="stat-value" id="totalKunjungan">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏢</div>
+                    <div>
+                        <p class="stat-label">Pemakaian Ruang</p>
+                        <p class="stat-value" id="totalRuang">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏛️</div>
+                    <div>
+                        <p class="stat-label">Balai BRI</p>
+                        <p class="stat-value" id="totalBalai">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div>
+                        <p class="stat-label">Per Program</p>
+                        <p class="stat-value" id="totalProgram">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="jadwal-grid-4">
+                <div class="card jadwal-card">
+                    <div class="card-header">
+                        <h3>📋 Jadwal Kunjungan</h3>
+                        <span class="badge">Hari Ini</span>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>No</th><th>Nama</th><th>Waktu</th><th>PIC</th></tr></thead>
+                            <tbody id="ringkasanKunjungan"></tbody>
+                        </table>
+                    </div>
+                    <div style="text-align:right;margin-top:8px;font-size:12px;">
+                        <a href="#" onclick="switchMenu('jadwal'); switchTab('kunjungan'); return false;" style="color:#1a237e;text-decoration:none;font-weight:600;">Lihat semua →</a>
+                    </div>
+                </div>
+
+                <div class="card jadwal-card">
+                    <div class="card-header">
+                        <h3>🏢 Pemakaian Ruang</h3>
+                        <span class="badge">Hari Ini</span>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>No</th><th>Kegiatan</th><th>Waktu</th><th>Ruangan</th></tr></thead>
+                            <tbody id="ringkasanRuang"></tbody>
+                        </table>
+                    </div>
+                    <div style="text-align:right;margin-top:8px;font-size:12px;">
+                        <a href="#" onclick="switchMenu('jadwal'); switchTab('ruang'); return false;" style="color:#1a237e;text-decoration:none;font-weight:600;">Lihat semua →</a>
+                    </div>
+                </div>
+
+                <div class="card jadwal-card">
+                    <div class="card-header">
+                        <h3>🏛️ Balai BRI</h3>
+                        <span class="badge">Hari Ini</span>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>No</th><th>Kegiatan</th><th>Waktu</th><th>Ruangan</th></tr></thead>
+                            <tbody id="ringkasanBalai"></tbody>
+                        </table>
+                    </div>
+                    <div style="text-align:right;margin-top:8px;font-size:12px;">
+                        <a href="#" onclick="switchMenu('jadwal'); switchTab('balai'); return false;" style="color:#1a237e;text-decoration:none;font-weight:600;">Lihat semua →</a>
+                    </div>
+                </div>
+
+                <div class="card jadwal-card">
+                    <div class="card-header">
+                        <h3>📊 Per Program</h3>
+                        <span class="badge">Hari Ini</span>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>No</th><th>Program</th><th>Waktu</th><th>Lokasi</th></tr></thead>
+                            <tbody id="ringkasanProgram"></tbody>
+                        </table>
+                    </div>
+                    <div style="text-align:right;margin-top:8px;font-size:12px;">
+                        <a href="#" onclick="switchMenu('jadwal'); switchTab('program'); return false;" style="color:#1a237e;text-decoration:none;font-weight:600;">Lihat semua →</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="row-2">
+                <div class="card calendar-card">
+                    <div class="card-header">
+                        <h3>📅 Kalender Kegiatan</h3>
+                        <div class="calendar-nav">
+                            <button id="prevMonth">◀</button>
+                            <span id="monthYear"></span>
+                            <button id="nextMonth">▶</button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                    <div class="calendar-legend">
+                        <span><span class="dot" style="background:#1a237e;"></span> Ada Event</span>
+                        <span><span class="dot" style="background:#ff9800;"></span> Hari Ini</span>
+                        <span><span class="dot" style="background:#e0e0e0;"></span> Kosong</span>
+                    </div>
+                </div>
+
+                <div class="card event-list-card">
+                    <div class="card-header">
+                        <h3>📌 Kegiatan Bulan Ini</h3>
+                        <span class="badge" id="eventCountBadge">0 Kegiatan</span>
+                    </div>
+                    <div id="dashboardEventList">
+                        <p style="color:#888;font-size:13px;text-align:center;padding:20px 0;">Loading...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="row-3">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>📊 Capaian Pengunjung</h3>
+                        <div class="chart-filter">
+                            <button class="filter-btn active" data-period="weekly">Mingguan</button>
+                            <button class="filter-btn" data-period="monthly">Bulanan</button>
+                            <button class="filter-btn" data-period="yearly">Tahunan</button>
+                        </div>
+                    </div>
+                    <div class="chart-container"><canvas id="barChart"></canvas></div>
+                </div>
+                <div class="card chart-card">
+                    <div class="card-header"><h3>🍩 Kategori Pengunjung</h3></div>
+                    <div class="chart-container"><canvas id="pieChart"></canvas></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- HALAMAN: JADWAL HARIAN (4 TAB) -->
+        <!-- ========================================== -->
+        <div id="page-jadwal" class="page-content">
+            <div class="card" style="padding:24px;">
+                <div class="card-header">
+                    <h3>📋 Manajemen Jadwal</h3>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <button class="btn-print" onclick="printJadwal()">🖨️ Cetak</button>
+                        <button class="btn-add" onclick="tambahJadwal()">+ Tambah</button>
+                        <button class="btn-add" style="background:#ff9800;" onclick="bukaMasterData()">⚙️ Master Data</button>
+                    </div>
+                </div>
+
+                <div class="tab-navigation">
+                    <button class="tab-btn active" data-tab="kunjungan" onclick="switchTab('kunjungan')">📋 Kunjungan</button>
+                    <button class="tab-btn" data-tab="ruang" onclick="switchTab('ruang')">🏢 Pemakaian Ruang</button>
+                    <button class="tab-btn" data-tab="balai" onclick="switchTab('balai')">🏛️ Balai BRI</button>
+                    <button class="tab-btn" data-tab="program" onclick="switchTab('program')">📊 Per Program</button>
+                </div>
+
+                <div class="tab-content active" id="tab-kunjungan">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>No</th><th>Nama Tamu</th><th>Instansi</th><th>Tanggal</th><th>Waktu</th><th>Jumlah</th><th>Tujuan</th><th>PIC</th><th>Aksi</th></tr></thead>
+                            <tbody id="kunjunganTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-ruang">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>No</th><th>Nama Kegiatan</th><th>Ruangan</th><th>Tanggal</th><th>Waktu</th><th>Kapasitas</th><th>PIC</th><th>Aksi</th></tr></thead>
+                            <tbody id="ruangTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-balai">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>No</th><th>Nama Kegiatan</th><th>Jenis Kegiatan</th><th>Tanggal</th><th>Waktu</th><th>Ruangan</th><th>PIC</th><th>Aksi</th></tr></thead>
+                            <tbody id="balaiTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-program">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>No</th><th>Nama Program</th><th>Kegiatan</th><th>Tanggal</th><th>Waktu</th><th>Lokasi</th><th>PIC</th><th>Aksi</th></tr></thead>
+                            <tbody id="programTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="printFooter" style="display:none;margin-top:20px;padding-top:16px;border-top:2px solid #ddd;text-align:center;font-size:12px;color:#888;">
+                    <p>Dicetak pada: <span id="printDate"></span></p>
+                    <p>Dokumen ini adalah berkas resmi dari Sistem Penjadwalan</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- MODAL TAMBAH JADWAL -->
+        <!-- ========================================== -->
+        <div class="modal" id="jadwalModal">
+            <div class="modal-content" style="max-width:600px;">
+                <div class="modal-header">
+                    <h3 id="modalJadwalTitle">Tambah Jadwal</h3>
+                    <button class="modal-close" onclick="closeJadwalModal()">×</button>
+                </div>
+                <form id="jadwalForm">
+                    <input type="hidden" id="jadwalId" />
+                    <input type="hidden" id="jadwalJenis" />
+                    <div class="form-group">
+                        <label>Jenis Jadwal</label>
+                        <select id="formJenis" onchange="ubahFormJadwal()" required>
+                            <option value="kunjungan">📋 Kunjungan</option>
+                            <option value="ruang">🏢 Pemakaian Ruang</option>
+                            <option value="balai">🏛️ Balai BRI</option>
+                            <option value="program">📊 Per Program</option>
+                        </select>
+                    </div>
+
+                    <!-- Field Kunjungan -->
+                    <div id="fieldKunjungan">
+                        <div class="form-group">
+                            <label>Nama Tamu / Kegiatan</label>
+                            <input type="text" id="fNamaTamu" placeholder="Masukkan nama tamu" />
+                        </div>
+                        <div class="form-group">
+                            <label>Instansi</label>
+                            <select id="fInstansi">
+                                <option value="">Pilih Instansi</option>
+                            </select>
+                            <button type="button" class="btn-add" style="margin-top:4px;padding:4px 12px;font-size:12px;" onclick="tambahMasterInstansiCepat()">+ Tambah Instansi</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Jumlah Pengunjung</label>
+                            <input type="number" id="fJumlahPengunjung" min="0" step="1" placeholder="Masukkan jumlah pengunjung" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Tujuan</label>
+                            <input type="text" id="fTujuan" placeholder="Masukkan tujuan kunjungan" />
+                        </div>
+                    </div>
+
+                    <!-- Field Ruang -->
+                    <div id="fieldRuang" style="display:none;">
+                        <div class="form-group">
+                            <label>Nama Kegiatan</label>
+                            <input type="text" id="fKegiatanRuang" placeholder="Masukkan nama kegiatan" />
+                        </div>
+                        <div class="form-group">
+                            <label>Kapasitas</label>
+                            <input type="number" id="fKapasitas" placeholder="Jumlah orang" />
+                        </div>
+                    </div>
+
+                    <!-- Field Balai -->
+                    <div id="fieldBalai" style="display:none;">
+                        <div class="form-group">
+                            <label>Nama Kegiatan</label>
+                            <input type="text" id="fKegiatanBalai" placeholder="Masukkan nama kegiatan" />
+                        </div>
+                        <div class="form-group">
+                            <label>Jenis Kegiatan</label>
+                            <input type="text" id="fJenisKegiatan" placeholder="Rapat/Pelatihan/Sosialisasi" />
+                        </div>
+                    </div>
+
+                    <!-- Field Program -->
+                    <div id="fieldProgram" style="display:none;">
+                        <div class="form-group">
+                            <label>Nama Program</label>
+                            <input type="text" id="fNamaProgram" placeholder="Masukkan nama program" />
+                        </div>
+                        <div class="form-group">
+                            <label>Kegiatan</label>
+                            <input type="text" id="fKegiatanProgram" placeholder="Masukkan kegiatan" />
+                        </div>
+                    </div>
+
+                    <!-- Field Umum -->
+                    <div class="form-group">
+                        <label>Tanggal</label>
+                        <input type="date" id="fTanggal" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Waktu</label>
+                        <select id="fWaktu" required>
+                            <option value="">Pilih Waktu</option>
+                            <option value="07:00 - 08:00">07:00 - 08:00</option>
+                            <option value="08:00 - 09:00">08:00 - 09:00</option>
+                            <option value="08:00 - 09:30">08:00 - 09:30</option>
+                            <option value="09:00 - 10:00">09:00 - 10:00</option>
+                            <option value="09:00 - 11:00">09:00 - 11:00</option>
+                            <option value="09:00 - 12:00">09:00 - 12:00</option>
+                            <option value="10:00 - 11:00">10:00 - 11:00</option>
+                            <option value="10:00 - 12:00">10:00 - 12:00</option>
+                            <option value="10:30 - 11:30">10:30 - 11:30</option>
+                            <option value="13:00 - 14:00">13:00 - 14:00</option>
+                            <option value="13:00 - 14:30">13:00 - 14:30</option>
+                            <option value="13:00 - 15:00">13:00 - 15:00</option>
+                            <option value="13:00 - 16:00">13:00 - 16:00</option>
+                            <option value="13:30 - 15:00">13:30 - 15:00</option>
+                            <option value="14:00 - 16:00">14:00 - 16:00</option>
+                            <option value="14:30 - 16:00">14:30 - 16:00</option>
+                            <option value="16:00 - 17:00">16:00 - 17:00</option>
+                            <option value="16:30 - 18:00">16:30 - 18:00</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ruangan</label>
+                        <select id="fRuangan" required><option value="">Pilih Ruangan</option></select>
+                        <button type="button" class="btn-add" style="margin-top:4px;padding:4px 12px;font-size:12px;" onclick="tambahMasterRuanganCepat()">+ Tambah Ruangan</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Tempat / Lokasi</label>
+                        <select id="fTempat" required><option value="">Pilih Tempat</option></select>
+                        <button type="button" class="btn-add" style="margin-top:4px;padding:4px 12px;font-size:12px;" onclick="tambahMasterTempatCepat()">+ Tambah Tempat</button>
+                    </div>
+                    <div class="form-group">
+                        <label>PIC</label>
+                        <select id="fPic" required><option value="">Pilih PIC</option></select>
+                        <button type="button" class="btn-add" style="margin-top:4px;padding:4px 12px;font-size:12px;" onclick="tambahMasterPicCepat()">+ Tambah PIC</button>
+                    </div>
+
+                    <div class="form-group" style="flex-direction:row;gap:10px;margin-top:10px;">
+                        <button type="button" class="btn-add" style="flex:1;" onclick="saveJadwal()">💾 Simpan</button>
+                        <button type="button" class="btn-delete" id="btnDeleteJadwal" onclick="hapusJadwalFromModal()" style="display:none;">🗑️ Hapus</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ===== MODAL MASTER DATA ===== -->
+        <div class="modal" id="masterModal">
+            <div class="modal-content" style="max-width:700px;">
+                <div class="modal-header">
+                    <h3>⚙️ Master Data</h3>
+                    <button class="modal-close" onclick="closeMasterModal()">×</button>
+                </div>
+                <div class="tab-navigation" style="margin-bottom:16px;">
+                    <button class="tab-btn active" onclick="switchMasterTab('ruangan')">🏢 Ruangan</button>
+                    <button class="tab-btn" onclick="switchMasterTab('tempat')">📍 Tempat</button>
+                    <button class="tab-btn" onclick="switchMasterTab('pic')">👤 PIC</button>
+                    <button class="tab-btn" onclick="switchMasterTab('instansi')">🏛️ Instansi</button>
+                </div>
+
+                <div id="master-ruangan" class="master-tab active">
+                    <div style="display:flex;gap:10px;margin-bottom:12px;">
+                        <input type="text" id="inputRuangan" placeholder="Nama Ruangan" style="flex:1;padding:8px 12px;border:2px solid #e0e0e0;border-radius:8px;" />
+                        <button class="btn-add" onclick="tambahMasterRuangan()">+ Tambah</button>
+                    </div>
+                    <div id="listRuangan" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                </div>
+
+                <div id="master-tempat" class="master-tab" style="display:none;">
+                    <div style="display:flex;gap:10px;margin-bottom:12px;">
+                        <input type="text" id="inputTempat" placeholder="Nama Tempat" style="flex:1;padding:8px 12px;border:2px solid #e0e0e0;border-radius:8px;" />
+                        <button class="btn-add" onclick="tambahMasterTempat()">+ Tambah</button>
+                    </div>
+                    <div id="listTempat" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                </div>
+
+                <div id="master-pic" class="master-tab" style="display:none;">
+                    <div style="display:flex;gap:10px;margin-bottom:12px;">
+                        <input type="text" id="inputPic" placeholder="Nama PIC" style="flex:1;padding:8px 12px;border:2px solid #e0e0e0;border-radius:8px;" />
+                        <button class="btn-add" onclick="tambahMasterPic()">+ Tambah</button>
+                    </div>
+                    <div id="listPic" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                </div>
+
+                <div id="master-instansi" class="master-tab" style="display:none;">
+                    <div style="display:flex;gap:10px;margin-bottom:12px;">
+                        <input type="text" id="inputInstansi" placeholder="Nama Instansi" style="flex:1;padding:8px 12px;border:2px solid #e0e0e0;border-radius:8px;" />
+                        <button class="btn-add" onclick="tambahMasterInstansi()">+ Tambah</button>
+                    </div>
+                    <div id="listInstansi" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- HALAMAN: KALENDER -->
+        <!-- ========================================== -->
+        <div id="page-kalender" class="page-content">
+            <div class="card" style="padding:24px;">
+                <div class="card-header">
+                    <h3>📅 Kalender Kegiatan</h3>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <button class="btn-add" onclick="tambahEvent()">+ Tambah Event</button>
+                        <button class="btn-print" onclick="refreshKalenderFull()">🔄 Refresh</button>
+                    </div>
+                </div>
+                <div class="calendar-nav" style="justify-content:center;margin-bottom:12px;">
+                    <button id="prevMonthFull">◀</button>
+                    <span id="monthYearFull"></span>
+                    <button id="nextMonthFull">▶</button>
+                </div>
+                <div class="calendar-grid-full" id="calendarGridFull"></div>
+                <div class="calendar-legend">
+                    <span><span class="dot" style="background:#1a237e;"></span> Ada Event</span>
+                    <span><span class="dot" style="background:#ff9800;"></span> Hari Ini</span>
+                    <span><span class="dot" style="background:#e0e0e0;"></span> Kosong</span>
+                </div>
+                <div style="margin-top:20px;padding:16px;background:#f8f9fc;border-radius:10px;">
+                    <h4 style="color:#1a237e;margin-bottom:10px;">📌 Daftar Event Bulan Ini</h4>
+                    <div id="eventListFull"><p style="color:#888;">Klik tanggal untuk melihat & mengelola event</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- HALAMAN: CAPAIAN -->
+        <!-- ========================================== -->
+        <div id="page-capaian" class="page-content">
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;padding:12px 16px;background:#f8f9fc;border-radius:8px;">
+                <label style="font-weight:600;color:#1a237e;">📅 Filter Capaian:</label>
+                <select id="capaianFilter" onchange="ubahFilterCapaian()" style="padding:6px 12px;border:2px solid #e0e0e0;border-radius:6px;">
+                    <option value="mingguan">📊 Mingguan</option>
+                    <option value="bulanan" selected>📊 Bulanan</option>
+                    <option value="tahunan">📊 Tahunan</option>
+                </select>
+                <div id="capaianMingguInfo" style="font-size:13px;color:#888;margin-left:8px;"></div>
+            </div>
+
+            <div class="row-3" style="margin-bottom:20px;">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>📊 Grafik Capaian Pengunjung</h3>
+                        <div class="chart-filter">
+                            <button class="filter-btn active" data-period="mingguan" onclick="ubahGrafikCapaian('mingguan')">Mingguan</button>
+                            <button class="filter-btn" data-period="bulanan" onclick="ubahGrafikCapaian('bulanan')">Bulanan</button>
+                            <button class="filter-btn" data-period="tahunan" onclick="ubahGrafikCapaian('tahunan')">Tahunan</button>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="height:300px;"><canvas id="barChartFull"></canvas></div>
+                </div>
+                <div class="card chart-card">
+                    <div class="card-header"><h3>🍩 Kategori Pengunjung</h3></div>
+                    <div class="chart-container" style="height:300px;"><canvas id="pieChartFull"></canvas></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 id="capaianTableTitle">📋 Detail Capaian Bulanan</h3>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <button class="btn-add" onclick="tambahCapaian()">+ Tambah Data</button>
+                        <button class="btn-print" onclick="refreshCapaian()">🔄 Refresh</button>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead id="capaianTableHead">
+                            <tr>
+                                <th>No</th>
+                                <th>Periode</th>
+                                <th>Jumlah</th>
+                                <th>Target / Kegiatan</th>
+                                <th>Pencapaian</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="capaianTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== MODAL CAPAIAN ===== -->
+        <div class="modal" id="capaianModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalCapaianTitle">Tambah Data Capaian</h3>
+                    <button class="modal-close" onclick="closeCapaianModal()">×</button>
+                </div>
+                <form id="capaianForm">
+                    <input type="hidden" id="capaianIndex" />
+                    <div class="form-group">
+                        <label>Bulan</label>
+                        <select id="capaianBulan" required>
+                            <option value="Jan">Januari</option>
+                            <option value="Feb">Februari</option>
+                            <option value="Mar">Maret</option>
+                            <option value="Apr">April</option>
+                            <option value="Mei">Mei</option>
+                            <option value="Jun">Juni</option>
+                            <option value="Jul">Juli</option>
+                            <option value="Agu">Agustus</option>
+                            <option value="Sep">September</option>
+                            <option value="Okt">Oktober</option>
+                            <option value="Nov">November</option>
+                            <option value="Des">Desember</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Jumlah Pengunjung</label>
+                        <input type="number" id="capaianJumlah" min="0" required placeholder="Masukkan jumlah pengunjung" />
+                    </div>
+                    <div class="form-group">
+                        <label>Target</label>
+                        <input type="number" id="capaianTarget" min="0" required placeholder="Masukkan target" />
+                    </div>
+                    <div style="border-top:2px solid #eef1f7;padding-top:12px;margin-top:8px;">
+                        <label style="font-weight:600;color:#1a237e;font-size:14px;display:block;margin-bottom:8px;">📊 Rincian Kategori Pengunjung</label>
+                        <p style="font-size:11px;color:#888;margin-bottom:10px;">💡 Total kategori harus sama dengan Jumlah Pengunjung</p>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label style="font-size:12px;color:#1a237e;">👨‍🎓 Mahasiswa</label>
+                                <input type="number" id="capaianMahasiswa" min="0" placeholder="Jumlah" style="padding:8px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;width:100%;" />
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label style="font-size:12px;color:#1a237e;">👨‍🏫 Dosen</label>
+                                <input type="number" id="capaianDosen" min="0" placeholder="Jumlah" style="padding:8px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;width:100%;" />
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label style="font-size:12px;color:#1a237e;">👥 Umum</label>
+                                <input type="number" id="capaianUmum" min="0" placeholder="Jumlah" style="padding:8px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;width:100%;" />
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label style="font-size:12px;color:#1a237e;">🏛️ Instansi</label>
+                                <input type="number" id="capaianInstansi" min="0" placeholder="Jumlah" style="padding:8px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;width:100%;" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="flex-direction:row;gap:10px;margin-top:14px;">
+                        <button type="button" class="btn-add" style="flex:1;" onclick="simpanCapaian()">💾 Simpan</button>
+                        <button type="button" class="btn-delete" id="btnDeleteCapaian" onclick="hapusCapaian()" style="display:none;">🗑️ Hapus</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- HALAMAN: LAPORAN -->
+        <!-- ========================================== -->
+        <div id="page-laporan" class="page-content">
+            <div class="card" style="margin-bottom:20px;">
+                <div class="card-header">
+                    <h3>🔍 Filter Laporan</h3>
+                    <span class="badge">Generate</span>
+                </div>
+                <div class="filter-laporan">
+                    <div class="filter-group">
+                        <label>Jenis Laporan</label>
+                        <select id="laporanJenis">
+                            <option value="all">📋 Semua Data</option>
+                            <option value="kunjungan">📋 Kunjungan</option>
+                            <option value="ruang">🏢 Pemakaian Ruang</option>
+                            <option value="balai">🏛️ Balai BRI</option>
+                            <option value="program">📊 Per Program</option>
+                            <option value="capaian" selected>📈 Capaian</option>
+                            <option value="kalender">📅 Kalender</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Periode</label>
+                        <select id="laporanPeriode" onchange="toggleDateRange()">
+                            <option value="bulan_ini">Bulan Ini</option>
+                            <option value="bulan_lalu">Bulan Lalu</option>
+                            <option value="tahun_ini">Tahun Ini</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" id="dateRangeGroup" style="display:none;">
+                        <label>Dari</label>
+                        <input type="date" id="tglMulai" />
+                        <label style="margin-left:8px;">Sampai</label>
+                        <input type="date" id="tglSelesai" />
+                    </div>
+                    <div class="filter-group" style="justify-content:flex-end;">
+                        <button class="btn-filter" onclick="generateLaporan()">📊 Tampilkan</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats" id="laporanStats">
+                <div class="stat-card"><div class="stat-icon">📋</div><div><p class="stat-label">Total Kunjungan</p><p class="stat-value" id="lapTotalKunjungan">0</p></div></div>
+                <div class="stat-card"><div class="stat-icon">🏢</div><div><p class="stat-label">Total Ruang</p><p class="stat-value" id="lapTotalRuang">0</p></div></div>
+                <div class="stat-card"><div class="stat-icon">🏛️</div><div><p class="stat-label">Total Balai</p><p class="stat-value" id="lapTotalBalai">0</p></div></div>
+                <div class="stat-card"><div class="stat-icon">📊</div><div><p class="stat-label">Total Program</p><p class="stat-value" id="lapTotalProgram">0</p></div></div>
+            </div>
+
+            <div class="row-3" style="margin-bottom:20px;">
+                <div class="card chart-card">
+                    <div class="card-header"><h3>📊 Grafik Capaian</h3>
+                        <div class="chart-filter">
+                            <button class="filter-btn active" data-period="mingguan" onclick="ubahGrafikLaporan('mingguan')">Mingguan</button>
+                            <button class="filter-btn" data-period="bulanan" onclick="ubahGrafikLaporan('bulanan')">Bulanan</button>
+                            <button class="filter-btn" data-period="tahunan" onclick="ubahGrafikLaporan('tahunan')">Tahunan</button>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="height:300px;"><canvas id="barChartLaporan"></canvas></div>
+                </div>
+                <div class="card chart-card">
+                    <div class="card-header"><h3>🍩 Kategori</h3></div>
+                    <div class="chart-container" style="height:300px;"><canvas id="pieChartLaporan"></canvas></div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom:20px;" id="laporanCard">
+                <div class="card-header">
+                    <h3>📋 Data Laporan</h3>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <span class="badge" id="lapJumlahData">0 Data</span>
+                        <span class="badge" style="background:#4caf50;color:#fff;" id="lapStatus">Siap</span>
+                    </div>
+                </div>
+                <div class="table-wrapper" id="laporanTableArea">
+                    <table id="laporanTable">
+                        <thead id="laporanThead"></thead>
+                        <tbody id="laporanTableBody"><tr><td colspan="10" style="text-align:center;color:#888;padding:40px;">📂 Pilih filter dan klik "Tampilkan"</td></tr></tbody>
+                    </table>
+                </div>
+                <div id="laporanFooter" style="margin-top:16px;padding-top:12px;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:12px;color:#888;flex-wrap:wrap;">
+                    <span>🕐 Dicetak: <span id="lapTanggalCetak"></span></span>
+                    <span>📌 <span id="lapJenisLaporan">Semua Data</span></span>
+                    <span>© Sistem Penjadwalan</span>
+                </div>
+            </div>
+
+            <div class="card" style="text-align:center;padding:24px;">
+                <h4 style="color:#1a237e;margin-bottom:16px;">📥 Export Laporan</h4>
+                <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+                    <button class="btn-export pdf" onclick="exportPDF()">📄 PDF</button>
+                    <button class="btn-export excel" onclick="exportExcel()">📊 Excel</button>
+                    <button class="btn-export print" onclick="printLaporan()">🖨️ Cetak</button>
+                    <button class="btn-export word" onclick="exportWord()">📝 Word</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ===== MODAL EVENT ===== -->
+    <div class="modal" id="eventModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalEventTitle">Tambah Event</h3>
+                <button class="modal-close" onclick="closeEventModal()">×</button>
+            </div>
+            <form id="eventForm">
+                <input type="hidden" id="eventId" />
+                <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="number" id="eventTanggal" min="1" max="31" required placeholder="Contoh: 15" />
+                </div>
+                <div class="form-group">
+                    <label>Nama Kegiatan</label>
+                    <input type="text" id="eventNama" required placeholder="Masukkan nama kegiatan" />
+                </div>
+                <div class="form-group">
+                    <label>Waktu</label>
+                    <select id="eventWaktu">
+                        <option value="">Pilih Waktu</option>
+                        <option value="07:00 - 08:00">07:00 - 08:00</option>
+                        <option value="08:00 - 09:00">08:00 - 09:00</option>
+                        <option value="09:00 - 10:00">09:00 - 10:00</option>
+                        <option value="10:00 - 11:00">10:00 - 11:00</option>
+                        <option value="13:00 - 14:00">13:00 - 14:00</option>
+                        <option value="14:00 - 15:00">14:00 - 15:00</option>
+                        <option value="15:00 - 16:00">15:00 - 16:00</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ruangan</label>
+                    <select id="eventRuangan"><option value="">Pilih Ruangan</option></select>
+                </div>
+                <div class="form-group">
+                    <label>Tempat</label>
+                    <select id="eventTempat"><option value="">Pilih Tempat</option></select>
+                </div>
+                <div class="form-group">
+                    <label>PIC</label>
+                    <select id="eventPic"><option value="">Pilih PIC</option></select>
+                </div>
+                <div class="form-group" style="flex-direction:row;gap:10px;margin-top:10px;">
+                    <button type="button" class="btn-add" style="flex:1;" onclick="saveEvent()">💾 Simpan</button>
+                    <button type="button" class="btn-delete" id="btnDeleteEvent" onclick="hapusEvent()" style="display:none;">🗑️ Hapus</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+   <script src="dashboard.js"></script>
+
+<!-- ===== SCRIPT OVERRIDE UNTUK FIX ===== -->
+<script>
+    // ============================================
+    // FUNGSI SIMPAN CAPAIAN
+    // ============================================
+    function simpanCapaian() {
+        console.log('🟢 simpanCapaian dipanggil!');
+        try {
+            const index = document.getElementById('capaianIndex').value;
+            const bulan = document.getElementById('capaianBulan').value;
+            const jumlah = parseInt(document.getElementById('capaianJumlah').value);
+            const target = parseInt(document.getElementById('capaianTarget').value);
+            const mahasiswa = parseInt(document.getElementById('capaianMahasiswa').value) || 0;
+            const dosen = parseInt(document.getElementById('capaianDosen').value) || 0;
+            const umum = parseInt(document.getElementById('capaianUmum').value) || 0;
+            const instansi = parseInt(document.getElementById('capaianInstansi').value) || 0;
+            
+            if (!bulan) { alert('⚠️ Bulan harus dipilih!'); return; }
+            if (isNaN(jumlah) || jumlah <= 0) { alert('⚠️ Jumlah Pengunjung harus diisi dan lebih dari 0!'); return; }
+            if (isNaN(target) || target <= 0) { alert('⚠️ Target harus diisi dan lebih dari 0!'); return; }
+            
+            const totalKategori = mahasiswa + dosen + umum + instansi;
+            if (totalKategori > 0 && totalKategori !== jumlah) {
+                if (!confirm(`⚠️ Total kategori (${totalKategori}) tidak sama dengan Jumlah (${jumlah}).\nApakah Anda yakin ingin menyimpan?`)) {
+                    return;
+                }
+            }
+            
+            const existingIndex = capaianData.findIndex(d => d.bulan === bulan);
+            
+            if (index === '') {
+                if (existingIndex !== -1) { alert(`⚠️ Data untuk bulan ${bulan} sudah ada!`); return; }
+                capaianData.push({ bulan, jumlah, target, mahasiswa, dosen, umum, instansi });
+                alert('✅ Data capaian berhasil ditambahkan!');
+            } else {
+                if (existingIndex !== -1 && existingIndex !== parseInt(index)) { alert(`⚠️ Data untuk bulan ${bulan} sudah ada!`); return; }
+                capaianData[parseInt(index)] = { bulan, jumlah, target, mahasiswa, dosen, umum, instansi };
+                alert('✅ Data capaian berhasil diupdate!');
+            }
+            
+            closeCapaianModal();
+            renderCapaianTable();
+            updateAllCharts();
+            simpanSemuaData();
+        } catch(e) {
+            console.error('❌ Error:', e);
+            alert('❌ Terjadi error: ' + e.message);
+        }
+    }
+
+    function closeCapaianModal() {
+        const modal = document.getElementById('capaianModal');
+        if (modal) {
+            modal.classList.remove('active');
+            modal.style.display = 'none';
+        }
+    }
+
+    function renderCapaianTable() {
+        renderCapaianTableByPeriod(currentPeriodFull || 'bulanan');
+    }
+
+    window.tambahJadwal = function() {
+        console.log('🟢 tambahJadwal dari HTML override');
+        try {
+            const modal = document.getElementById('jadwalModal');
+            if (!modal) { alert('Modal tidak ditemukan!'); return; }
+            document.getElementById('modalJadwalTitle').textContent = 'Tambah Jadwal';
+            document.getElementById('jadwalId').value = '';
+            document.getElementById('jadwalJenis').value = '';
+            document.getElementById('btnDeleteJadwal').style.display = 'none';
+            document.getElementById('fNamaTamu').value = '';
+            document.getElementById('fInstansi').value = '';
+            document.getElementById('fJumlahPengunjung').value = '';
+            document.getElementById('fTujuan').value = '';
+            document.getElementById('fKegiatanRuang').value = '';
+            document.getElementById('fKapasitas').value = '';
+            document.getElementById('fKegiatanBalai').value = '';
+            document.getElementById('fJenisKegiatan').value = '';
+            document.getElementById('fNamaProgram').value = '';
+            document.getElementById('fKegiatanProgram').value = '';
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('fTanggal').value = today;
+            document.getElementById('fWaktu').value = '';
+            document.getElementById('fRuangan').value = '';
+            document.getElementById('fTempat').value = '';
+            document.getElementById('fPic').value = '';
+            document.getElementById('formJenis').value = 'kunjungan';
+            if (typeof updateDropdowns === 'function') updateDropdowns();
+            if (typeof ubahFormJadwal === 'function') ubahFormJadwal();
+            modal.style.display = 'flex';
+            modal.classList.add('active');
+        } catch(e) {
+            console.error('❌ Error:', e);
+            alert('Error: ' + e.message);
+        }
+    };
+
+    window.closeJadwalModal = function() {
+        const modal = document.getElementById('jadwalModal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+        }
+    };
+
+    window.ubahFormJadwal = function() {
+        const jenis = document.getElementById('formJenis').value;
+        document.getElementById('fieldKunjungan').style.display = 'none';
+        document.getElementById('fieldRuang').style.display = 'none';
+        document.getElementById('fieldBalai').style.display = 'none';
+        document.getElementById('fieldProgram').style.display = 'none';
+        if (jenis === 'kunjungan') document.getElementById('fieldKunjungan').style.display = 'block';
+        else if (jenis === 'ruang') document.getElementById('fieldRuang').style.display = 'block';
+        else if (jenis === 'balai') document.getElementById('fieldBalai').style.display = 'block';
+        else if (jenis === 'program') document.getElementById('fieldProgram').style.display = 'block';
+    };
+
+    window.saveJadwal = function() {
+        console.log('🟢 saveJadwal dari HTML override');
+        try {
+            const id = document.getElementById('jadwalId').value;
+            const jenis = document.getElementById('formJenis').value;
+            const isEdit = id !== '';
+            const tanggal = document.getElementById('fTanggal').value;
+            const waktu = document.getElementById('fWaktu').value;
+            const ruangan = document.getElementById('fRuangan').value;
+            const tempat = document.getElementById('fTempat').value;
+            const pic = document.getElementById('fPic').value;
+            if (!tanggal || !waktu || !ruangan || !tempat || !pic) {
+                alert('⚠️ Semua field wajib diisi!');
+                return;
+            }
+            let dataBaru = { tanggal, waktu, ruangan, tempat, pic };
+            let success = false, message = '';
+            if (jenis === 'kunjungan') {
+                const nama = document.getElementById('fNamaTamu').value.trim();
+                const instansi = document.getElementById('fInstansi').value;
+                const jumlah = parseInt(document.getElementById('fJumlahPengunjung').value);
+                const tujuan = document.getElementById('fTujuan').value.trim();
+                if (!nama) { alert('⚠️ Nama Tamu wajib diisi!'); return; }
+                if (isNaN(jumlah) || jumlah <= 0) { alert('⚠️ Jumlah Pengunjung harus diisi dan lebih dari 0!'); return; }
+                dataBaru = { ...dataBaru, nama, instansi: instansi || 'Umum', jumlahPengunjung: jumlah, tujuan: tujuan || '-', id: isEdit ? parseInt(id) : nextKunjunganId++ };
+                if (isEdit) {
+                    const index = kunjunganData.findIndex(d => d.id === parseInt(id));
+                    if (index !== -1) { kunjunganData[index] = dataBaru; success = true; message = '✅ Data kunjungan berhasil diupdate!'; }
+                    else { alert('❌ Data tidak ditemukan!'); return; }
+                } else { kunjunganData.push(dataBaru); success = true; message = '✅ Data kunjungan berhasil ditambahkan!'; }
+                renderKunjunganTable();
+            } else if (jenis === 'ruang') {
+                const kegiatan = document.getElementById('fKegiatanRuang').value.trim();
+                const kapasitas = parseInt(document.getElementById('fKapasitas').value);
+                if (!kegiatan) { alert('⚠️ Nama Kegiatan wajib diisi!'); return; }
+                if (isNaN(kapasitas) || kapasitas <= 0) { alert('⚠️ Kapasitas harus diisi dan lebih dari 0!'); return; }
+                dataBaru = { ...dataBaru, kegiatan, kapasitas, id: isEdit ? parseInt(id) : nextRuangId++ };
+                if (isEdit) {
+                    const index = ruangData.findIndex(d => d.id === parseInt(id));
+                    if (index !== -1) { ruangData[index] = dataBaru; success = true; message = '✅ Data ruang berhasil diupdate!'; }
+                    else { alert('❌ Data tidak ditemukan!'); return; }
+                } else { ruangData.push(dataBaru); success = true; message = '✅ Data ruang berhasil ditambahkan!'; }
+                renderRuangTable();
+            } else if (jenis === 'balai') {
+                const kegiatan = document.getElementById('fKegiatanBalai').value.trim();
+                const jenisKeg = document.getElementById('fJenisKegiatan').value.trim();
+                if (!kegiatan || !jenisKeg) { alert('⚠️ Nama Kegiatan dan Jenis Kegiatan wajib diisi!'); return; }
+                dataBaru = { ...dataBaru, kegiatan, jenis: jenisKeg, id: isEdit ? parseInt(id) : nextBalaiId++ };
+                if (isEdit) {
+                    const index = balaiData.findIndex(d => d.id === parseInt(id));
+                    if (index !== -1) { balaiData[index] = dataBaru; success = true; message = '✅ Data balai berhasil diupdate!'; }
+                    else { alert('❌ Data tidak ditemukan!'); return; }
+                } else { balaiData.push(dataBaru); success = true; message = '✅ Data balai berhasil ditambahkan!'; }
+                renderBalaiTable();
+            } else if (jenis === 'program') {
+                const program = document.getElementById('fNamaProgram').value.trim();
+                const kegiatan = document.getElementById('fKegiatanProgram').value.trim();
+                if (!program || !kegiatan) { alert('⚠️ Nama Program dan Kegiatan wajib diisi!'); return; }
+                dataBaru = { ...dataBaru, program, kegiatan, lokasi: tempat, id: isEdit ? parseInt(id) : nextProgramId++ };
+                if (isEdit) {
+                    const index = programData.findIndex(d => d.id === parseInt(id));
+                    if (index !== -1) { programData[index] = dataBaru; success = true; message = '✅ Data program berhasil diupdate!'; }
+                    else { alert('❌ Data tidak ditemukan!'); return; }
+                } else { programData.push(dataBaru); success = true; message = '✅ Data program berhasil ditambahkan!'; }
+                renderProgramTable();
+            }
+            if (success) {
+                renderRingkasanJadwal();
+                updateStats();
+                sinkronkanJadwalKeKalender();
+                sinkronkanKunjunganKeCapaian();
+                simpanSemuaData();
+                alert(message);
+                closeJadwalModal();
+            }
+        } catch(e) {
+            console.error('❌ Error:', e);
+            alert('Error: ' + e.message);
+        }
+    };
+
+    window.editJadwal = function(jenis, id) {
+        console.log('🟢 editJadwal dipanggil!', jenis, id);
+        try {
+            let data, title;
+            const modal = document.getElementById('jadwalModal');
+            if (!modal) { alert('Modal tidak ditemukan!'); return; }
+            switch(jenis) {
+                case 'kunjungan':
+                    data = kunjunganData.find(d => d.id === id);
+                    if (!data) { alert('Data kunjungan tidak ditemukan!'); return; }
+                    title = 'Edit Jadwal Kunjungan';
+                    document.getElementById('formJenis').value = 'kunjungan';
+                    document.getElementById('fNamaTamu').value = data.nama || '';
+                    document.getElementById('fInstansi').value = data.instansi || '';
+                    document.getElementById('fJumlahPengunjung').value = data.jumlahPengunjung || 0;
+                    document.getElementById('fTujuan').value = data.tujuan || '';
+                    document.getElementById('fKegiatanRuang').value = '';
+                    document.getElementById('fKapasitas').value = '';
+                    document.getElementById('fKegiatanBalai').value = '';
+                    document.getElementById('fJenisKegiatan').value = '';
+                    document.getElementById('fNamaProgram').value = '';
+                    document.getElementById('fKegiatanProgram').value = '';
+                    break;
+                case 'ruang':
+                    data = ruangData.find(d => d.id === id);
+                    if (!data) { alert('Data ruang tidak ditemukan!'); return; }
+                    title = 'Edit Jadwal Pemakaian Ruang';
+                    document.getElementById('formJenis').value = 'ruang';
+                    document.getElementById('fKegiatanRuang').value = data.kegiatan || '';
+                    document.getElementById('fKapasitas').value = data.kapasitas || '';
+                    document.getElementById('fNamaTamu').value = '';
+                    document.getElementById('fInstansi').value = '';
+                    document.getElementById('fJumlahPengunjung').value = '';
+                    document.getElementById('fTujuan').value = '';
+                    document.getElementById('fKegiatanBalai').value = '';
+                    document.getElementById('fJenisKegiatan').value = '';
+                    document.getElementById('fNamaProgram').value = '';
+                    document.getElementById('fKegiatanProgram').value = '';
+                    break;
+                case 'balai':
+                    data = balaiData.find(d => d.id === id);
+                    if (!data) { alert('Data balai tidak ditemukan!'); return; }
+                    title = 'Edit Jadwal Balai BRI';
+                    document.getElementById('formJenis').value = 'balai';
+                    document.getElementById('fKegiatanBalai').value = data.kegiatan || '';
+                    document.getElementById('fJenisKegiatan').value = data.jenis || '';
+                    document.getElementById('fNamaTamu').value = '';
+                    document.getElementById('fInstansi').value = '';
+                    document.getElementById('fJumlahPengunjung').value = '';
+                    document.getElementById('fTujuan').value = '';
+                    document.getElementById('fKegiatanRuang').value = '';
+                    document.getElementById('fKapasitas').value = '';
+                    document.getElementById('fNamaProgram').value = '';
+                    document.getElementById('fKegiatanProgram').value = '';
+                    break;
+                case 'program':
+                    data = programData.find(d => d.id === id);
+                    if (!data) { alert('Data program tidak ditemukan!'); return; }
+                    title = 'Edit Jadwal Per Program';
+                    document.getElementById('formJenis').value = 'program';
+                    document.getElementById('fNamaProgram').value = data.program || '';
+                    document.getElementById('fKegiatanProgram').value = data.kegiatan || '';
+                    document.getElementById('fNamaTamu').value = '';
+                    document.getElementById('fInstansi').value = '';
+                    document.getElementById('fJumlahPengunjung').value = '';
+                    document.getElementById('fTujuan').value = '';
+                    document.getElementById('fKegiatanRuang').value = '';
+                    document.getElementById('fKapasitas').value = '';
+                    document.getElementById('fKegiatanBalai').value = '';
+                    document.getElementById('fJenisKegiatan').value = '';
+                    break;
+                default:
+                    alert('Jenis jadwal tidak dikenal!');
+                    return;
+            }
+            document.getElementById('modalJadwalTitle').textContent = title;
+            document.getElementById('jadwalId').value = id;
+            document.getElementById('jadwalJenis').value = jenis;
+            document.getElementById('btnDeleteJadwal').style.display = 'inline-block';
+            document.getElementById('fTanggal').value = data.tanggal || '';
+            document.getElementById('fWaktu').value = data.waktu || '';
+            document.getElementById('fRuangan').value = data.ruangan || data.lokasi || '';
+            document.getElementById('fTempat').value = data.tempat || data.lokasi || '';
+            document.getElementById('fPic').value = data.pic || '';
+            updateDropdowns();
+            ubahFormJadwal();
+            modal.style.display = 'flex';
+            modal.classList.add('active');
+        } catch(e) {
+            console.error('❌ Error di editJadwal:', e);
+            alert('Error: ' + e.message);
+        }
+    };
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        if (sidebar) sidebar.classList.toggle('active');
+        if (overlay) overlay.classList.toggle('active');
+    }
+
+    function closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        if (sidebar) sidebar.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+    }
+
+    function switchMenu(page) {
+        console.log('Switch menu ke:', page);
+        document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
+        const target = document.getElementById('page-' + page);
+        if (target) target.classList.add('active');
+        document.querySelectorAll('.menu a').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.menu a[data-page="' + page + '"]').forEach(el => el.classList.add('active'));
+    }
+
+    function switchTab(tab) {
+        console.log('Switch tab ke:', tab);
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        const target = document.getElementById('tab-' + tab);
+        if (target) target.classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn[data-tab="' + tab + '"]').forEach(el => el.classList.add('active'));
+    }
+
+    function switchMasterTab(tab) {
+        document.querySelectorAll('.master-tab').forEach(el => el.style.display = 'none');
+        const target = document.getElementById('master-' + tab);
+        if (target) target.style.display = 'block';
+        document.querySelectorAll('#masterModal .tab-btn').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('#masterModal .tab-btn').forEach(el => {
+            if (el.textContent.toLowerCase().includes(tab)) el.classList.add('active');
+        });
+    }
+
+    function printJadwal() { alert('🖨️ Cetak jadwal'); }
+    function bukaMasterData() { document.getElementById('masterModal').style.display = 'flex'; }
+    function refreshKalenderFull() { alert('🔄 Kalender direfresh'); }
+    function ubahFilterCapaian() { 
+        const val = document.getElementById('capaianFilter').value;
+        ubahGrafikCapaian(val);
+    }
+    function ubahGrafikCapaian(p) { 
+        console.log('🔄 Ubah grafik capaian ke:', p);
+        if (typeof window.ubahGrafikCapaianJS === 'function') {
+            window.ubahGrafikCapaianJS(p);
+        } else {
+            alert('Fungsi ubahGrafikCapaianJS belum dimuat!');
+        }
+    }
+    function ubahGrafikLaporan(p) { console.log('Grafik laporan:', p); }
+    function generateLaporan() { 
+        if (typeof window.generateLaporanJS === 'function') {
+            window.generateLaporanJS();
+        } else {
+            alert('Fungsi generateLaporanJS belum dimuat!');
+        }
+    }
+    function toggleDateRange() {
+        const val = document.getElementById('laporanPeriode').value;
+        document.getElementById('dateRangeGroup').style.display = (val === 'custom') ? 'flex' : 'none';
+    }
+    function exportPDF() { alert('📄 Export PDF'); }
+    function exportExcel() { alert('📊 Export Excel'); }
+    function printLaporan() { alert('🖨️ Cetak laporan'); }
+    function exportWord() { alert('📝 Export Word'); }
+    function refreshCapaian() { 
+        renderCapaianTable();
+        updateAllCharts();
+        alert('🔄 Data capaian berhasil direfresh!');
+    }
+
+    console.log('✅ Semua fungsi override aktif!');
+</script>
+    
+</body>
+</html>
