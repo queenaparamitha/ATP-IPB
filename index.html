@@ -1,9 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <meta http-equiv="refresh" content="0; url=user.html">
+    <meta charset="UTF-8">
+    <title>Login Admin</title>
+    <link rel="stylesheet" href="assets/css/login.css">
+    <!-- ✅ path: assets/css/login.css (karena index.html di root) -->
 </head>
 <body>
-    <p>Redirecting...</p>
+
+    <div class="login-box">
+        <h2>Login Admin</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button id="loginBtn">Login</button>
+        <p id="errorMessage" style="color:red;margin-top:10px;display:none;font-size:14px;"></p>
+    </div>
+
+    <script type="module">
+        // ============================================
+        // LOGIN SCRIPT - LANGSUNG DI HTML
+        // ============================================
+        
+        import { auth } from "./admin/firebase-config.js";
+        // ✅ path: ./admin/firebase-config.js (karena index.html di root)
+        
+        import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+        const loginBtn = document.getElementById('loginBtn');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const errorMsg = document.getElementById('errorMessage');
+
+        console.log('✅ Login page loaded!');
+        console.log('📌 Path saat ini:', window.location.pathname);
+
+        loginBtn.addEventListener('click', function() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            errorMsg.style.display = 'none';
+            loginBtn.textContent = 'Loading...';
+            loginBtn.disabled = true;
+
+            console.log('🟢 Login button clicked!');
+            console.log('Username:', username);
+
+            if (username !== "agribusinessandtechnologypark") {
+                errorMsg.textContent = '❌ Username salah!';
+                errorMsg.style.display = 'block';
+                loginBtn.textContent = 'Login';
+                loginBtn.disabled = false;
+                return;
+            }
+
+            const email = "agribusinessandtechnologypark@gmail.com";
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    console.log('✅ Login berhasil!');
+                    alert('✅ Login berhasil!');
+                    window.location.href = "admin/dashboard.html";
+                    // ✅ path: admin/dashboard.html
+                })
+                .catch((error) => {
+                    console.error('❌ Login error:', error);
+                    
+                    if (error.code === 'auth/wrong-password') {
+                        errorMsg.textContent = '❌ Password salah!';
+                    } else if (error.code === 'auth/user-not-found') {
+                        errorMsg.textContent = '❌ Email tidak terdaftar!';
+                    } else {
+                        errorMsg.textContent = '❌ Login gagal: ' + error.message;
+                    }
+                    errorMsg.style.display = 'block';
+                    loginBtn.textContent = 'Login';
+                    loginBtn.disabled = false;
+                });
+        });
+
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') loginBtn.click();
+        });
+        usernameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') loginBtn.click();
+        });
+
+        console.log('✅ Login ready!');
+    </script>
+
 </body>
 </html>
