@@ -28,19 +28,19 @@
     <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar" id="sidebar">
         <nav class="menu">
-            <a href="#" class="active" data-page="dashboard">
+            <a href="#" class="active" data-page="dashboard" onclick="switchMenu('dashboard'); return false;">
                 <span class="icon">🏠</span><span class="text">Beranda</span>
             </a>
-            <a href="#" data-page="jadwal">
+            <a href="#" data-page="jadwal" onclick="switchMenu('jadwal'); return false;">
                 <span class="icon">📋</span><span class="text">Jadwal Harian</span>
             </a>
-            <a href="#" data-page="kalender">
+            <a href="#" data-page="kalender" onclick="switchMenu('kalender'); return false;">
                 <span class="icon">📅</span><span class="text">Kalender</span>
             </a>
-            <a href="#" data-page="capaian">
+            <a href="#" data-page="capaian" onclick="switchMenu('capaian'); return false;">
                 <span class="icon">📈</span><span class="text">Capaian</span>
             </a>
-            <a href="#" data-page="laporan">
+            <a href="#" data-page="laporan" onclick="switchMenu('laporan'); return false;">
                 <span class="icon">📁</span><span class="text">Laporan</span>
             </a>
         </nav>
@@ -84,22 +84,15 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">🏛️</div>
-                    <div>
-                        <p class="stat-label">Balai BRI</p>
-                        <p class="stat-value" id="totalBalai">0</p>
-                    </div>
-                </div>
-                <div class="stat-card">
                     <div class="stat-icon">📊</div>
                     <div>
-                        <p class="stat-label">Per Program</p>
+                        <p class="stat-label">Kegiatan Harian</p>
                         <p class="stat-value" id="totalProgram">0</p>
                     </div>
                 </div>
             </section>
 
-            <section class="jadwal-grid-4">
+            <section class="jadwal-vertical">
                 <div class="card jadwal-card">
                     <div class="card-header">
                         <h3>📋 Jadwal Kunjungan</h3>
@@ -107,7 +100,7 @@
                     </div>
                     <div class="table-wrapper">
                         <table>
-                            <thead><tr><th>No</th><th>Nama</th><th>Waktu</th><th>PIC</th></tr></thead>
+                            <thead><tr><th>No</th><th>Nama</th><th>Instansi</th><th>Tanggal</th><th>Waktu</th><th>Jumlah</th><th>PIC</th></tr></thead>
                             <tbody id="ringkasanKunjungan"></tbody>
                         </table>
                     </div>
@@ -123,7 +116,7 @@
                     </div>
                     <div class="table-wrapper">
                         <table>
-                            <thead><tr><th>No</th><th>Kegiatan</th><th>Waktu</th><th>Ruangan</th></tr></thead>
+                            <thead><tr><th>No</th><th>Nama Kegiatan</th><th>Ruangan</th><th>Tanggal</th><th>Waktu</th><th>Kapasitas</th><th>PIC</th></tr></thead>
                             <tbody id="ringkasanRuang"></tbody>
                         </table>
                     </div>
@@ -134,28 +127,12 @@
 
                 <div class="card jadwal-card">
                     <div class="card-header">
-                        <h3>🏛️ Balai BRI</h3>
+                        <h3>📊 Kegiatan Harian</h3>
                         <span class="badge">Hari Ini</span>
                     </div>
                     <div class="table-wrapper">
                         <table>
-                            <thead><tr><th>No</th><th>Kegiatan</th><th>Waktu</th><th>Ruangan</th></tr></thead>
-                            <tbody id="ringkasanBalai"></tbody>
-                        </table>
-                    </div>
-                    <div style="text-align:right;margin-top:8px;font-size:12px;">
-                        <a href="#" onclick="switchMenu('jadwal'); switchTab('balai'); return false;" style="color:#1a237e;text-decoration:none;font-weight:600;">Lihat semua →</a>
-                    </div>
-                </div>
-
-                <div class="card jadwal-card">
-                    <div class="card-header">
-                        <h3>📊 Per Program</h3>
-                        <span class="badge">Hari Ini</span>
-                    </div>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead><tr><th>No</th><th>Program</th><th>Waktu</th><th>Lokasi</th></tr></thead>
+                            <thead><tr><th>No</th><th>Kegiatan</th><th>Deskripsi</th><th>Tanggal</th><th>Waktu</th><th>Ruangan</th><th>Tempat</th><th>PIC</th></tr></thead>
                             <tbody id="ringkasanProgram"></tbody>
                         </table>
                     </div>
@@ -170,9 +147,9 @@
                     <div class="card-header">
                         <h3>📅 Kalender Kegiatan</h3>
                         <div class="calendar-nav">
-                            <button id="prevMonth">◀</button>
+                            <button id="prevMonth" onclick="changeMonth(-1)">◀</button>
                             <span id="monthYear"></span>
-                            <button id="nextMonth">▶</button>
+                            <button id="nextMonth" onclick="changeMonth(1)">▶</button>
                         </div>
                     </div>
                     <div class="calendar-grid" id="calendarGrid"></div>
@@ -199,22 +176,22 @@
                     <div class="card-header">
                         <h3>📊 Capaian Pengunjung</h3>
                         <div class="chart-filter">
-                            <button class="filter-btn active" data-period="weekly">Mingguan</button>
-                            <button class="filter-btn" data-period="monthly">Bulanan</button>
-                            <button class="filter-btn" data-period="yearly">Tahunan</button>
+                            <button class="filter-btn active" data-period="weekly" onclick="ubahGrafikDashboard('weekly')">Mingguan</button>
+                            <button class="filter-btn" data-period="monthly" onclick="ubahGrafikDashboard('monthly')">Bulanan</button>
+                            <button class="filter-btn" data-period="yearly" onclick="ubahGrafikDashboard('yearly')">Tahunan</button>
                         </div>
                     </div>
-                    <div class="chart-container"><canvas id="barChart"></canvas></div>
+                    <div class="chart-container" style="height:250px;width:100%;"><canvas id="barChart"></canvas></div>
                 </div>
                 <div class="card chart-card">
                     <div class="card-header"><h3>🍩 Kategori Pengunjung</h3></div>
-                    <div class="chart-container"><canvas id="pieChart"></canvas></div>
+                    <div class="chart-container" style="height:250px;width:100%;"><canvas id="pieChart"></canvas></div>
                 </div>
             </section>
         </div>
 
         <!-- ========================================== -->
-        <!-- HALAMAN: JADWAL HARIAN (4 TAB) -->
+        <!-- HALAMAN: JADWAL HARIAN -->
         <!-- ========================================== -->
         <div id="page-jadwal" class="page-content">
             <div class="card" style="padding:24px;">
@@ -230,14 +207,13 @@
                 <div class="tab-navigation">
                     <button class="tab-btn active" data-tab="kunjungan" onclick="switchTab('kunjungan')">📋 Kunjungan</button>
                     <button class="tab-btn" data-tab="ruang" onclick="switchTab('ruang')">🏢 Pemakaian Ruang</button>
-                    <button class="tab-btn" data-tab="balai" onclick="switchTab('balai')">🏛️ Balai BRI</button>
-                    <button class="tab-btn" data-tab="program" onclick="switchTab('program')">📊 Per Program</button>
+                    <button class="tab-btn" data-tab="program" onclick="switchTab('program')">📊 Kegiatan Harian</button>
                 </div>
 
                 <div class="tab-content active" id="tab-kunjungan">
                     <div class="table-wrapper">
                         <table>
-                            <thead><tr><th>No</th><th>Nama Tamu</th><th>Instansi</th><th>Tanggal</th><th>Waktu</th><th>Jumlah</th><th>Tujuan</th><th>PIC</th><th>Aksi</th></tr></thead>
+                            <thead><tr><th>No</th><th>Nama Tamu</th><th>Instansi</th><th>Tanggal</th><th>Waktu</th><th>Jumlah</th><th>PIC</th><th>Aksi</th></tr></thead>
                             <tbody id="kunjunganTableBody"></tbody>
                         </table>
                     </div>
@@ -251,20 +227,11 @@
                         </table>
                     </div>
                 </div>
-
-                <div class="tab-content" id="tab-balai">
-                    <div class="table-wrapper">
-                        <table>
-                            <thead><tr><th>No</th><th>Nama Kegiatan</th><th>Jenis Kegiatan</th><th>Tanggal</th><th>Waktu</th><th>Ruangan</th><th>PIC</th><th>Aksi</th></tr></thead>
-                            <tbody id="balaiTableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-
+              
                 <div class="tab-content" id="tab-program">
                     <div class="table-wrapper">
                         <table>
-                            <thead><tr><th>No</th><th>Nama Program</th><th>Kegiatan</th><th>Tanggal</th><th>Waktu</th><th>Lokasi</th><th>PIC</th><th>Aksi</th></tr></thead>
+                            <thead><tr><th>No</th><th>Kegiatan</th><th>Deskripsi</th><th>Tanggal</th><th>Waktu</th><th>Ruangan</th><th>Tempat</th><th>PIC</th><th>Aksi</th></tr></thead>
                             <tbody id="programTableBody"></tbody>
                         </table>
                     </div>
@@ -286,30 +253,27 @@
                     <h3 id="modalJadwalTitle">Tambah Jadwal</h3>
                     <button class="modal-close" onclick="closeJadwalModal()">×</button>
                 </div>
-                <form id="jadwalForm">
+                <form id="jadwalForm" onsubmit="return false;">
                     <input type="hidden" id="jadwalId" />
                     <input type="hidden" id="jadwalJenis" />
+                    
                     <div class="form-group">
                         <label>Jenis Jadwal</label>
                         <select id="formJenis" onchange="ubahFormJadwal()" required>
                             <option value="kunjungan">📋 Kunjungan</option>
                             <option value="ruang">🏢 Pemakaian Ruang</option>
-                            <option value="balai">🏛️ Balai BRI</option>
-                            <option value="program">📊 Per Program</option>
+                            <option value="program">📊 Kegiatan Harian</option>
                         </select>
                     </div>
 
-                    <!-- Field Kunjungan -->
                     <div id="fieldKunjungan">
                         <div class="form-group">
-                            <label>Nama Tamu / Kegiatan</label>
-                            <input type="text" id="fNamaTamu" placeholder="Masukkan nama tamu" />
+                            <label>Nama Tamu</label>
+                            <input type="text" id="fNamaTamu" placeholder="Masukkan nama tamu" required />
                         </div>
                         <div class="form-group">
                             <label>Instansi</label>
-                            <select id="fInstansi">
-                                <option value="">Pilih Instansi</option>
-                            </select>
+                            <select id="fInstansi"><option value="">Pilih Instansi</option></select>
                             <button type="button" class="btn-add" style="margin-top:4px;padding:4px 12px;font-size:12px;" onclick="tambahMasterInstansiCepat()">+ Tambah Instansi</button>
                         </div>
                         <div class="form-group">
@@ -322,49 +286,54 @@
                         </div>
                     </div>
 
-                    <!-- Field Ruang -->
                     <div id="fieldRuang" style="display:none;">
                         <div class="form-group">
                             <label>Nama Kegiatan</label>
-                            <input type="text" id="fKegiatanRuang" placeholder="Masukkan nama kegiatan" />
+                            <input type="text" id="fKegiatanRuang" placeholder="Masukkan nama kegiatan" required />
                         </div>
                         <div class="form-group">
                             <label>Kapasitas</label>
-                            <input type="number" id="fKapasitas" placeholder="Jumlah orang" />
+                            <input type="number" id="fKapasitas" placeholder="Jumlah orang" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Ruangan</label>
+                            <select id="fRuanganRuang" required>
+                                <option value="">Pilih Ruangan</option>
+                            </select>
+                            <button type="button" class="btn-add" style="margin-top:4px;padding:4px 12px;font-size:12px;" onclick="tambahMasterRuanganCepat()">+ Tambah Ruangan</button>
                         </div>
                     </div>
 
-                    <!-- Field Balai -->
-                    <div id="fieldBalai" style="display:none;">
-                        <div class="form-group">
-                            <label>Nama Kegiatan</label>
-                            <input type="text" id="fKegiatanBalai" placeholder="Masukkan nama kegiatan" />
-                        </div>
-                        <div class="form-group">
-                            <label>Jenis Kegiatan</label>
-                            <input type="text" id="fJenisKegiatan" placeholder="Rapat/Pelatihan/Sosialisasi" />
-                        </div>
-                    </div>
-
-                    <!-- Field Program -->
                     <div id="fieldProgram" style="display:none;">
                         <div class="form-group">
-                            <label>Nama Program</label>
-                            <input type="text" id="fNamaProgram" placeholder="Masukkan nama program" />
+                            <label>Nama Kegiatan</label>
+                            <input type="text" id="fNamaProgram" placeholder="Masukkan nama kegiatan" required />
                         </div>
                         <div class="form-group">
-                            <label>Kegiatan</label>
-                            <input type="text" id="fKegiatanProgram" placeholder="Masukkan kegiatan" />
+                            <label>Deskripsi</label>
+                            <input type="text" id="fKegiatanProgram" placeholder="Masukkan deskripsi kegiatan" />
+                        </div>
+                        <div class="form-group">
+                            <label>Ruangan</label>
+                            <select id="fRuanganProgram" required>
+                                <option value="">Pilih Ruangan</option>
+                            </select>
+                            <button type="button" class="btn-add" style="margin-top:4px;padding:4px 12px;font-size:12px;" onclick="tambahMasterRuanganCepat()">+ Tambah Ruangan</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Tempat / Lokasi</label>
+                            <select id="fTempatProgram" required>
+                                <option value="">Pilih Tempat</option>
+                            </select>
+                            <button type="button" class="btn-add" style="margin-top:4px;padding:4px 12px;font-size:12px;" onclick="tambahMasterTempatCepat()">+ Tambah Tempat</button>
                         </div>
                     </div>
 
-                    <!-- Field Umum -->
                     <div class="form-group">
                         <label>Tanggal</label>
                         <input type="date" id="fTanggal" required />
                     </div>
 
-                    <!-- ===== WAKTU MANUAL ===== -->
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                         <div class="form-group">
                             <label>⏰ Waktu Mulai</label>
@@ -377,18 +346,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Ruangan</label>
-                        <select id="fRuangan" required><option value="">Pilih Ruangan</option></select>
-                        <button type="button" class="btn-add" style="margin-top:4px;padding:4px 12px;font-size:12px;" onclick="tambahMasterRuanganCepat()">+ Tambah Ruangan</button>
-                    </div>
-                    <div class="form-group">
-                        <label>Tempat / Lokasi</label>
-                        <select id="fTempat" required><option value="">Pilih Tempat</option></select>
-                        <button type="button" class="btn-add" style="margin-top:4px;padding:4px 12px;font-size:12px;" onclick="tambahMasterTempatCepat()">+ Tambah Tempat</button>
-                    </div>
-                    <div class="form-group">
                         <label>PIC</label>
-                        <select id="fPic" required><option value="">Pilih PIC</option></select>
+                        <select id="fPic" required>
+                            <option value="">Pilih PIC</option>
+                        </select>
                         <button type="button" class="btn-add" style="margin-top:4px;padding:4px 12px;font-size:12px;" onclick="tambahMasterPicCepat()">+ Tambah PIC</button>
                     </div>
 
@@ -455,12 +416,12 @@
             <div class="card" style="padding:24px;">
                 <div class="card-header">
                     <h3>📅 Kalender Kegiatan</h3>
-                    <button class="btn-print" onclick="refreshKalenderFull()">🔄 Refresh</button>
+                    <button class="btn-print" onclick="renderKalenderFull()">🔄 Refresh</button>
                 </div>
                 <div class="calendar-nav" style="justify-content:center;margin-bottom:12px;">
-                    <button id="prevMonthFull">◀</button>
+                    <button id="prevMonthFull" onclick="changeMonthFull(-1)">◀</button>
                     <span id="monthYearFull"></span>
-                    <button id="nextMonthFull">▶</button>
+                    <button id="nextMonthFull" onclick="changeMonthFull(1)">▶</button>
                 </div>
                 <div class="calendar-grid-full" id="calendarGridFull"></div>
                 <div class="calendar-legend">
@@ -494,16 +455,20 @@
                     <div class="card-header">
                         <h3>📊 Grafik Capaian Pengunjung</h3>
                         <div class="chart-filter">
-                            <button class="filter-btn active" data-period="mingguan" onclick="ubahGrafikCapaian('mingguan')">Mingguan</button>
-                            <button class="filter-btn" data-period="bulanan" onclick="ubahGrafikCapaian('bulanan')">Bulanan</button>
+                            <button class="filter-btn" data-period="mingguan" onclick="ubahGrafikCapaian('mingguan')">Mingguan</button>
+                            <button class="filter-btn active" data-period="bulanan" onclick="ubahGrafikCapaian('bulanan')">Bulanan</button>
                             <button class="filter-btn" data-period="tahunan" onclick="ubahGrafikCapaian('tahunan')">Tahunan</button>
                         </div>
                     </div>
-                    <div class="chart-container" style="height:300px;"><canvas id="barChartFull"></canvas></div>
+                    <div class="chart-container" style="height:300px;width:100%;">
+                        <canvas id="barChartFull"></canvas>
+                    </div>
                 </div>
                 <div class="card chart-card">
                     <div class="card-header"><h3>🍩 Kategori Pengunjung</h3></div>
-                    <div class="chart-container" style="height:300px;"><canvas id="pieChartFull"></canvas></div>
+                    <div class="chart-container" style="height:300px;width:100%;">
+                        <canvas id="pieChartFull"></canvas>
+                    </div>
                 </div>
             </div>
 
@@ -517,12 +482,12 @@
                 </div>
                 <div class="table-wrapper">
                     <table>
-                        <thead id="capaianTableHead">
+                        <thead>
                             <tr>
                                 <th>No</th>
                                 <th>Periode</th>
                                 <th>Jumlah</th>
-                                <th>Target / Kegiatan</th>
+                                <th>Target</th>
                                 <th>Pencapaian</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
@@ -541,7 +506,7 @@
                     <h3 id="modalCapaianTitle">Tambah Data Capaian</h3>
                     <button class="modal-close" onclick="closeCapaianModal()">×</button>
                 </div>
-                <form id="capaianForm">
+                <form id="capaianForm" onsubmit="return false;">
                     <input type="hidden" id="capaianIndex" />
                     <div class="form-group">
                         <label>Bulan</label>
@@ -614,8 +579,7 @@
                             <option value="all">📋 Semua Data</option>
                             <option value="kunjungan">📋 Kunjungan</option>
                             <option value="ruang">🏢 Pemakaian Ruang</option>
-                            <option value="balai">🏛️ Balai BRI</option>
-                            <option value="program">📊 Per Program</option>
+                            <option value="program">📊 Kegiatan Harian</option>
                             <option value="capaian" selected>📈 Capaian</option>
                             <option value="kalender">📅 Kalender</option>
                         </select>
@@ -644,8 +608,7 @@
             <div class="stats" id="laporanStats">
                 <div class="stat-card"><div class="stat-icon">📋</div><div><p class="stat-label">Total Kunjungan</p><p class="stat-value" id="lapTotalKunjungan">0</p></div></div>
                 <div class="stat-card"><div class="stat-icon">🏢</div><div><p class="stat-label">Total Ruang</p><p class="stat-value" id="lapTotalRuang">0</p></div></div>
-                <div class="stat-card"><div class="stat-icon">🏛️</div><div><p class="stat-label">Total Balai</p><p class="stat-value" id="lapTotalBalai">0</p></div></div>
-                <div class="stat-card"><div class="stat-icon">📊</div><div><p class="stat-label">Total Program</p><p class="stat-value" id="lapTotalProgram">0</p></div></div>
+                <div class="stat-card"><div class="stat-icon">📊</div><div><p class="stat-label">Total Kegiatan Harian</p><p class="stat-value" id="lapTotalProgram">0</p></div></div>
             </div>
 
             <div class="row-3" style="margin-bottom:20px;">
@@ -657,11 +620,11 @@
                             <button class="filter-btn" data-period="tahunan" onclick="ubahGrafikLaporan('tahunan')">Tahunan</button>
                         </div>
                     </div>
-                    <div class="chart-container" style="height:300px;"><canvas id="barChartLaporan"></canvas></div>
+                    <div class="chart-container" style="height:300px;width:100%;"><canvas id="barChartLaporan"></canvas></div>
                 </div>
                 <div class="card chart-card">
-                    <div class="card-header"><h3>🍩 Kategori</h3></div>
-                    <div class="chart-container" style="height:300px;"><canvas id="pieChartLaporan"></canvas></div>
+                    <div class="card-header"><h3>🍩 Kategori Pengunjung</h3></div>
+                    <div class="chart-container" style="height:300px;width:100%;"><canvas id="pieChartLaporan"></canvas></div>
                 </div>
             </div>
 
@@ -706,7 +669,7 @@
                 <h3 id="modalEventTitle">Tambah Event</h3>
                 <button class="modal-close" onclick="closeEventModal()">×</button>
             </div>
-            <form id="eventForm">
+            <form id="eventForm" onsubmit="return false;">
                 <input type="hidden" id="eventId" />
                 <div class="form-group">
                     <label>Tanggal</label>
@@ -716,7 +679,6 @@
                     <label>Nama Kegiatan</label>
                     <input type="text" id="eventNama" required placeholder="Masukkan nama kegiatan" />
                 </div>
-                <!-- ===== WAKTU EVENT MANUAL ===== -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                     <div class="form-group">
                         <label>⏰ Waktu Mulai</label>
@@ -747,409 +709,1907 @@
         </div>
     </div>
 
-   <script src="dashboard.js"></script>
+    <script>
+    // ============================================
+    // DATA
+    // ============================================
+    var capaianData = [
+        { bulan: 'Jan', jumlah: 120, target: 200, mahasiswa: 54, dosen: 30, umum: 24, instansi: 12 },
+        { bulan: 'Feb', jumlah: 150, target: 200, mahasiswa: 67, dosen: 37, umum: 30, instansi: 16 },
+        { bulan: 'Mar', jumlah: 180, target: 200, mahasiswa: 81, dosen: 45, umum: 36, instansi: 18 },
+        { bulan: 'Apr', jumlah: 170, target: 200, mahasiswa: 76, dosen: 42, umum: 34, instansi: 18 },
+        { bulan: 'Mei', jumlah: 200, target: 200, mahasiswa: 90, dosen: 50, umum: 40, instansi: 20 },
+        { bulan: 'Jun', jumlah: 220, target: 200, mahasiswa: 99, dosen: 55, umum: 44, instansi: 22 },
+        { bulan: 'Jul', jumlah: 190, target: 200, mahasiswa: 85, dosen: 47, umum: 38, instansi: 20 },
+        { bulan: 'Agu', jumlah: 210, target: 200, mahasiswa: 94, dosen: 52, umum: 42, instansi: 22 },
+        { bulan: 'Sep', jumlah: 240, target: 200, mahasiswa: 108, dosen: 60, umum: 48, instansi: 24 },
+        { bulan: 'Okt', jumlah: 260, target: 200, mahasiswa: 117, dosen: 65, umum: 52, instansi: 26 },
+        { bulan: 'Nov', jumlah: 230, target: 200, mahasiswa: 103, dosen: 57, umum: 46, instansi: 24 },
+        { bulan: 'Des', jumlah: 280, target: 200, mahasiswa: 126, dosen: 70, umum: 56, instansi: 28 }
+    ];
 
-<!-- ===== SCRIPT OVERRIDE UNTUK FIX ===== -->
-<script>
+    var kunjunganData = [];
+    var ruangData = [];
+    var programData = [];
+    var eventData = [];
+    var capaianMingguanData = [];
+
+    var masterRuangan = ['Ruang A', 'Ruang B', 'Ruang C'];
+    var masterTempat = ['Gedung A', 'Gedung B', 'Gedung C'];
+    var masterPic = ['Budi', 'Siti', 'Andi'];
+    var masterInstansi = ['IPB', 'Pemda', 'Swasta'];
+
+    var nextKunjunganId = 1;
+    var nextRuangId = 1;
+    var nextProgramId = 1;
+    var nextEventId = 1;
+    var currentMonth = new Date().getMonth();
+    var currentYear = new Date().getFullYear();
+    var currentMonthFull = new Date().getMonth();
+    var currentYearFull = new Date().getFullYear();
+    var currentPeriodFull = 'bulanan';
+    var currentLaporanPeriod = 'bulanan';
+
     // ============================================
-    // FUNGSI SIMPAN CAPAIAN
+    // SINKRONISASI KUNJUNGAN KE CAPAIAN MINGGUAN
     // ============================================
+    function sinkronkanKunjunganKeCapaian() {
+        capaianMingguanData = [];
+        var dataKunjungan = kunjunganData.filter(function(item) {
+            return item.jumlahPengunjung && item.jumlahPengunjung > 0;
+        });
+        dataKunjungan.forEach(function(item) {
+            var existing = capaianMingguanData.find(function(d) {
+                return d.tanggal === item.tanggal && d.instansi === item.instansi;
+            });
+            if (existing) {
+                existing.jumlah += item.jumlahPengunjung;
+            } else {
+                capaianMingguanData.push({
+                    tanggal: item.tanggal,
+                    instansi: item.instansi,
+                    jumlah: item.jumlahPengunjung,
+                    pic: item.pic,
+                    nama: item.nama
+                });
+            }
+        });
+    }
+
+    // ============================================
+    // RENDER CAPAIAN MINGGUAN (TABEL)
+    // ============================================
+    function renderCapaianMingguanTable() {
+        var tbody = document.getElementById('capaianTableBody');
+        if (!tbody) return;
+
+        var dayMap = {};
+        var dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        dayNames.forEach(function(day) { dayMap[day] = 0; });
+
+        if (capaianMingguanData && capaianMingguanData.length > 0) {
+            capaianMingguanData.forEach(function(item) {
+                if (item.tanggal) {
+                    var date = new Date(item.tanggal);
+                    var dayIndex = date.getDay() || 7;
+                    var dayName = dayNames[dayIndex - 1];
+                    if (dayMap[dayName] !== undefined) {
+                        dayMap[dayName] += item.jumlah || 0;
+                    }
+                }
+            });
+        }
+
+        var maxVal = Math.max.apply(null, Object.values(dayMap)) || 1;
+        var html = '';
+        dayNames.forEach(function(day, index) {
+            var val = dayMap[day] || 0;
+            var persentase = maxVal > 0 ? Math.round((val / maxVal) * 100) : 0;
+            html += '<tr>' +
+                '<td>' + (index + 1) + '</td>' +
+                '<td><strong>' + day + '</strong></td>' +
+                '<td>' + val + '</td>' +
+                '<td>-</td>' +
+                '<td><div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;background:#e0e0e0;border-radius:10px;height:8px;max-width:100px;"><div style="width:' + persentase + '%;background:#ff9800;border-radius:10px;height:8px;"></div></div><span style="font-weight:700;color:#1a237e;min-width:45px;">' + persentase + '%</span></div></td>' +
+                '<td>' + (val > 0 ? '✅ Ada Kegiatan' : '⬜ Kosong') + '</td>' +
+                '</tr>';
+        });
+        tbody.innerHTML = html;
+    }
+
+    // ============================================
+    // RENDER TABEL CAPAIAN BULANAN
+    // ============================================
+    function renderCapaianTable() {
+        var period = document.getElementById('capaianFilter') ? document.getElementById('capaianFilter').value : 'bulanan';
+        if (period === 'mingguan') {
+            renderCapaianMingguanTable();
+            return;
+        }
+
+        var tbody = document.getElementById('capaianTableBody');
+        if (!tbody) return;
+
+        if (!capaianData || capaianData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#888;padding:20px;">Belum ada data capaian</td></tr>';
+            return;
+        }
+
+        var html = '';
+        for (var i = 0; i < capaianData.length; i++) {
+            var d = capaianData[i];
+            var persentase = d.target > 0 ? Math.round((d.jumlah / d.target) * 100) : 0;
+            var status = '';
+            var statusClass = '';
+
+            if (persentase >= 100) {
+                status = '✅ Tercapai';
+                statusClass = 'status-success';
+            } else if (persentase >= 75) {
+                status = '⚠️ Mendekati';
+                statusClass = 'status-warning';
+            } else {
+                status = '❌ Kurang';
+                statusClass = 'status-danger';
+            }
+
+            html += '<tr>' +
+                '<td>' + (i + 1) + '</td>' +
+                '<td><strong>' + d.bulan + '</strong></td>' +
+                '<td><span class="jumlah-badge">' + d.jumlah + '</span></td>' +
+                '<td>' + d.target + '</td>' +
+                '<td>' + persentase + '%</td>' +
+                '<td><span class="' + statusClass + '">' + status + '</span></td>' +
+                '<td>' +
+                '<button class="btn-edit" onclick="editCapaian(' + i + ')">✏️ Edit</button>' +
+                '<button class="btn-delete" style="padding:4px 10px;font-size:11px;" onclick="hapusCapaianData(' + i + ')">🗑️</button>' +
+                '</td>' +
+                '</tr>';
+        }
+        tbody.innerHTML = html;
+    }
+
+    // ============================================
+    // GET DATA MINGGUAN UNTUK CHART
+    // ============================================
+    function getWeeklyChartData() {
+        var dayMap = {};
+        var dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        dayNames.forEach(function(day) { dayMap[day] = 0; });
+
+        if (capaianMingguanData && capaianMingguanData.length > 0) {
+            capaianMingguanData.forEach(function(item) {
+                if (item.tanggal) {
+                    var date = new Date(item.tanggal);
+                    var dayIndex = date.getDay() || 7;
+                    var dayName = dayNames[dayIndex - 1];
+                    if (dayMap[dayName] !== undefined) {
+                        dayMap[dayName] += item.jumlah || 0;
+                    }
+                }
+            });
+        }
+
+        return {
+            labels: dayNames,
+            data: dayNames.map(function(day) { return dayMap[day] || 0; })
+        };
+    }
+
+    // ============================================
+    // CHART CAPAIAN - BAR CHART
+    // ============================================
+    var barChartFullInstance = null;
+
+    function initBarChartFull(period) {
+        var canvas = document.getElementById('barChartFull');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        if (barChartFullInstance) {
+            barChartFullInstance.destroy();
+            barChartFullInstance = null;
+        }
+
+        var labels = [];
+        var data = [];
+        var targetData = [];
+
+        if (period === 'mingguan') {
+            var weeklyData = getWeeklyChartData();
+            labels = weeklyData.labels;
+            data = weeklyData.data;
+            var maxVal = Math.max.apply(null, data) || 1;
+            targetData = data.map(function() { return Math.round(maxVal * 1.2); });
+        } else if (period === 'bulanan') {
+            labels = capaianData.map(function(d) { return d.bulan; });
+            data = capaianData.map(function(d) { return d.jumlah; });
+            targetData = capaianData.map(function(d) { return d.target; });
+        } else if (period === 'tahunan') {
+            var tahunSekarang = new Date().getFullYear();
+            var totalTahunIni = 0;
+            for (var i = 0; i < capaianData.length; i++) {
+                totalTahunIni += capaianData[i].jumlah || 0;
+            }
+            var rataRataBulan = capaianData.length > 0 ? totalTahunIni / capaianData.length : 100;
+            labels = [];
+            data = [];
+            targetData = [];
+            for (var t = 4; t >= 0; t--) {
+                var tahun = tahunSekarang - t;
+                labels.push(tahun.toString());
+                if (t === 0) {
+                    data.push(totalTahunIni);
+                } else {
+                    var faktor = 1 + (t * 0.05);
+                    data.push(Math.round(rataRataBulan * 12 * faktor * (0.8 + (t * 0.05))));
+                }
+                var targetValue = data[data.length - 1] * 1.1;
+                targetData.push(Math.round(targetValue));
+            }
+        }
+
+        var datasets = [];
+        var colorMap = { 'mingguan': '#ff9800', 'bulanan': '#1a237e', 'tahunan': '#ffca28' };
+
+        datasets.push({
+            label: 'Pengunjung',
+            data: data,
+            backgroundColor: colorMap[period] || '#1a237e',
+            borderColor: period === 'bulanan' ? '#0d1445' : '#e6b800',
+            borderWidth: 1,
+            borderRadius: 4
+        });
+
+        if (period === 'bulanan' || period === 'tahunan') {
+            datasets.push({
+                label: 'Target',
+                data: targetData,
+                backgroundColor: 'rgba(255, 152, 0, 0.5)',
+                borderColor: '#ff9800',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                borderRadius: 4,
+                type: 'line'
+            });
+        }
+
+        barChartFullInstance = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: labels, datasets: datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { usePointStyle: true, pointStyle: 'circle', padding: 16, font: { size: 13 } }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#eee' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // ============================================
+    // CHART LAPORAN - BAR CHART
+    // ============================================
+    var barChartLaporanInstance = null;
+
+    function initBarChartLaporan(period) {
+        var canvas = document.getElementById('barChartLaporan');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        if (barChartLaporanInstance) {
+            barChartLaporanInstance.destroy();
+            barChartLaporanInstance = null;
+        }
+
+        var labels = [];
+        var data = [];
+        var targetData = [];
+
+        if (period === 'mingguan') {
+            var weeklyData = getWeeklyChartData();
+            labels = weeklyData.labels;
+            data = weeklyData.data;
+            var maxVal = Math.max.apply(null, data) || 1;
+            targetData = data.map(function() { return Math.round(maxVal * 1.2); });
+        } else if (period === 'bulanan') {
+            labels = capaianData.map(function(d) { return d.bulan; });
+            data = capaianData.map(function(d) { return d.jumlah; });
+            targetData = capaianData.map(function(d) { return d.target; });
+        } else if (period === 'tahunan') {
+            var tahunSekarang = new Date().getFullYear();
+            var totalTahunIni = 0;
+            for (var i = 0; i < capaianData.length; i++) {
+                totalTahunIni += capaianData[i].jumlah || 0;
+            }
+            var rataRataBulan = capaianData.length > 0 ? totalTahunIni / capaianData.length : 100;
+            labels = [];
+            data = [];
+            targetData = [];
+            for (var t = 4; t >= 0; t--) {
+                var tahun = tahunSekarang - t;
+                labels.push(tahun.toString());
+                if (t === 0) {
+                    data.push(totalTahunIni);
+                } else {
+                    var faktor = 1 + (t * 0.05);
+                    data.push(Math.round(rataRataBulan * 12 * faktor * (0.8 + (t * 0.05))));
+                }
+                var targetValue = data[data.length - 1] * 1.1;
+                targetData.push(Math.round(targetValue));
+            }
+        }
+
+        var datasets = [];
+
+        datasets.push({
+            label: 'Pengunjung',
+            data: data,
+            backgroundColor: '#1a237e',
+            borderColor: '#0d1445',
+            borderWidth: 1,
+            borderRadius: 4
+        });
+
+        if (period === 'bulanan' || period === 'tahunan') {
+            datasets.push({
+                label: 'Target',
+                data: targetData,
+                backgroundColor: 'rgba(255, 152, 0, 0.5)',
+                borderColor: '#ff9800',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                borderRadius: 4,
+                type: 'line'
+            });
+        }
+
+        barChartLaporanInstance = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: labels, datasets: datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { usePointStyle: true, pointStyle: 'circle', padding: 16, font: { size: 13 } }
+                    }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#eee' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // ============================================
+    // CHART DASHBOARD (BERANDA) - BAR CHART + PIE CHART (FIX)
+    // ============================================
+    var barChart = null;
+    var pieChart = null; // ← PAKAI VARIABLE INI, BUKAN window.pieChart
+
+    function initDashboardCharts() {
+        // BAR CHART
+        var ctx1 = document.getElementById('barChart');
+        if (ctx1) {
+            var ctx1Context = ctx1.getContext('2d');
+            if (ctx1Context) {
+                if (barChart) {
+                    barChart.destroy();
+                    barChart = null;
+                }
+
+                var labels = capaianData.map(function(d) { return d.bulan; });
+                var data = capaianData.map(function(d) { return d.jumlah; });
+
+                barChart = new Chart(ctx1Context, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Pengunjung',
+                            data: data,
+                            backgroundColor: '#1a237e',
+                            borderColor: '#0d1445',
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: '#eee' } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // PIE CHART - FIX
+        var ctx2 = document.getElementById('pieChart');
+        if (ctx2) {
+            var ctx2Context = ctx2.getContext('2d');
+            if (ctx2Context) {
+                if (pieChart) {
+                    pieChart.destroy();
+                    pieChart = null;
+                }
+
+                var totalMahasiswa = 0,
+                    totalDosen = 0,
+                    totalUmum = 0,
+                    totalInstansi = 0;
+                for (var i = 0; i < capaianData.length; i++) {
+                    var d = capaianData[i];
+                    totalMahasiswa += d.mahasiswa || 0;
+                    totalDosen += d.dosen || 0;
+                    totalUmum += d.umum || 0;
+                    totalInstansi += d.instansi || 0;
+                }
+
+                var total = totalMahasiswa + totalDosen + totalUmum + totalInstansi;
+                var labelsPie = [],
+                    dataPie = [],
+                    colorsPie = [];
+
+                if (total === 0) {
+                    labelsPie = ['Belum ada data'];
+                    dataPie = [1];
+                    colorsPie = ['#e0e0e0'];
+                } else {
+                    var categories = [
+                        { name: 'Mahasiswa', value: totalMahasiswa, color: '#1a237e' },
+                        { name: 'Dosen', value: totalDosen, color: '#ffca28' },
+                        { name: 'Umum', value: totalUmum, color: '#4caf50' },
+                        { name: 'Instansi', value: totalInstansi, color: '#ff9800' }
+                    ];
+                    for (var j = 0; j < categories.length; j++) {
+                        if (categories[j].value > 0) {
+                            labelsPie.push(categories[j].name);
+                            dataPie.push(categories[j].value);
+                            colorsPie.push(categories[j].color);
+                        }
+                    }
+                }
+
+                pieChart = new Chart(ctx2Context, {
+                    type: 'pie',
+                    data: {
+                        labels: labelsPie,
+                        datasets: [{
+                            data: dataPie,
+                            backgroundColor: colorsPie,
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 14,
+                                    usePointStyle: true,
+                                    pointStyle: 'circle',
+                                    font: { size: 13 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        var label = context.label || '';
+                                        var value = context.parsed || 0;
+                                        var percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return label + ': ' + percentage + '% (' + value + ' orang)';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    function ubahGrafikDashboard(period) {
+        document.querySelectorAll('#page-dashboard .chart-filter .filter-btn').forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        var activeBtn = document.querySelector('#page-dashboard .chart-filter .filter-btn[data-period="' + period + '"]');
+        if (activeBtn) activeBtn.classList.add('active');
+
+        var labels = [];
+        var data = [];
+
+        if (period === 'weekly') {
+            var weeklyData = getWeeklyChartData();
+            labels = weeklyData.labels;
+            data = weeklyData.data;
+        } else if (period === 'monthly') {
+            labels = capaianData.map(function(d) { return d.bulan; });
+            data = capaianData.map(function(d) { return d.jumlah; });
+        } else if (period === 'yearly') {
+            var tahunSekarang = new Date().getFullYear();
+            var totalTahunIni = 0;
+            for (var i = 0; i < capaianData.length; i++) {
+                totalTahunIni += capaianData[i].jumlah || 0;
+            }
+            var rataRataBulan = capaianData.length > 0 ? totalTahunIni / capaianData.length : 100;
+            labels = ['2022', '2023', '2024', '2025', tahunSekarang.toString()];
+            data = [];
+            for (var t = 4; t >= 0; t--) {
+                if (t === 0) {
+                    data.push(totalTahunIni);
+                } else {
+                    var faktor = 1 + (t * 0.05);
+                    data.push(Math.round(rataRataBulan * 12 * faktor * (0.8 + (t * 0.05))));
+                }
+            }
+        }
+
+        if (barChart) {
+            barChart.data.labels = labels;
+            barChart.data.datasets[0].data = data;
+            barChart.update();
+        }
+    }
+
+    // ============================================
+    // PIE CHART FULL & LAPORAN
+    // ============================================
+    var pieChartFullInstance = null;
+    var pieChartLaporanInstance = null;
+
+    function initPieChartFull() {
+        var canvas = document.getElementById('pieChartFull');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        if (pieChartFullInstance) {
+            pieChartFullInstance.destroy();
+            pieChartFullInstance = null;
+        }
+
+        var totalMahasiswa = 0,
+            totalDosen = 0,
+            totalUmum = 0,
+            totalInstansi = 0;
+        for (var i = 0; i < capaianData.length; i++) {
+            var d = capaianData[i];
+            totalMahasiswa += d.mahasiswa || 0;
+            totalDosen += d.dosen || 0;
+            totalUmum += d.umum || 0;
+            totalInstansi += d.instansi || 0;
+        }
+
+        var total = totalMahasiswa + totalDosen + totalUmum + totalInstansi;
+        var labels = [],
+            data = [],
+            colors = [];
+
+        if (total === 0) {
+            labels = ['Belum ada data'];
+            data = [1];
+            colors = ['#e0e0e0'];
+        } else {
+            var categories = [
+                { name: 'Mahasiswa', value: totalMahasiswa, color: '#1a237e' },
+                { name: 'Dosen', value: totalDosen, color: '#ffca28' },
+                { name: 'Umum', value: totalUmum, color: '#4caf50' },
+                { name: 'Instansi', value: totalInstansi, color: '#ff9800' }
+            ];
+            for (var j = 0; j < categories.length; j++) {
+                if (categories[j].value > 0) {
+                    labels.push(categories[j].name);
+                    data.push(categories[j].value);
+                    colors.push(categories[j].color);
+                }
+            }
+        }
+
+        pieChartFullInstance = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors,
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 14,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: { size: 13 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.label || '';
+                                var value = context.parsed || 0;
+                                var percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return label + ': ' + percentage + '% (' + value + ' orang)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function initPieChartLaporan() {
+        var canvas = document.getElementById('pieChartLaporan');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        if (pieChartLaporanInstance) {
+            pieChartLaporanInstance.destroy();
+            pieChartLaporanInstance = null;
+        }
+
+        var totalMahasiswa = 0,
+            totalDosen = 0,
+            totalUmum = 0,
+            totalInstansi = 0;
+        for (var i = 0; i < capaianData.length; i++) {
+            var d = capaianData[i];
+            totalMahasiswa += d.mahasiswa || 0;
+            totalDosen += d.dosen || 0;
+            totalUmum += d.umum || 0;
+            totalInstansi += d.instansi || 0;
+        }
+
+        var total = totalMahasiswa + totalDosen + totalUmum + totalInstansi;
+        var labels = [],
+            data = [],
+            colors = [];
+
+        if (total === 0) {
+            labels = ['Belum ada data'];
+            data = [1];
+            colors = ['#e0e0e0'];
+        } else {
+            var categories = [
+                { name: 'Mahasiswa', value: totalMahasiswa, color: '#1a237e' },
+                { name: 'Dosen', value: totalDosen, color: '#ffca28' },
+                { name: 'Umum', value: totalUmum, color: '#4caf50' },
+                { name: 'Instansi', value: totalInstansi, color: '#ff9800' }
+            ];
+            for (var j = 0; j < categories.length; j++) {
+                if (categories[j].value > 0) {
+                    labels.push(categories[j].name);
+                    data.push(categories[j].value);
+                    colors.push(categories[j].color);
+                }
+            }
+        }
+
+        pieChartLaporanInstance = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors,
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 14,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: { size: 13 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.label || '';
+                                var value = context.parsed || 0;
+                                var percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return label + ': ' + percentage + '% (' + value + ' orang)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // ============================================
+    // FUNGSI CAPAIAN LAINNYA
+    // ============================================
+    function tambahCapaian() {
+        var modal = document.getElementById('capaianModal');
+        if (!modal) return;
+        document.getElementById('modalCapaianTitle').textContent = 'Tambah Data Capaian';
+        document.getElementById('capaianIndex').value = '';
+        document.getElementById('capaianBulan').value = 'Jan';
+        document.getElementById('capaianJumlah').value = '';
+        document.getElementById('capaianTarget').value = '200';
+        document.getElementById('capaianMahasiswa').value = '';
+        document.getElementById('capaianDosen').value = '';
+        document.getElementById('capaianUmum').value = '';
+        document.getElementById('capaianInstansi').value = '';
+        document.getElementById('btnDeleteCapaian').style.display = 'none';
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+    }
+
+    function editCapaian(index) {
+        var data = capaianData[index];
+        if (!data) return;
+        var modal = document.getElementById('capaianModal');
+        if (!modal) return;
+        document.getElementById('modalCapaianTitle').textContent = 'Edit Data Capaian';
+        document.getElementById('capaianIndex').value = index;
+        document.getElementById('capaianBulan').value = data.bulan;
+        document.getElementById('capaianJumlah').value = data.jumlah;
+        document.getElementById('capaianTarget').value = data.target;
+        document.getElementById('capaianMahasiswa').value = data.mahasiswa || 0;
+        document.getElementById('capaianDosen').value = data.dosen || 0;
+        document.getElementById('capaianUmum').value = data.umum || 0;
+        document.getElementById('capaianInstansi').value = data.instansi || 0;
+        document.getElementById('btnDeleteCapaian').style.display = 'inline-block';
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+    }
+
     function simpanCapaian() {
-        console.log('🟢 simpanCapaian dipanggil!');
-        try {
-            const index = document.getElementById('capaianIndex').value;
-            const bulan = document.getElementById('capaianBulan').value;
-            const jumlah = parseInt(document.getElementById('capaianJumlah').value);
-            const target = parseInt(document.getElementById('capaianTarget').value);
-            const mahasiswa = parseInt(document.getElementById('capaianMahasiswa').value) || 0;
-            const dosen = parseInt(document.getElementById('capaianDosen').value) || 0;
-            const umum = parseInt(document.getElementById('capaianUmum').value) || 0;
-            const instansi = parseInt(document.getElementById('capaianInstansi').value) || 0;
-            
-            if (!bulan) { alert('⚠️ Bulan harus dipilih!'); return; }
-            if (isNaN(jumlah) || jumlah <= 0) { alert('⚠️ Jumlah Pengunjung harus diisi dan lebih dari 0!'); return; }
-            if (isNaN(target) || target <= 0) { alert('⚠️ Target harus diisi dan lebih dari 0!'); return; }
-            
-            const totalKategori = mahasiswa + dosen + umum + instansi;
-            if (totalKategori > 0 && totalKategori !== jumlah) {
-                if (!confirm(`⚠️ Total kategori (${totalKategori}) tidak sama dengan Jumlah (${jumlah}).\nApakah Anda yakin ingin menyimpan?`)) {
+        var index = document.getElementById('capaianIndex').value;
+        var bulan = document.getElementById('capaianBulan').value;
+        var jumlah = parseInt(document.getElementById('capaianJumlah').value) || 0;
+        var target = parseInt(document.getElementById('capaianTarget').value) || 0;
+        var mahasiswa = parseInt(document.getElementById('capaianMahasiswa').value) || 0;
+        var dosen = parseInt(document.getElementById('capaianDosen').value) || 0;
+        var umum = parseInt(document.getElementById('capaianUmum').value) || 0;
+        var instansi = parseInt(document.getElementById('capaianInstansi').value) || 0;
+
+        if (!bulan) { alert('⚠️ Bulan harus dipilih!'); return; }
+        if (jumlah <= 0) { alert('⚠️ Jumlah Pengunjung harus diisi dan lebih dari 0!'); return; }
+        if (target <= 0) { alert('⚠️ Target harus diisi dan lebih dari 0!'); return; }
+
+        var dataBaru = { bulan: bulan, jumlah: jumlah, target: target, mahasiswa: mahasiswa, dosen: dosen, umum: umum,
+            instansi: instansi };
+
+        if (index === '') {
+            for (var i = 0; i < capaianData.length; i++) {
+                if (capaianData[i].bulan === bulan) {
+                    alert('⚠️ Data untuk bulan ' + bulan + ' sudah ada!');
                     return;
                 }
             }
-            
-            const existingIndex = capaianData.findIndex(d => d.bulan === bulan);
-            
-            if (index === '') {
-                if (existingIndex !== -1) { alert(`⚠️ Data untuk bulan ${bulan} sudah ada!`); return; }
-                capaianData.push({ bulan, jumlah, target, mahasiswa, dosen, umum, instansi });
-                alert('✅ Data capaian berhasil ditambahkan!');
-            } else {
-                if (existingIndex !== -1 && existingIndex !== parseInt(index)) { alert(`⚠️ Data untuk bulan ${bulan} sudah ada!`); return; }
-                capaianData[parseInt(index)] = { bulan, jumlah, target, mahasiswa, dosen, umum, instansi };
-                alert('✅ Data capaian berhasil diupdate!');
+            capaianData.push(dataBaru);
+            alert('✅ Data capaian berhasil ditambahkan!');
+        } else {
+            for (var j = 0; j < capaianData.length; j++) {
+                if (capaianData[j].bulan === bulan && j !== parseInt(index)) {
+                    alert('⚠️ Data untuk bulan ' + bulan + ' sudah ada!');
+                    return;
+                }
             }
-            
+            capaianData[parseInt(index)] = dataBaru;
+            alert('✅ Data capaian berhasil diupdate!');
+        }
+
+        closeCapaianModal();
+        renderCapaianTable();
+        initBarChartFull(currentPeriodFull);
+        initPieChartFull();
+        initDashboardCharts();
+        initLaporanCharts();
+        simpanSemuaData();
+    }
+
+    function hapusCapaianData(index) {
+        if (!confirm('Apakah Anda yakin ingin menghapus data capaian ini?')) return;
+        capaianData.splice(index, 1);
+        renderCapaianTable();
+        initBarChartFull(currentPeriodFull);
+        initPieChartFull();
+        initDashboardCharts();
+        initLaporanCharts();
+        simpanSemuaData();
+        alert('✅ Data capaian berhasil dihapus!');
+    }
+
+    function hapusCapaian() {
+        var index = document.getElementById('capaianIndex').value;
+        if (index !== '') {
             closeCapaianModal();
-            renderCapaianTable();
-            updateAllCharts();
-            simpanSemuaData();
-        } catch(e) {
-            console.error('❌ Error:', e);
-            alert('❌ Terjadi error: ' + e.message);
+            hapusCapaianData(parseInt(index));
         }
     }
 
     function closeCapaianModal() {
-        const modal = document.getElementById('capaianModal');
+        var modal = document.getElementById('capaianModal');
         if (modal) {
-            modal.classList.remove('active');
             modal.style.display = 'none';
+            modal.classList.remove('active');
         }
     }
 
-    function renderCapaianTable() {
-        renderCapaianTableByPeriod(currentPeriodFull || 'bulanan');
+    function refreshCapaian() {
+        renderCapaianTable();
+        initBarChartFull(currentPeriodFull);
+        initPieChartFull();
+        initDashboardCharts();
+        initLaporanCharts();
+        alert('🔄 Data capaian berhasil direfresh!');
     }
 
-    window.tambahJadwal = function() {
-        console.log('🟢 tambahJadwal dari HTML override');
+    function ubahFilterCapaian() {
+        var val = document.getElementById('capaianFilter').value;
+        ubahGrafikCapaian(val);
+    }
+
+    function ubahGrafikCapaian(period) {
+        currentPeriodFull = period;
+        var buttons = document.querySelectorAll('#page-capaian .chart-filter .filter-btn');
+        for (var i = 0; i < buttons.length; i++) {
+            buttons[i].classList.remove('active');
+            if (buttons[i].dataset.period === period) {
+                buttons[i].classList.add('active');
+            }
+        }
+        var filterSelect = document.getElementById('capaianFilter');
+        if (filterSelect) {
+            filterSelect.value = period;
+        }
+        var titleMap = {
+            'mingguan': '📋 Detail Capaian Mingguan',
+            'bulanan': '📋 Detail Capaian Bulanan',
+            'tahunan': '📋 Detail Capaian Tahunan'
+        };
+        var titleEl = document.getElementById('capaianTableTitle');
+        if (titleEl) {
+            titleEl.textContent = titleMap[period] || '📋 Detail Capaian';
+        }
+        renderCapaianTable();
+        initBarChartFull(period);
+        initPieChartFull();
+    }
+
+    function ubahGrafikLaporan(period) {
+        currentLaporanPeriod = period;
+        document.querySelectorAll('#page-laporan .chart-filter .filter-btn').forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        var activeBtn = document.querySelector('#page-laporan .chart-filter .filter-btn[data-period="' + period + '"]');
+        if (activeBtn) activeBtn.classList.add('active');
+        initBarChartLaporan(period);
+        initPieChartLaporan();
+    }
+
+    function initLaporanCharts() {
+        initBarChartLaporan('bulanan');
+        initPieChartLaporan();
+    }
+
+    // ============================================
+    // FUNGSI KALENDER
+    // ============================================
+    function renderCalendar(month, year, gridId, monthYearId) {
+        var grid = document.getElementById(gridId);
+        if (!grid) return;
+        var monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+            'November', 'Desember'
+        ];
+        var dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+        document.getElementById(monthYearId).textContent = monthNames[month] + ' ' + year;
+        var firstDay = new Date(year, month, 1).getDay();
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        var today = new Date();
+        var todayDate = today.getDate();
+        var todayMonth = today.getMonth();
+        var todayYear = today.getFullYear();
+        var html = '';
+        dayNames.forEach(function(day) { html += '<div class="day-name">' + day + '</div>'; });
+        for (var i = 0; i < firstDay; i++) { html += '<div class="day empty"></div>'; }
+        for (var d = 1; d <= daysInMonth; d++) {
+            var isToday = (d === todayDate && month === todayMonth && year === todayYear);
+            var hasEvent = eventData.some(function(e) { return e.tanggal === d && e.bulan === month && e.tahun === year; });
+            var className = 'day';
+            if (isToday) className += ' today';
+            if (hasEvent) className += ' has-event';
+            else if (!isToday) className += ' no-event';
+            html += '<div class="' + className + '" onclick="lihatEvent(' + d + ',' + month + ',' + year + ')">' + d +
+                '</div>';
+        }
+        grid.innerHTML = html;
+        updateEventList(month, year);
+    }
+
+    function changeMonth(delta) {
+        currentMonth += delta;
+        if (currentMonth > 11) { currentMonth = 0;
+            currentYear++; } else if (currentMonth < 0) { currentMonth = 11;
+            currentYear--; }
+        renderCalendar(currentMonth, currentYear, 'calendarGrid', 'monthYear');
+    }
+
+    function changeMonthFull(delta) {
+        currentMonthFull += delta;
+        if (currentMonthFull > 11) { currentMonthFull = 0;
+            currentYearFull++; } else if (currentMonthFull < 0) { currentMonthFull = 11;
+            currentYearFull--; }
+        renderCalendarFull(currentMonthFull, currentYearFull);
+    }
+
+    function renderCalendarFull(month, year) {
+        renderCalendar(month, year, 'calendarGridFull', 'monthYearFull');
+        var monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+            'November', 'Desember'
+        ];
+        var eventsThisMonth = eventData.filter(function(e) { return e.bulan === month && e.tahun === year; });
+        var container = document.getElementById('eventListFull');
+        if (eventsThisMonth.length === 0) {
+            container.innerHTML = '<p style="color:#888;">Tidak ada event bulan ini</p>';
+        } else {
+            container.innerHTML = eventsThisMonth.map(function(e) {
+                return '<div class="dashboard-event-item"><span class="event-date">' + e.tanggal +
+                    '</span><span class="event-name">' + e.nama + '</span><span class="event-time">' + (e.waktu ||
+                        '08:00 - 17:00') + '</span><span class="event-pic">' + (e.pic || '-') + '</span></div>';
+            }).join('');
+        }
+    }
+
+    function lihatEvent(tanggal, bulan, tahun) {
+        var events = eventData.filter(function(e) { return e.tanggal === tanggal && e.bulan === bulan && e.tahun === tahun; });
+        if (events.length === 0) { alert('Tidak ada event pada tanggal ' + tanggal); return; }
+        var msg = events.map(function(e) { return '📌 ' + e.nama + '\n⏰ ' + (e.waktu || '08:00 - 17:00') + '\n👤 ' + (e.pic ||
+                '-') + '\n🏢 ' + (e.ruangan || '-'); }).join('\n\n');
+        alert('📅 Event tanggal ' + tanggal + ':\n\n' + msg);
+    }
+
+    function updateEventList(month, year) {
+        var events = eventData.filter(function(e) { return e.bulan === month && e.tahun === year; });
+        var container = document.getElementById('dashboardEventList');
+        var badge = document.getElementById('eventCountBadge');
+        if (badge) badge.textContent = events.length + ' Kegiatan';
+        if (events.length === 0) {
+            container.innerHTML =
+                '<p style="color:#888;font-size:13px;text-align:center;padding:20px 0;">Tidak ada kegiatan bulan ini</p>';
+            return;
+        }
+        events.sort(function(a, b) { return a.tanggal - b.tanggal; });
+        container.innerHTML = events.map(function(e) {
+            return '<div class="dashboard-event-item"><span class="event-date">' + e.tanggal +
+                '</span><span class="event-name">' + e.nama + '</span><span class="event-time">' + (e.waktu ||
+                    '08:00 - 17:00') + '</span><span class="event-pic">' + (e.pic || '-') + '</span></div>';
+        }).join('');
+    }
+
+    // ============================================
+    // SINKRONISASI JADWAL KE KALENDER
+    // ============================================
+    function sinkronkanJadwalKeKalender() {
+        eventData = [];
+        kunjunganData.forEach(function(d) {
+            if (d.tanggal) {
+                var parts = d.tanggal.split('-').map(Number);
+                eventData.push({ tanggal: parts[2], bulan: parts[1] - 1, tahun: parts[0], nama: d.nama || 'Kunjungan',
+                    waktu: d.waktu || '08:00 - 17:00', pic: d.pic || '-', ruangan: d.ruangan || '-',
+                    jenis: 'kunjungan' });
+            }
+        });
+        ruangData.forEach(function(d) {
+            if (d.tanggal) {
+                var parts = d.tanggal.split('-').map(Number);
+                eventData.push({ tanggal: parts[2], bulan: parts[1] - 1, tahun: parts[0], nama: d.kegiatan ||
+                        'Pemakaian Ruang', waktu: d.waktu || '08:00 - 17:00', pic: d.pic || '-',
+                    ruangan: d.ruangan || '-', jenis: 'ruang' });
+            }
+        });
+        programData.forEach(function(d) {
+            if (d.tanggal) {
+                var parts = d.tanggal.split('-').map(Number);
+                eventData.push({ tanggal: parts[2], bulan: parts[1] - 1, tahun: parts[0], nama: d.kegiatan ||
+                        'Kegiatan Harian', waktu: d.waktu || '08:00 - 17:00', pic: d.pic || '-',
+                    ruangan: d.ruangan || '-', jenis: 'program' });
+            }
+        });
+        renderCalendar(currentMonth, currentYear, 'calendarGrid', 'monthYear');
+        renderCalendarFull(currentMonthFull, currentYearFull);
+    }
+
+    // ============================================
+    // FUNGSI RENDER RINGKASAN JADWAL
+    // ============================================
+    function renderRingkasanJadwal() {
+        var today = new Date().toISOString().split('T')[0];
+        var kunjunganHariIni = kunjunganData.filter(function(d) { return d.tanggal === today; });
+        var ruangHariIni = ruangData.filter(function(d) { return d.tanggal === today; });
+        var programHariIni = programData.filter(function(d) { return d.tanggal === today; });
+
+        var kunjunganTbody = document.getElementById('ringkasanKunjungan');
+        if (kunjunganHariIni.length === 0) {
+            kunjunganTbody.innerHTML =
+                '<tr><td colspan="7" style="text-align:center;color:#888;padding:12px;">Tidak ada kunjungan hari ini</td></tr>';
+        } else {
+            kunjunganTbody.innerHTML = kunjunganHariIni.slice(0, 5).map(function(d, i) {
+                return '<tr><td>' + (i + 1) + '</td><td>' + (d.nama || '-') + '</td><td>' + (d.instansi || '-') +
+                    '</td><td>' + (d.tanggal || '-') + '</td><td>' + (d.waktu || '-') + '</td><td>' + (d
+                        .jumlahPengunjung || 0) + '</td><td>' + (d.pic || '-') + '</td></tr>';
+            }).join('');
+        }
+
+        var ruangTbody = document.getElementById('ringkasanRuang');
+        if (ruangHariIni.length === 0) {
+            ruangTbody.innerHTML =
+                '<tr><td colspan="7" style="text-align:center;color:#888;padding:12px;">Tidak ada pemakaian ruang hari ini</td></tr>';
+        } else {
+            ruangTbody.innerHTML = ruangHariIni.slice(0, 5).map(function(d, i) {
+                return '<tr><td>' + (i + 1) + '</td><td>' + (d.kegiatan || '-') + '</td><td>' + (d.ruangan || '-') +
+                    '</td><td>' + (d.tanggal || '-') + '</td><td>' + (d.waktu || '-') + '</td><td>' + (d
+                        .kapasitas || 0) + '</td><td>' + (d.pic || '-') + '</td></tr>';
+            }).join('');
+        }
+
+        var programTbody = document.getElementById('ringkasanProgram');
+        if (programHariIni.length === 0) {
+            programTbody.innerHTML =
+                '<tr><td colspan="8" style="text-align:center;color:#888;padding:12px;">Tidak ada kegiatan harian hari ini</td></tr>';
+        } else {
+            programTbody.innerHTML = programHariIni.slice(0, 5).map(function(d, i) {
+                return '<tr><td>' + (i + 1) + '</td><td>' + (d.kegiatan || '-') + '</td><td>' + (d.deskripsi ||
+                        '-') + '</td><td>' + (d.tanggal || '-') + '</td><td>' + (d.waktu || '-') + '</td><td>' +
+                    (d.ruangan || '-') + '</td><td>' + (d.tempat || '-') + '</td><td>' + (d.pic || '-') +
+                    '</td></tr>';
+            }).join('');
+        }
+        updateStats();
+    }
+
+    // ============================================
+    // FUNGSI RENDER TABEL JADWAL
+    // ============================================
+    function renderKunjunganTable() {
+        var tbody = document.getElementById('kunjunganTableBody');
+        if (kunjunganData.length === 0) {
+            tbody.innerHTML =
+                '<tr><td colspan="8" style="text-align:center;color:#888;padding:20px;">Tidak ada data kunjungan</td></tr>';
+            return;
+        }
+        tbody.innerHTML = kunjunganData.map(function(d, i) {
+            return '<tr><td>' + (i + 1) + '</td><td>' + (d.nama || '-') + '</td><td>' + (d.instansi || '-') +
+                '</td><td>' + (d.tanggal || '-') + '</td><td>' + (d.waktu || '-') + '</td><td><span class="jumlah-badge">' +
+                (d.jumlahPengunjung || 0) + '</span></td><td>' + (d.pic || '-') +
+                '</td><td><button class="btn-edit" onclick="editJadwal(\'kunjungan\',' + d.id +
+                ')">✏️ Edit</button><button class="btn-delete" style="padding:4px 10px;font-size:11px;" onclick="hapusJadwal(\'kunjungan\',' +
+                d.id + ')">🗑️</button></td></tr>';
+        }).join('');
+    }
+
+    function renderRuangTable() {
+        var tbody = document.getElementById('ruangTableBody');
+        if (ruangData.length === 0) {
+            tbody.innerHTML =
+                '<tr><td colspan="8" style="text-align:center;color:#888;padding:20px;">Tidak ada data pemakaian ruang</td></tr>';
+            return;
+        }
+        tbody.innerHTML = ruangData.map(function(d, i) {
+            return '<tr><td>' + (i + 1) + '</td><td>' + (d.kegiatan || '-') + '</td><td>' + (d.ruangan || '-') +
+                '</td><td>' + (d.tanggal || '-') + '</td><td>' + (d.waktu || '-') + '</td><td><span class="jumlah-badge">' +
+                (d.kapasitas || 0) + '</span></td><td>' + (d.pic || '-') +
+                '</td><td><button class="btn-edit" onclick="editJadwal(\'ruang\',' + d.id +
+                ')">✏️ Edit</button><button class="btn-delete" style="padding:4px 10px;font-size:11px;" onclick="hapusJadwal(\'ruang\',' +
+                d.id + ')">🗑️</button></td></tr>';
+        }).join('');
+    }
+
+    function renderProgramTable() {
+        var tbody = document.getElementById('programTableBody');
+        if (programData.length === 0) {
+            tbody.innerHTML =
+                '<tr><td colspan="9" style="text-align:center;color:#888;padding:20px;">Tidak ada data kegiatan harian</td></tr>';
+            return;
+        }
+        tbody.innerHTML = programData.map(function(d, i) {
+            return '<tr><td>' + (i + 1) + '</td><td>' + (d.kegiatan || '-') + '</td><td>' + (d.deskripsi || '-') +
+                '</td><td>' + (d.tanggal || '-') + '</td><td>' + (d.waktu || '-') + '</td><td>' + (d.ruangan || '-') +
+                '</td><td>' + (d.tempat || d.lokasi || '-') + '</td><td>' + (d.pic || '-') +
+                '</td><td><button class="btn-edit" onclick="editJadwal(\'program\',' + d.id +
+                ')">✏️ Edit</button><button class="btn-delete" style="padding:4px 10px;font-size:11px;" onclick="hapusJadwal(\'program\',' +
+                d.id + ')">🗑️</button></td></tr>';
+        }).join('');
+    }
+
+    // ============================================
+    // UPDATE STATISTIK
+    // ============================================
+    function updateStats() {
+        document.getElementById('totalKunjungan').textContent = kunjunganData.length;
+        document.getElementById('totalRuang').textContent = ruangData.length;
+        document.getElementById('totalProgram').textContent = programData.length;
+        var lapKunjungan = document.getElementById('lapTotalKunjungan');
+        var lapRuang = document.getElementById('lapTotalRuang');
+        var lapProgram = document.getElementById('lapTotalProgram');
+        if (lapKunjungan) lapKunjungan.textContent = kunjunganData.length;
+        if (lapRuang) lapRuang.textContent = ruangData.length;
+        if (lapProgram) lapProgram.textContent = programData.length;
+    }
+
+    // ============================================
+    // FUNGSI HAPUS JADWAL
+    // ============================================
+    function hapusJadwal(jenis, id) {
+        if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
+        if (jenis === 'kunjungan') { kunjunganData = kunjunganData.filter(function(d) { return d.id !== id; });
+            renderKunjunganTable(); } else if (jenis === 'ruang') { ruangData = ruangData.filter(function(d) { return d.id !==
+                    id; });
+            renderRuangTable(); } else if (jenis === 'program') { programData = programData.filter(function(d) { return d.id !==
+                    id; });
+            renderProgramTable(); }
+        renderRingkasanJadwal();
+        updateStats();
+        sinkronkanJadwalKeKalender();
+        sinkronkanKunjunganKeCapaian();
+        simpanSemuaData();
+        alert('✅ Data berhasil dihapus!');
+    }
+
+    function hapusJadwalFromModal() {
+        var id = document.getElementById('jadwalId').value;
+        var jenis = document.getElementById('jadwalJenis').value;
+        if (id && jenis) {
+            closeJadwalModal();
+            hapusJadwal(jenis, parseInt(id));
+        }
+    }
+
+    // ============================================
+    // FUNGSI SIMPAN & LOAD DATA
+    // ============================================
+    function simpanSemuaData() {
         try {
-            const modal = document.getElementById('jadwalModal');
-            if (!modal) { alert('Modal tidak ditemukan!'); return; }
-            document.getElementById('modalJadwalTitle').textContent = 'Tambah Jadwal';
-            document.getElementById('jadwalId').value = '';
-            document.getElementById('jadwalJenis').value = '';
-            document.getElementById('btnDeleteJadwal').style.display = 'none';
-            document.getElementById('fNamaTamu').value = '';
-            document.getElementById('fInstansi').value = '';
-            document.getElementById('fJumlahPengunjung').value = '';
-            document.getElementById('fTujuan').value = '';
-            document.getElementById('fKegiatanRuang').value = '';
-            document.getElementById('fKapasitas').value = '';
-            document.getElementById('fKegiatanBalai').value = '';
-            document.getElementById('fJenisKegiatan').value = '';
-            document.getElementById('fNamaProgram').value = '';
-            document.getElementById('fKegiatanProgram').value = '';
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('fTanggal').value = today;
-            document.getElementById('fWaktuMulai').value = '';
-            document.getElementById('fWaktuSelesai').value = '';
-            document.getElementById('fRuangan').value = '';
-            document.getElementById('fTempat').value = '';
-            document.getElementById('fPic').value = '';
-            document.getElementById('formJenis').value = 'kunjungan';
-            if (typeof updateDropdowns === 'function') updateDropdowns();
-            if (typeof ubahFormJadwal === 'function') ubahFormJadwal();
-            modal.style.display = 'flex';
-            modal.classList.add('active');
-        } catch(e) {
-            console.error('❌ Error:', e);
-            alert('Error: ' + e.message);
-        }
-    };
+            localStorage.setItem('kunjunganData', JSON.stringify(kunjunganData));
+            localStorage.setItem('ruangData', JSON.stringify(ruangData));
+            localStorage.setItem('programData', JSON.stringify(programData));
+            localStorage.setItem('capaianData', JSON.stringify(capaianData));
+            localStorage.setItem('capaianMingguanData', JSON.stringify(capaianMingguanData));
+            localStorage.setItem('eventData', JSON.stringify(eventData));
+            localStorage.setItem('masterRuangan', JSON.stringify(masterRuangan));
+            localStorage.setItem('masterTempat', JSON.stringify(masterTempat));
+            localStorage.setItem('masterPic', JSON.stringify(masterPic));
+            localStorage.setItem('masterInstansi', JSON.stringify(masterInstansi));
+            localStorage.setItem('nextKunjunganId', JSON.stringify(nextKunjunganId));
+            localStorage.setItem('nextRuangId', JSON.stringify(nextRuangId));
+            localStorage.setItem('nextProgramId', JSON.stringify(nextProgramId));
+        } catch (e) { console.log('Gagal simpan ke localStorage:', e); }
+    }
 
-    window.closeJadwalModal = function() {
-        const modal = document.getElementById('jadwalModal');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.classList.remove('active');
-        }
-    };
+    function loadSemuaData() {
+        try {
+            var savedKunjungan = localStorage.getItem('kunjunganData');
+            var savedRuang = localStorage.getItem('ruangData');
+            var savedProgram = localStorage.getItem('programData');
+            var savedCapaian = localStorage.getItem('capaianData');
+            var savedCapaianMingguan = localStorage.getItem('capaianMingguanData');
+            var savedEvent = localStorage.getItem('eventData');
+            var savedMasterRuangan = localStorage.getItem('masterRuangan');
+            var savedMasterTempat = localStorage.getItem('masterTempat');
+            var savedMasterPic = localStorage.getItem('masterPic');
+            var savedMasterInstansi = localStorage.getItem('masterInstansi');
+            var savedNextKunjunganId = localStorage.getItem('nextKunjunganId');
+            var savedNextRuangId = localStorage.getItem('nextRuangId');
+            var savedNextProgramId = localStorage.getItem('nextProgramId');
 
-    window.ubahFormJadwal = function() {
-        const jenis = document.getElementById('formJenis').value;
+            if (savedKunjungan) kunjunganData = JSON.parse(savedKunjungan);
+            if (savedRuang) ruangData = JSON.parse(savedRuang);
+            if (savedProgram) programData = JSON.parse(savedProgram);
+            if (savedCapaian) capaianData = JSON.parse(savedCapaian);
+            if (savedCapaianMingguan) capaianMingguanData = JSON.parse(savedCapaianMingguan);
+            if (savedEvent) eventData = JSON.parse(savedEvent);
+            if (savedMasterRuangan) masterRuangan = JSON.parse(savedMasterRuangan);
+            if (savedMasterTempat) masterTempat = JSON.parse(savedMasterTempat);
+            if (savedMasterPic) masterPic = JSON.parse(savedMasterPic);
+            if (savedMasterInstansi) masterInstansi = JSON.parse(savedMasterInstansi);
+            if (savedNextKunjunganId) nextKunjunganId = JSON.parse(savedNextKunjunganId);
+            if (savedNextRuangId) nextRuangId = JSON.parse(savedNextRuangId);
+            if (savedNextProgramId) nextProgramId = JSON.parse(savedNextProgramId);
+
+            if (kunjunganData.length > 0) {
+                var maxId = Math.max.apply(null, kunjunganData.map(function(d) { return d.id || 0; }));
+                if (maxId >= nextKunjunganId) nextKunjunganId = maxId + 1;
+            }
+            if (ruangData.length > 0) {
+                var maxId2 = Math.max.apply(null, ruangData.map(function(d) { return d.id || 0; }));
+                if (maxId2 >= nextRuangId) nextRuangId = maxId2 + 1;
+            }
+            if (programData.length > 0) {
+                var maxId3 = Math.max.apply(null, programData.map(function(d) { return d.id || 0; }));
+                if (maxId3 >= nextProgramId) nextProgramId = maxId3 + 1;
+            }
+        } catch (e) { console.log('Gagal load dari localStorage:', e); }
+    }
+
+    // ============================================
+    // UPDATE DROPDOWNS
+    // ============================================
+    function updateDropdowns() {
+        var ruanganSelects = ['fRuanganRuang', 'fRuanganProgram', 'eventRuangan'];
+        var tempatSelects = ['fTempatProgram', 'eventTempat'];
+        var picSelects = ['fPic', 'eventPic'];
+        var instansiSelects = ['fInstansi'];
+
+        ruanganSelects.forEach(function(id) {
+            var select = document.getElementById(id);
+            if (select) {
+                var currentVal = select.value;
+                select.innerHTML = '<option value="">Pilih Ruangan</option>';
+                masterRuangan.forEach(function(r) { select.innerHTML += '<option value="' + r + '">' + r +
+                    '</option>'; });
+                if (masterRuangan.indexOf(currentVal) !== -1) select.value = currentVal;
+            }
+        });
+
+        tempatSelects.forEach(function(id) {
+            var select = document.getElementById(id);
+            if (select) {
+                var currentVal = select.value;
+                select.innerHTML = '<option value="">Pilih Tempat</option>';
+                masterTempat.forEach(function(t) { select.innerHTML += '<option value="' + t + '">' + t +
+                    '</option>'; });
+                if (masterTempat.indexOf(currentVal) !== -1) select.value = currentVal;
+            }
+        });
+
+        picSelects.forEach(function(id) {
+            var select = document.getElementById(id);
+            if (select) {
+                var currentVal = select.value;
+                select.innerHTML = '<option value="">Pilih PIC</option>';
+                masterPic.forEach(function(p) { select.innerHTML += '<option value="' + p + '">' + p +
+                    '</option>'; });
+                if (masterPic.indexOf(currentVal) !== -1) select.value = currentVal;
+            }
+        });
+
+        instansiSelects.forEach(function(id) {
+            var select = document.getElementById(id);
+            if (select) {
+                var currentVal = select.value;
+                select.innerHTML = '<option value="">Pilih Instansi</option>';
+                masterInstansi.forEach(function(i) { select.innerHTML += '<option value="' + i + '">' + i +
+                    '</option>'; });
+                if (masterInstansi.indexOf(currentVal) !== -1) select.value = currentVal;
+            }
+        });
+    }
+
+    // ============================================
+    // MASTER DATA FUNCTIONS
+    // ============================================
+    function tambahMasterRuangan() {
+        var input = document.getElementById('inputRuangan');
+        var value = input.value.trim();
+        if (!value) { alert('Masukkan nama ruangan!'); return; }
+        if (masterRuangan.indexOf(value) !== -1) { alert('Ruangan sudah ada!'); return; }
+        masterRuangan.push(value);
+        input.value = '';
+        renderMasterRuangan();
+        updateDropdowns();
+        simpanSemuaData();
+    }
+
+    function renderMasterRuangan() {
+        var container = document.getElementById('listRuangan');
+        container.innerHTML = masterRuangan.map(function(item, index) {
+            return '<span class="master-item">' + item + '<button onclick="hapusMasterRuangan(' + index +
+                ')">×</button></span>';
+        }).join('');
+    }
+
+    function hapusMasterRuangan(index) {
+        if (!confirm('Hapus ruangan ini?')) return;
+        masterRuangan.splice(index, 1);
+        renderMasterRuangan();
+        updateDropdowns();
+        simpanSemuaData();
+    }
+
+    function tambahMasterTempat() {
+        var input = document.getElementById('inputTempat');
+        var value = input.value.trim();
+        if (!value) { alert('Masukkan nama tempat!'); return; }
+        if (masterTempat.indexOf(value) !== -1) { alert('Tempat sudah ada!'); return; }
+        masterTempat.push(value);
+        input.value = '';
+        renderMasterTempat();
+        updateDropdowns();
+        simpanSemuaData();
+    }
+
+    function renderMasterTempat() {
+        var container = document.getElementById('listTempat');
+        container.innerHTML = masterTempat.map(function(item, index) {
+            return '<span class="master-item">' + item + '<button onclick="hapusMasterTempat(' + index +
+                ')">×</button></span>';
+        }).join('');
+    }
+
+    function hapusMasterTempat(index) {
+        if (!confirm('Hapus tempat ini?')) return;
+        masterTempat.splice(index, 1);
+        renderMasterTempat();
+        updateDropdowns();
+        simpanSemuaData();
+    }
+
+    function tambahMasterPic() {
+        var input = document.getElementById('inputPic');
+        var value = input.value.trim();
+        if (!value) { alert('Masukkan nama PIC!'); return; }
+        if (masterPic.indexOf(value) !== -1) { alert('PIC sudah ada!'); return; }
+        masterPic.push(value);
+        input.value = '';
+        renderMasterPic();
+        updateDropdowns();
+        simpanSemuaData();
+    }
+
+    function renderMasterPic() {
+        var container = document.getElementById('listPic');
+        container.innerHTML = masterPic.map(function(item, index) {
+            return '<span class="master-item">' + item + '<button onclick="hapusMasterPic(' + index +
+                ')">×</button></span>';
+        }).join('');
+    }
+
+    function hapusMasterPic(index) {
+        if (!confirm('Hapus PIC ini?')) return;
+        masterPic.splice(index, 1);
+        renderMasterPic();
+        updateDropdowns();
+        simpanSemuaData();
+    }
+
+    function tambahMasterInstansi() {
+        var input = document.getElementById('inputInstansi');
+        var value = input.value.trim();
+        if (!value) { alert('Masukkan nama instansi!'); return; }
+        if (masterInstansi.indexOf(value) !== -1) { alert('Instansi sudah ada!'); return; }
+        masterInstansi.push(value);
+        input.value = '';
+        renderMasterInstansi();
+        updateDropdowns();
+        simpanSemuaData();
+    }
+
+    function renderMasterInstansi() {
+        var container = document.getElementById('listInstansi');
+        container.innerHTML = masterInstansi.map(function(item, index) {
+            return '<span class="master-item">' + item + '<button onclick="hapusMasterInstansi(' + index +
+                ')">×</button></span>';
+        }).join('');
+    }
+
+    function hapusMasterInstansi(index) {
+        if (!confirm('Hapus instansi ini?')) return;
+        masterInstansi.splice(index, 1);
+        renderMasterInstansi();
+        updateDropdowns();
+        simpanSemuaData();
+    }
+
+    function tambahMasterRuanganCepat() {
+        var value = prompt('Masukkan nama ruangan baru:');
+        if (value && masterRuangan.indexOf(value) === -1) {
+            masterRuangan.push(value);
+            updateDropdowns();
+            renderMasterRuangan();
+            simpanSemuaData();
+            alert('✅ Ruangan berhasil ditambahkan!');
+        }
+    }
+
+    function tambahMasterTempatCepat() {
+        var value = prompt('Masukkan nama tempat baru:');
+        if (value && masterTempat.indexOf(value) === -1) {
+            masterTempat.push(value);
+            updateDropdowns();
+            renderMasterTempat();
+            simpanSemuaData();
+            alert('✅ Tempat berhasil ditambahkan!');
+        }
+    }
+
+    function tambahMasterPicCepat() {
+        var value = prompt('Masukkan nama PIC baru:');
+        if (value && masterPic.indexOf(value) === -1) {
+            masterPic.push(value);
+            updateDropdowns();
+            renderMasterPic();
+            simpanSemuaData();
+            alert('✅ PIC berhasil ditambahkan!');
+        }
+    }
+
+    function tambahMasterInstansiCepat() {
+        var value = prompt('Masukkan nama instansi baru:');
+        if (value && masterInstansi.indexOf(value) === -1) {
+            masterInstansi.push(value);
+            updateDropdowns();
+            renderMasterInstansi();
+            simpanSemuaData();
+            alert('✅ Instansi berhasil ditambahkan!');
+        }
+    }
+
+    // ============================================
+    // MODAL FUNCTIONS
+    // ============================================
+    function closeMasterModal() {
+        document.getElementById('masterModal').style.display = 'none';
+    }
+
+    function switchMasterTab(tab) {
+        document.querySelectorAll('.master-tab').forEach(function(el) { el.style.display = 'none'; });
+        var target = document.getElementById('master-' + tab);
+        if (target) target.style.display = 'block';
+        document.querySelectorAll('#masterModal .tab-btn').forEach(function(el) { el.classList.remove('active'); });
+        document.querySelectorAll('#masterModal .tab-btn').forEach(function(el) {
+            if (el.textContent.toLowerCase().indexOf(tab) !== -1) el.classList.add('active');
+        });
+    }
+
+    // ============================================
+    // NAVIGASI
+    // ============================================
+    function toggleSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('overlay');
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('overlay').classList.remove('active');
+    }
+
+    function switchMenu(page) {
+        document.querySelectorAll('.page-content').forEach(function(el) { el.classList.remove('active'); });
+        var target = document.getElementById('page-' + page);
+        if (target) target.classList.add('active');
+        document.querySelectorAll('.menu a').forEach(function(el) { el.classList.remove('active'); });
+        document.querySelectorAll('.menu a[data-page="' + page + '"]').forEach(function(el) { el.classList.add('active'); });
+        var titles = { dashboard: 'Dashboard', jadwal: 'Jadwal Harian', kalender: 'Kalender', capaian: 'Capaian',
+            laporan: 'Laporan' };
+        document.getElementById('pageTitle').textContent = titles[page] || 'Dashboard';
+        if (page === 'kalender') {
+            renderCalendarFull(currentMonthFull, currentYearFull);
+        }
+        if (page === 'capaian') {
+            renderCapaianTable();
+            initBarChartFull(currentPeriodFull);
+            initPieChartFull();
+        }
+        if (page === 'dashboard') {
+            initDashboardCharts();
+        }
+        if (page === 'laporan') {
+            initLaporanCharts();
+            generateLaporanSilent();
+        }
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+        var target = document.getElementById('tab-' + tab);
+        if (target) target.classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active'); });
+        document.querySelectorAll('.tab-btn[data-tab="' + tab + '"]').forEach(function(el) { el.classList.add('active'); });
+    }
+
+    // ============================================
+    // TAMBAH JADWAL
+    // ============================================
+    function tambahJadwal() {
+        var modal = document.getElementById('jadwalModal');
+        if (!modal) { alert('Modal tidak ditemukan!'); return; }
+        document.getElementById('modalJadwalTitle').textContent = 'Tambah Jadwal';
+        document.getElementById('jadwalId').value = '';
+        document.getElementById('jadwalJenis').value = '';
+        document.getElementById('btnDeleteJadwal').style.display = 'none';
+        document.getElementById('fNamaTamu').value = '';
+        document.getElementById('fInstansi').value = '';
+        document.getElementById('fJumlahPengunjung').value = '';
+        document.getElementById('fTujuan').value = '';
+        document.getElementById('fKegiatanRuang').value = '';
+        document.getElementById('fKapasitas').value = '';
+        document.getElementById('fNamaProgram').value = '';
+        document.getElementById('fKegiatanProgram').value = '';
+        document.getElementById('fWaktuMulai').value = '';
+        document.getElementById('fWaktuSelesai').value = '';
+        document.getElementById('fRuanganRuang').value = '';
+        document.getElementById('fRuanganProgram').value = '';
+        document.getElementById('fTempatProgram').value = '';
+        document.getElementById('fPic').value = '';
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById('fTanggal').value = today;
+        document.getElementById('formJenis').value = 'kunjungan';
+        updateDropdowns();
+        ubahFormJadwal();
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+    }
+
+    function closeJadwalModal() {
+        var modal = document.getElementById('jadwalModal');
+        if (modal) { modal.style.display = 'none';
+            modal.classList.remove('active'); }
+    }
+
+    function ubahFormJadwal() {
+        var jenis = document.getElementById('formJenis').value;
         document.getElementById('fieldKunjungan').style.display = 'none';
         document.getElementById('fieldRuang').style.display = 'none';
-        document.getElementById('fieldBalai').style.display = 'none';
         document.getElementById('fieldProgram').style.display = 'none';
-        if (jenis === 'kunjungan') document.getElementById('fieldKunjungan').style.display = 'block';
-        else if (jenis === 'ruang') document.getElementById('fieldRuang').style.display = 'block';
-        else if (jenis === 'balai') document.getElementById('fieldBalai').style.display = 'block';
-        else if (jenis === 'program') document.getElementById('fieldProgram').style.display = 'block';
-    };
+        if (jenis === 'kunjungan') {
+            document.getElementById('fieldKunjungan').style.display = 'block';
+        } else if (jenis === 'ruang') {
+            document.getElementById('fieldRuang').style.display = 'block';
+        } else if (jenis === 'program') {
+            document.getElementById('fieldProgram').style.display = 'block';
+        }
+    }
 
-    window.saveJadwal = function() {
-        console.log('🟢 saveJadwal dari HTML override');
+    // ============================================
+    // SAVE JADWAL
+    // ============================================
+    function saveJadwal() {
         try {
-            const id = document.getElementById('jadwalId').value;
-            const jenis = document.getElementById('formJenis').value;
-            const isEdit = id !== '';
-            const tanggal = document.getElementById('fTanggal').value;
-            
-            // Ambil waktu manual
-            const waktuMulai = document.getElementById('fWaktuMulai').value;
-            const waktuSelesai = document.getElementById('fWaktuSelesai').value;
-            const waktu = waktuMulai && waktuSelesai ? `${waktuMulai} - ${waktuSelesai}` : '';
-            
-            const ruangan = document.getElementById('fRuangan').value;
-            const tempat = document.getElementById('fTempat').value;
-            const pic = document.getElementById('fPic').value;
-            
-            if (!tanggal || !waktuMulai || !waktuSelesai || !ruangan || !tempat || !pic) {
+            var id = document.getElementById('jadwalId').value;
+            var jenis = document.getElementById('formJenis').value;
+            var isEdit = id !== '';
+            var tanggal = document.getElementById('fTanggal').value;
+            var waktuMulai = document.getElementById('fWaktuMulai').value;
+            var waktuSelesai = document.getElementById('fWaktuSelesai').value;
+            var waktu = waktuMulai && waktuSelesai ? waktuMulai + ' - ' + waktuSelesai : '';
+            var pic = document.getElementById('fPic').value;
+
+            if (!tanggal || !waktuMulai || !waktuSelesai || !pic) {
                 alert('⚠️ Semua field wajib diisi!');
                 return;
             }
-            
-            let dataBaru = { tanggal, waktu, ruangan, tempat, pic };
-            let success = false, message = '';
-            
+
+            var dataBaru = { tanggal: tanggal, waktu: waktu, pic: pic };
+            var success = false;
+
             if (jenis === 'kunjungan') {
-                const nama = document.getElementById('fNamaTamu').value.trim();
-                const instansi = document.getElementById('fInstansi').value;
-                const jumlah = parseInt(document.getElementById('fJumlahPengunjung').value);
-                const tujuan = document.getElementById('fTujuan').value.trim();
+                var nama = document.getElementById('fNamaTamu').value.trim();
+                var instansi = document.getElementById('fInstansi').value;
+                var jumlah = parseInt(document.getElementById('fJumlahPengunjung').value);
+                var tujuan = document.getElementById('fTujuan').value.trim();
                 if (!nama) { alert('⚠️ Nama Tamu wajib diisi!'); return; }
                 if (isNaN(jumlah) || jumlah <= 0) { alert('⚠️ Jumlah Pengunjung harus diisi dan lebih dari 0!'); return; }
-                dataBaru = { ...dataBaru, nama, instansi: instansi || 'Umum', jumlahPengunjung: jumlah, tujuan: tujuan || '-', id: isEdit ? parseInt(id) : nextKunjunganId++ };
+                dataBaru = { tanggal: tanggal, waktu: waktu, pic: pic, nama: nama, instansi: instansi || 'Umum',
+                    jumlahPengunjung: jumlah, tujuan: tujuan || '-' };
                 if (isEdit) {
-                    const index = kunjunganData.findIndex(d => d.id === parseInt(id));
-                    if (index !== -1) { kunjunganData[index] = dataBaru; success = true; message = '✅ Data kunjungan berhasil diupdate!'; }
-                    else { alert('❌ Data tidak ditemukan!'); return; }
-                } else { kunjunganData.push(dataBaru); success = true; message = '✅ Data kunjungan berhasil ditambahkan!'; }
-                renderKunjunganTable();
+                    var index = kunjunganData.findIndex(function(d) { return d.id === parseInt(id); });
+                    if (index !== -1) { dataBaru.id = parseInt(id);
+                        kunjunganData[index] = dataBaru;
+                        success = true; }
+                } else { dataBaru.id = nextKunjunganId++;
+                    kunjunganData.push(dataBaru);
+                    success = true; }
+                if (success) renderKunjunganTable();
             } else if (jenis === 'ruang') {
-                const kegiatan = document.getElementById('fKegiatanRuang').value.trim();
-                const kapasitas = parseInt(document.getElementById('fKapasitas').value);
+                var kegiatan = document.getElementById('fKegiatanRuang').value.trim();
+                var kapasitas = parseInt(document.getElementById('fKapasitas').value);
+                var ruangan = document.getElementById('fRuanganRuang').value;
                 if (!kegiatan) { alert('⚠️ Nama Kegiatan wajib diisi!'); return; }
                 if (isNaN(kapasitas) || kapasitas <= 0) { alert('⚠️ Kapasitas harus diisi dan lebih dari 0!'); return; }
-                dataBaru = { ...dataBaru, kegiatan, kapasitas, id: isEdit ? parseInt(id) : nextRuangId++ };
+                if (!ruangan) { alert('⚠️ Ruangan wajib dipilih!'); return; }
+                dataBaru = { tanggal: tanggal, waktu: waktu, pic: pic, kegiatan: kegiatan, kapasitas: kapasitas,
+                    ruangan: ruangan };
                 if (isEdit) {
-                    const index = ruangData.findIndex(d => d.id === parseInt(id));
-                    if (index !== -1) { ruangData[index] = dataBaru; success = true; message = '✅ Data ruang berhasil diupdate!'; }
-                    else { alert('❌ Data tidak ditemukan!'); return; }
-                } else { ruangData.push(dataBaru); success = true; message = '✅ Data ruang berhasil ditambahkan!'; }
-                renderRuangTable();
-            } else if (jenis === 'balai') {
-                const kegiatan = document.getElementById('fKegiatanBalai').value.trim();
-                const jenisKeg = document.getElementById('fJenisKegiatan').value.trim();
-                if (!kegiatan || !jenisKeg) { alert('⚠️ Nama Kegiatan dan Jenis Kegiatan wajib diisi!'); return; }
-                dataBaru = { ...dataBaru, kegiatan, jenis: jenisKeg, id: isEdit ? parseInt(id) : nextBalaiId++ };
-                if (isEdit) {
-                    const index = balaiData.findIndex(d => d.id === parseInt(id));
-                    if (index !== -1) { balaiData[index] = dataBaru; success = true; message = '✅ Data balai berhasil diupdate!'; }
-                    else { alert('❌ Data tidak ditemukan!'); return; }
-                } else { balaiData.push(dataBaru); success = true; message = '✅ Data balai berhasil ditambahkan!'; }
-                renderBalaiTable();
+                    var index2 = ruangData.findIndex(function(d) { return d.id === parseInt(id); });
+                    if (index2 !== -1) { dataBaru.id = parseInt(id);
+                        ruangData[index2] = dataBaru;
+                        success = true; }
+                } else { dataBaru.id = nextRuangId++;
+                    ruangData.push(dataBaru);
+                    success = true; }
+                if (success) renderRuangTable();
             } else if (jenis === 'program') {
-                const program = document.getElementById('fNamaProgram').value.trim();
-                const kegiatan = document.getElementById('fKegiatanProgram').value.trim();
-                if (!program || !kegiatan) { alert('⚠️ Nama Program dan Kegiatan wajib diisi!'); return; }
-                dataBaru = { ...dataBaru, program, kegiatan, lokasi: tempat, id: isEdit ? parseInt(id) : nextProgramId++ };
+                var kegiatan2 = document.getElementById('fNamaProgram').value.trim();
+                var deskripsi = document.getElementById('fKegiatanProgram').value.trim();
+                var ruanganProg = document.getElementById('fRuanganProgram').value;
+                var tempatProg = document.getElementById('fTempatProgram').value;
+                if (!kegiatan2) { alert('⚠️ Nama Kegiatan wajib diisi!'); return; }
+                if (!ruanganProg) { alert('⚠️ Ruangan wajib dipilih!'); return; }
+                if (!tempatProg) { alert('⚠️ Tempat wajib dipilih!'); return; }
+                dataBaru = { tanggal: tanggal, waktu: waktu, pic: pic, kegiatan: kegiatan2, deskripsi: deskripsi || '-',
+                    ruangan: ruanganProg, tempat: tempatProg };
                 if (isEdit) {
-                    const index = programData.findIndex(d => d.id === parseInt(id));
-                    if (index !== -1) { programData[index] = dataBaru; success = true; message = '✅ Data program berhasil diupdate!'; }
-                    else { alert('❌ Data tidak ditemukan!'); return; }
-                } else { programData.push(dataBaru); success = true; message = '✅ Data program berhasil ditambahkan!'; }
-                renderProgramTable();
+                    var index3 = programData.findIndex(function(d) { return d.id === parseInt(id); });
+                    if (index3 !== -1) { dataBaru.id = parseInt(id);
+                        programData[index3] = dataBaru;
+                        success = true; }
+                } else { dataBaru.id = nextProgramId++;
+                    programData.push(dataBaru);
+                    success = true; }
+                if (success) renderProgramTable();
             }
-            
+
             if (success) {
                 renderRingkasanJadwal();
                 updateStats();
                 sinkronkanJadwalKeKalender();
                 sinkronkanKunjunganKeCapaian();
+                renderCapaianTable();
                 simpanSemuaData();
-                alert(message);
+                alert('✅ Data berhasil disimpan!');
                 closeJadwalModal();
             }
-        } catch(e) {
-            console.error('❌ Error:', e);
+        } catch (e) {
+            console.error('❌ Error di saveJadwal:', e);
             alert('Error: ' + e.message);
         }
-    };
+    }
 
-    window.editJadwal = function(jenis, id) {
-        console.log('🟢 editJadwal dipanggil!', jenis, id);
-        try {
-            let data, title;
-            const modal = document.getElementById('jadwalModal');
-            if (!modal) { alert('Modal tidak ditemukan!'); return; }
-            
-            switch(jenis) {
-                case 'kunjungan':
-                    data = kunjunganData.find(d => d.id === id);
-                    if (!data) { alert('Data kunjungan tidak ditemukan!'); return; }
-                    title = 'Edit Jadwal Kunjungan';
-                    document.getElementById('formJenis').value = 'kunjungan';
-                    document.getElementById('fNamaTamu').value = data.nama || '';
-                    document.getElementById('fInstansi').value = data.instansi || '';
-                    document.getElementById('fJumlahPengunjung').value = data.jumlahPengunjung || 0;
-                    document.getElementById('fTujuan').value = data.tujuan || '';
-                    document.getElementById('fKegiatanRuang').value = '';
-                    document.getElementById('fKapasitas').value = '';
-                    document.getElementById('fKegiatanBalai').value = '';
-                    document.getElementById('fJenisKegiatan').value = '';
-                    document.getElementById('fNamaProgram').value = '';
-                    document.getElementById('fKegiatanProgram').value = '';
-                    break;
-                case 'ruang':
-                    data = ruangData.find(d => d.id === id);
-                    if (!data) { alert('Data ruang tidak ditemukan!'); return; }
-                    title = 'Edit Jadwal Pemakaian Ruang';
-                    document.getElementById('formJenis').value = 'ruang';
-                    document.getElementById('fKegiatanRuang').value = data.kegiatan || '';
-                    document.getElementById('fKapasitas').value = data.kapasitas || '';
-                    document.getElementById('fNamaTamu').value = '';
-                    document.getElementById('fInstansi').value = '';
-                    document.getElementById('fJumlahPengunjung').value = '';
-                    document.getElementById('fTujuan').value = '';
-                    document.getElementById('fKegiatanBalai').value = '';
-                    document.getElementById('fJenisKegiatan').value = '';
-                    document.getElementById('fNamaProgram').value = '';
-                    document.getElementById('fKegiatanProgram').value = '';
-                    break;
-                case 'balai':
-                    data = balaiData.find(d => d.id === id);
-                    if (!data) { alert('Data balai tidak ditemukan!'); return; }
-                    title = 'Edit Jadwal Balai BRI';
-                    document.getElementById('formJenis').value = 'balai';
-                    document.getElementById('fKegiatanBalai').value = data.kegiatan || '';
-                    document.getElementById('fJenisKegiatan').value = data.jenis || '';
-                    document.getElementById('fNamaTamu').value = '';
-                    document.getElementById('fInstansi').value = '';
-                    document.getElementById('fJumlahPengunjung').value = '';
-                    document.getElementById('fTujuan').value = '';
-                    document.getElementById('fKegiatanRuang').value = '';
-                    document.getElementById('fKapasitas').value = '';
-                    document.getElementById('fNamaProgram').value = '';
-                    document.getElementById('fKegiatanProgram').value = '';
-                    break;
-                case 'program':
-                    data = programData.find(d => d.id === id);
-                    if (!data) { alert('Data program tidak ditemukan!'); return; }
-                    title = 'Edit Jadwal Per Program';
-                    document.getElementById('formJenis').value = 'program';
-                    document.getElementById('fNamaProgram').value = data.program || '';
-                    document.getElementById('fKegiatanProgram').value = data.kegiatan || '';
-                    document.getElementById('fNamaTamu').value = '';
-                    document.getElementById('fInstansi').value = '';
-                    document.getElementById('fJumlahPengunjung').value = '';
-                    document.getElementById('fTujuan').value = '';
-                    document.getElementById('fKegiatanRuang').value = '';
-                    document.getElementById('fKapasitas').value = '';
-                    document.getElementById('fKegiatanBalai').value = '';
-                    document.getElementById('fJenisKegiatan').value = '';
-                    break;
-                default:
-                    alert('Jenis jadwal tidak dikenal!');
-                    return;
-            }
-            
-            // Set waktu manual
-            if (data.waktu) {
-                const parts = data.waktu.split(' - ');
-                if (parts.length === 2) {
-                    document.getElementById('fWaktuMulai').value = parts[0].trim();
-                    document.getElementById('fWaktuSelesai').value = parts[1].trim();
-                } else {
-                    document.getElementById('fWaktuMulai').value = '';
-                    document.getElementById('fWaktuSelesai').value = '';
-                }
-            } else {
-                document.getElementById('fWaktuMulai').value = '';
-                document.getElementById('fWaktuSelesai').value = '';
-            }
-            
-            document.getElementById('modalJadwalTitle').textContent = title;
-            document.getElementById('jadwalId').value = id;
-            document.getElementById('jadwalJenis').value = jenis;
-            document.getElementById('btnDeleteJadwal').style.display = 'inline-block';
-            document.getElementById('fTanggal').value = data.tanggal || '';
-            document.getElementById('fRuangan').value = data.ruangan || data.lokasi || '';
-            document.getElementById('fTempat').value = data.tempat || data.lokasi || '';
-            document.getElementById('fPic').value = data.pic || '';
-            
-            updateDropdowns();
-            ubahFormJadwal();
-            modal.style.display = 'flex';
-            modal.classList.add('active');
-        } catch(e) {
-            console.error('❌ Error di editJadwal:', e);
-            alert('Error: ' + e.message);
+    // ============================================
+    // EDIT JADWAL
+    // ============================================
+    function editJadwal(jenis, id) {
+        var data, title;
+        var modal = document.getElementById('jadwalModal');
+
+        switch (jenis) {
+            case 'kunjungan':
+                data = kunjunganData.find(function(d) { return d.id === id; });
+                if (!data) { alert('Data tidak ditemukan!'); return; }
+                title = 'Edit Jadwal Kunjungan';
+                document.getElementById('formJenis').value = 'kunjungan';
+                document.getElementById('fNamaTamu').value = data.nama || '';
+                document.getElementById('fInstansi').value = data.instansi || '';
+                document.getElementById('fJumlahPengunjung').value = data.jumlahPengunjung || 0;
+                document.getElementById('fTujuan').value = data.tujuan || '';
+                document.getElementById('fKegiatanRuang').value = '';
+                document.getElementById('fKapasitas').value = '';
+                document.getElementById('fNamaProgram').value = '';
+                document.getElementById('fKegiatanProgram').value = '';
+                document.getElementById('fRuanganRuang').value = '';
+                document.getElementById('fRuanganProgram').value = '';
+                document.getElementById('fTempatProgram').value = '';
+                break;
+            case 'ruang':
+                data = ruangData.find(function(d) { return d.id === id; });
+                if (!data) { alert('Data tidak ditemukan!'); return; }
+                title = 'Edit Pemakaian Ruang';
+                document.getElementById('formJenis').value = 'ruang';
+                document.getElementById('fKegiatanRuang').value = data.kegiatan || '';
+                document.getElementById('fKapasitas').value = data.kapasitas || '';
+                document.getElementById('fRuanganRuang').value = data.ruangan || '';
+                document.getElementById('fNamaTamu').value = '';
+                document.getElementById('fInstansi').value = '';
+                document.getElementById('fJumlahPengunjung').value = '';
+                document.getElementById('fTujuan').value = '';
+                document.getElementById('fNamaProgram').value = '';
+                document.getElementById('fKegiatanProgram').value = '';
+                document.getElementById('fRuanganProgram').value = '';
+                document.getElementById('fTempatProgram').value = '';
+                break;
+            case 'program':
+                data = programData.find(function(d) { return d.id === id; });
+                if (!data) { alert('Data tidak ditemukan!'); return; }
+                title = 'Edit Kegiatan Harian';
+                document.getElementById('formJenis').value = 'program';
+                document.getElementById('fNamaProgram').value = data.kegiatan || '';
+                document.getElementById('fKegiatanProgram').value = data.deskripsi || '';
+                document.getElementById('fRuanganProgram').value = data.ruangan || '';
+                document.getElementById('fTempatProgram').value = data.tempat || '';
+                document.getElementById('fNamaTamu').value = '';
+                document.getElementById('fInstansi').value = '';
+                document.getElementById('fJumlahPengunjung').value = '';
+                document.getElementById('fTujuan').value = '';
+                document.getElementById('fKegiatanRuang').value = '';
+                document.getElementById('fKapasitas').value = '';
+                document.getElementById('fRuanganRuang').value = '';
+                break;
+            default:
+                alert('Jenis tidak dikenal!');
+                return;
         }
-    };
 
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        if (sidebar) sidebar.classList.toggle('active');
-        if (overlay) overlay.classList.toggle('active');
+        if (data.waktu) {
+            var parts = data.waktu.split(' - ');
+            if (parts.length === 2) {
+                document.getElementById('fWaktuMulai').value = parts[0].trim();
+                document.getElementById('fWaktuSelesai').value = parts[1].trim();
+            }
+        }
+
+        document.getElementById('modalJadwalTitle').textContent = title;
+        document.getElementById('jadwalId').value = id;
+        document.getElementById('jadwalJenis').value = jenis;
+        document.getElementById('btnDeleteJadwal').style.display = 'inline-block';
+        document.getElementById('fTanggal').value = data.tanggal || '';
+        document.getElementById('fPic').value = data.pic || '';
+
+        updateDropdowns();
+        ubahFormJadwal();
+        modal.style.display = 'flex';
+        modal.classList.add('active');
     }
 
-    function closeSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        if (sidebar) sidebar.classList.remove('active');
-        if (overlay) overlay.classList.remove('active');
-    }
+    // ============================================
+    // GENERATE LAPORAN
+    // ============================================
+    function generateLaporanSilent() {
+        document.getElementById('lapStatus').textContent = '✅ Selesai';
+        document.getElementById('lapStatus').style.background = '#4caf50';
+        document.getElementById('lapJumlahData').textContent = capaianData.length + ' Data';
+        document.getElementById('lapTotalKunjungan').textContent = kunjunganData.length;
+        document.getElementById('lapTotalRuang').textContent = ruangData.length;
+        document.getElementById('lapTotalProgram').textContent = programData.length;
 
-    function switchMenu(page) {
-        console.log('Switch menu ke:', page);
-        document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
-        const target = document.getElementById('page-' + page);
-        if (target) target.classList.add('active');
-        document.querySelectorAll('.menu a').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.menu a[data-page="' + page + '"]').forEach(el => el.classList.add('active'));
-    }
-
-    function switchTab(tab) {
-        console.log('Switch tab ke:', tab);
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        const target = document.getElementById('tab-' + tab);
-        if (target) target.classList.add('active');
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn[data-tab="' + tab + '"]').forEach(el => el.classList.add('active'));
-    }
-
-    function switchMasterTab(tab) {
-        document.querySelectorAll('.master-tab').forEach(el => el.style.display = 'none');
-        const target = document.getElementById('master-' + tab);
-        if (target) target.style.display = 'block';
-        document.querySelectorAll('#masterModal .tab-btn').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('#masterModal .tab-btn').forEach(el => {
-            if (el.textContent.toLowerCase().includes(tab)) el.classList.add('active');
+        var now = new Date();
+        document.getElementById('lapTanggalCetak').textContent = now.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
         });
+        document.getElementById('lapJenisLaporan').textContent = document.getElementById('laporanJenis').options[document
+            .getElementById('laporanJenis').selectedIndex].text;
+
+        renderLaporanTable(document.getElementById('laporanJenis').value);
     }
 
-    function printJadwal() { alert('🖨️ Cetak jadwal'); }
-    function bukaMasterData() { document.getElementById('masterModal').style.display = 'flex'; }
-    function refreshKalenderFull() { alert('🔄 Kalender direfresh'); }
-    function ubahFilterCapaian() { 
-        const val = document.getElementById('capaianFilter').value;
-        ubahGrafikCapaian(val);
+    function generateLaporan() {
+        generateLaporanSilent();
     }
-    function ubahGrafikCapaian(p) { 
-        console.log('🔄 Ubah grafik capaian ke:', p);
-        if (typeof window.ubahGrafikCapaianJS === 'function') {
-            window.ubahGrafikCapaianJS(p);
+
+    function renderLaporanTable(jenis) {
+        var tbody = document.getElementById('laporanTableBody');
+        var thead = document.getElementById('laporanThead');
+
+        if (jenis === 'capaian' || jenis === 'all') {
+            thead.innerHTML = '<tr><th>No</th><th>Bulan</th><th>Jumlah</th><th>Target</th><th>Pencapaian</th><th>Status</th></tr>';
+            if (capaianData.length === 0) {
+                tbody.innerHTML =
+                    '<tr><td colspan="6" style="text-align:center;color:#888;padding:20px;">Belum ada data capaian</td></tr>';
+                return;
+            }
+            var html = '';
+            for (var i = 0; i < capaianData.length; i++) {
+                var d = capaianData[i];
+                var persentase = d.target > 0 ? Math.round((d.jumlah / d.target) * 100) : 0;
+                var status = persentase >= 100 ? '✅ Tercapai' : (persentase >= 75 ? '⚠️ Mendekati' : '❌ Kurang');
+                html += '<tr><td>' + (i + 1) + '</td><td>' + d.bulan + '</td><td>' + d.jumlah + '</td><td>' + d.target +
+                    '</td><td>' + persentase + '%</td><td>' + status + '</td></tr>';
+            }
+            tbody.innerHTML = html;
         } else {
-            alert('Fungsi ubahGrafikCapaianJS belum dimuat!');
+            tbody.innerHTML =
+                '<tr><td colspan="10" style="text-align:center;color:#888;padding:40px;">📂 Data tidak ditemukan untuk jenis laporan ini</td></tr>';
         }
     }
-    function ubahGrafikLaporan(p) { console.log('Grafik laporan:', p); }
-    function generateLaporan() { 
-        if (typeof window.generateLaporanJS === 'function') {
-            window.generateLaporanJS();
-        } else {
-            alert('Fungsi generateLaporanJS belum dimuat!');
-        }
-    }
+
     function toggleDateRange() {
-        const val = document.getElementById('laporanPeriode').value;
+        var val = document.getElementById('laporanPeriode').value;
         document.getElementById('dateRangeGroup').style.display = (val === 'custom') ? 'flex' : 'none';
     }
+
     function exportPDF() { alert('📄 Export PDF'); }
+
     function exportExcel() { alert('📊 Export Excel'); }
+
     function printLaporan() { alert('🖨️ Cetak laporan'); }
+
     function exportWord() { alert('📝 Export Word'); }
-    function refreshCapaian() { 
-        renderCapaianTable();
-        updateAllCharts();
-        alert('🔄 Data capaian berhasil direfresh!');
+
+    function printJadwal() { alert('🖨️ Cetak jadwal'); }
+
+    function bukaMasterData() {
+        renderMasterRuangan();
+        renderMasterTempat();
+        renderMasterPic();
+        renderMasterInstansi();
+        document.getElementById('masterModal').style.display = 'flex';
     }
 
-    console.log('✅ Semua fungsi override aktif!');
-</script>
-    
+    function renderKalenderFull() {
+        renderCalendarFull(currentMonthFull, currentYearFull);
+        alert('🔄 Kalender direfresh!');
+    }
+
+    function closeEventModal() {
+        document.getElementById('eventModal').style.display = 'none';
+        document.getElementById('eventModal').classList.remove('active');
+    }
+
+    function saveEvent() {
+        alert('💾 Event disimpan!');
+        closeEventModal();
+    }
+
+    function hapusEvent() {
+        if (confirm('Hapus event?')) { alert('🗑️ Event dihapus!');
+            closeEventModal(); }
+    }
+
+    // ============================================
+    // INISIALISASI
+    // ============================================
+    function init() {
+        loadSemuaData();
+        renderKunjunganTable();
+        renderRuangTable();
+        renderProgramTable();
+        renderRingkasanJadwal();
+        sinkronkanKunjunganKeCapaian();
+        renderCapaianTable();
+        updateStats();
+        updateDropdowns();
+        renderMasterRuangan();
+        renderMasterTempat();
+        renderMasterPic();
+        renderMasterInstansi();
+        sinkronkanJadwalKeKalender();
+        renderCalendar(currentMonth, currentYear, 'calendarGrid', 'monthYear');
+        renderCalendarFull(currentMonthFull, currentYearFull);
+        initDashboardCharts();
+        initBarChartFull('bulanan');
+        initPieChartFull();
+        initLaporanCharts();
+        generateLaporanSilent();
+
+        console.log('✅ Dashboard siap!');
+        console.log('📊 Data kunjungan:', kunjunganData.length);
+        console.log('📊 Data ruang:', ruangData.length);
+        console.log('📊 Data program:', programData.length);
+        console.log('📊 Data event:', eventData.length);
+        console.log('📊 Data capaian:', capaianData.length);
+        console.log('📊 Data capaian mingguan:', capaianMingguanData.length);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+    </script>
+
 </body>
 </html>
