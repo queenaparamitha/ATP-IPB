@@ -54,7 +54,7 @@
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 16px;
             margin-bottom: 24px;
         }
@@ -85,9 +85,9 @@
             color: #1a237e;
         }
 
-        .jadwal-grid-4 {
+        .jadwal-grid-3 {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 24px;
         }
@@ -534,7 +534,7 @@
             .stats {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .jadwal-grid-4 {
+            .jadwal-grid-3 {
                 grid-template-columns: repeat(2, 1fr);
             }
             .chart-row-2 {
@@ -559,7 +559,7 @@
             .stat-card .info .value {
                 font-size: 18px;
             }
-            .jadwal-grid-4 {
+            .jadwal-grid-3 {
                 grid-template-columns: 1fr;
                 gap: 12px;
             }
@@ -642,13 +642,6 @@
             </div>
         </div>
         <div class="stat-card">
-            <span class="icon">🏛️</span>
-            <div class="info">
-                <div class="label">Balai BRI</div>
-                <div class="value" id="totalBalai">0</div>
-            </div>
-        </div>
-        <div class="stat-card">
             <span class="icon">📊</span>
             <div class="info">
                 <div class="label">Per Program</div>
@@ -657,7 +650,7 @@
         </div>
     </section>
 
-    <section class="jadwal-grid-4">
+    <section class="jadwal-grid-3">
         <div class="jadwal-card">
             <div class="card-header">
                 <h3>📋 Jadwal Kunjungan</h3>
@@ -687,22 +680,6 @@
             </div>
             <div class="lihat-semua">
                 <a href="#" onclick="lihatSemuaLengkap('ruang'); return false;">Lihat semua →</a>
-            </div>
-        </div>
-
-        <div class="jadwal-card">
-            <div class="card-header">
-                <h3>🏛️ Balai BRI</h3>
-                <span class="badge">Hari Ini</span>
-            </div>
-            <div class="table-wrapper">
-                <table>
-                    <thead><tr><th>No</th><th>Kegiatan</th><th>Waktu</th><th>Ruangan</th></tr></thead>
-                    <tbody id="ringkasanBalai"></tbody>
-                </table>
-            </div>
-            <div class="lihat-semua">
-                <a href="#" onclick="lihatSemuaLengkap('balai'); return false;">Lihat semua →</a>
             </div>
         </div>
 
@@ -800,12 +777,21 @@
     <!-- ===== SCRIPTS ===== -->
     <script>
         // ============================================
-        // DATA DEFAULT - KOSONG (ambil dari localStorage)
+        // DATA KEYS UNTUK LOCALSTORAGE - SAMA DENGAN ADMIN
+        // ============================================
+        const STORAGE_KEYS = {
+            kunjungan: 'kunjunganData',
+            ruang: 'ruangData',
+            program: 'programData',
+            capaian: 'capaianData'
+        };
+
+        // ============================================
+        // DATA DEFAULT
         // ============================================
         const defaultData = {
             kunjunganData: [],
             ruangData: [],
-            balaiData: [],
             programData: [],
             capaianData: [
                 { bulan: 'Jan', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
@@ -824,24 +810,23 @@
         };
 
         // ============================================
-        // AMBIL DATA DARI LOCALSTORAGE
+        // AMBIL DATA DARI LOCALSTORAGE - SAMA DENGAN ADMIN
         // ============================================
         function getDataFromStorage() {
             try {
-                const kunjungan = localStorage.getItem('kunjunganData');
-                const ruang = localStorage.getItem('ruangData');
-                const balai = localStorage.getItem('balaiData');
-                const program = localStorage.getItem('programData');
-                const capaian = localStorage.getItem('capaianData');
+                const kunjungan = localStorage.getItem(STORAGE_KEYS.kunjungan);
+                const ruang = localStorage.getItem(STORAGE_KEYS.ruang);
+                const program = localStorage.getItem(STORAGE_KEYS.program);
+                const capaian = localStorage.getItem(STORAGE_KEYS.capaian);
 
                 return {
                     kunjunganData: kunjungan ? JSON.parse(kunjungan) : defaultData.kunjunganData,
                     ruangData: ruang ? JSON.parse(ruang) : defaultData.ruangData,
-                    balaiData: balai ? JSON.parse(balai) : defaultData.balaiData,
                     programData: program ? JSON.parse(program) : defaultData.programData,
                     capaianData: capaian ? JSON.parse(capaian) : defaultData.capaianData,
                 };
             } catch (e) {
+                console.warn('Gagal load dari localStorage, pakai default:', e);
                 return defaultData;
             }
         }
@@ -874,12 +859,11 @@
         function renderStats() {
             document.getElementById('totalKunjungan').textContent = (data.kunjunganData || []).length;
             document.getElementById('totalRuang').textContent = (data.ruangData || []).length;
-            document.getElementById('totalBalai').textContent = (data.balaiData || []).length;
             document.getElementById('totalProgram').textContent = (data.programData || []).length;
         }
 
         // ============================================
-        // RENDER RINGKASAN 4 TABEL
+        // RENDER RINGKASAN 3 TABEL
         // ============================================
         function renderRingkasan() {
             const today = getToday();
@@ -889,9 +873,9 @@
             const tbodyKunjungan = document.getElementById('ringkasanKunjungan');
             if (tbodyKunjungan) {
                 if (kunjunganHariIni.length === 0) {
-                    tbodyKunjungan.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:8px;">Tidak ada kunjungan</td></tr>`;
+                    tbodyKunjungan.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:8px;">Tidak ada kunjungan hari ini</td></tr>`;
                 } else {
-                    tbodyKunjungan.innerHTML = kunjunganHariIni.map((item, index) => `
+                    tbodyKunjungan.innerHTML = kunjunganHariIni.slice(0, 5).map((item, index) => `
                         <tr>
                             <td>${index + 1}</td>
                             <td><strong>${item.nama || '-'}</strong></td>
@@ -907,27 +891,9 @@
             const tbodyRuang = document.getElementById('ringkasanRuang');
             if (tbodyRuang) {
                 if (ruangHariIni.length === 0) {
-                    tbodyRuang.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:8px;">Tidak ada pemakaian ruang</td></tr>`;
+                    tbodyRuang.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:8px;">Tidak ada pemakaian ruang hari ini</td></tr>`;
                 } else {
-                    tbodyRuang.innerHTML = ruangHariIni.map((item, index) => `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td><strong>${item.kegiatan || '-'}</strong></td>
-                            <td>${item.waktu || '-'}</td>
-                            <td>${item.ruangan || '-'}</td>
-                        </tr>
-                    `).join('');
-                }
-            }
-
-            // Balai
-            const balaiHariIni = (data.balaiData || []).filter(item => item.tanggal === today);
-            const tbodyBalai = document.getElementById('ringkasanBalai');
-            if (tbodyBalai) {
-                if (balaiHariIni.length === 0) {
-                    tbodyBalai.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:8px;">Tidak ada kegiatan Balai BRI</td></tr>`;
-                } else {
-                    tbodyBalai.innerHTML = balaiHariIni.map((item, index) => `
+                    tbodyRuang.innerHTML = ruangHariIni.slice(0, 5).map((item, index) => `
                         <tr>
                             <td>${index + 1}</td>
                             <td><strong>${item.kegiatan || '-'}</strong></td>
@@ -943,12 +909,12 @@
             const tbodyProgram = document.getElementById('ringkasanProgram');
             if (tbodyProgram) {
                 if (programHariIni.length === 0) {
-                    tbodyProgram.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:8px;">Tidak ada kegiatan program</td></tr>`;
+                    tbodyProgram.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:8px;">Tidak ada kegiatan program hari ini</td></tr>`;
                 } else {
-                    tbodyProgram.innerHTML = programHariIni.map((item, index) => `
+                    tbodyProgram.innerHTML = programHariIni.slice(0, 5).map((item, index) => `
                         <tr>
                             <td>${index + 1}</td>
-                            <td><strong>${item.program || '-'}</strong></td>
+                            <td><strong>${item.program || item.kegiatan || '-'}</strong></td>
                             <td>${item.waktu || '-'}</td>
                             <td>${item.lokasi || '-'}</td>
                         </tr>
@@ -986,15 +952,6 @@
                 }
             });
             (data.ruangData || []).forEach(item => {
-                if (item.tanggal) {
-                    const parts = item.tanggal.split('-');
-                    const tgl = parseInt(parts[2]);
-                    const bln = parseInt(parts[1]);
-                    const thn = parseInt(parts[0]);
-                    if (bln === month + 1 && thn === year) allEvents.push(tgl);
-                }
-            });
-            (data.balaiData || []).forEach(item => {
                 if (item.tanggal) {
                     const parts = item.tanggal.split('-');
                     const tgl = parseInt(parts[2]);
@@ -1058,7 +1015,7 @@
                     const bln = parseInt(parts[1]);
                     const thn = parseInt(parts[0]);
                     if (bln === month + 1 && thn === year) {
-                        eventDetails.push({ tanggal: tgl, nama: item.nama, jenis: 'Kunjungan', waktu: item.waktu, pic: item.pic });
+                        eventDetails.push({ tanggal: tgl, nama: item.nama, jenis: 'Kunjungan', waktu: item.waktu, pic: item.pic, instansi: item.instansi });
                     }
                 }
             });
@@ -1069,18 +1026,7 @@
                     const bln = parseInt(parts[1]);
                     const thn = parseInt(parts[0]);
                     if (bln === month + 1 && thn === year) {
-                        eventDetails.push({ tanggal: tgl, nama: item.kegiatan, jenis: 'Pemakaian Ruang', waktu: item.waktu, pic: item.pic });
-                    }
-                }
-            });
-            (data.balaiData || []).forEach(item => {
-                if (item.tanggal) {
-                    const parts = item.tanggal.split('-');
-                    const tgl = parseInt(parts[2]);
-                    const bln = parseInt(parts[1]);
-                    const thn = parseInt(parts[0]);
-                    if (bln === month + 1 && thn === year) {
-                        eventDetails.push({ tanggal: tgl, nama: item.kegiatan, jenis: 'Balai BRI', waktu: item.waktu, pic: item.pic });
+                        eventDetails.push({ tanggal: tgl, nama: item.kegiatan, jenis: 'Pemakaian Ruang', waktu: item.waktu, pic: item.pic, ruangan: item.ruangan });
                     }
                 }
             });
@@ -1091,7 +1037,7 @@
                     const bln = parseInt(parts[1]);
                     const thn = parseInt(parts[0]);
                     if (bln === month + 1 && thn === year) {
-                        eventDetails.push({ tanggal: tgl, nama: item.program, jenis: 'Program', waktu: item.waktu, pic: item.pic });
+                        eventDetails.push({ tanggal: tgl, nama: item.program || item.kegiatan, jenis: 'Program', waktu: item.waktu, pic: item.pic, lokasi: item.lokasi });
                     }
                 }
             });
@@ -1120,6 +1066,9 @@
                         <div class="event-name">${event.nama}</div>
                         <div class="event-detail">
                             <span>🕐 ${event.waktu || '--:--'}</span>
+                            ${event.instansi ? `<span>🏛️ ${event.instansi}</span>` : ''}
+                            ${event.ruangan ? `<span>🏢 ${event.ruangan}</span>` : ''}
+                            ${event.lokasi ? `<span>📍 ${event.lokasi}</span>` : ''}
                         </div>
                         <div class="event-pic">👤 PIC: <strong>${event.pic || '-'}</strong></div>
                         <div class="event-type">${event.jenis}</div>
@@ -1161,17 +1110,6 @@
                     }
                 }
             });
-            (data.balaiData || []).forEach(item => {
-                if (item.tanggal) {
-                    const parts = item.tanggal.split('-');
-                    const tgl = parseInt(parts[2]);
-                    const bln = parseInt(parts[1]);
-                    const thn = parseInt(parts[0]);
-                    if (tgl === tanggal && bln === month + 1 && thn === year) {
-                        eventDetails.push({ nama: item.kegiatan, jenis: 'Balai BRI', waktu: item.waktu, pic: item.pic, ruangan: item.ruangan });
-                    }
-                }
-            });
             (data.programData || []).forEach(item => {
                 if (item.tanggal) {
                     const parts = item.tanggal.split('-');
@@ -1179,7 +1117,7 @@
                     const bln = parseInt(parts[1]);
                     const thn = parseInt(parts[0]);
                     if (tgl === tanggal && bln === month + 1 && thn === year) {
-                        eventDetails.push({ nama: item.program, jenis: 'Program', waktu: item.waktu, pic: item.pic, lokasi: item.lokasi });
+                        eventDetails.push({ nama: item.program || item.kegiatan, jenis: 'Program', waktu: item.waktu, pic: item.pic, lokasi: item.lokasi });
                     }
                 }
             });
@@ -1314,18 +1252,18 @@
                 return { labels: bulanNames, values: bulanValues };
                 
             } else if (period === 'tahunan') {
-                let total2026 = 0;
+                let totalSemua = 0;
                 capaian.forEach(item => {
-                    total2026 += item.jumlah || 0;
+                    totalSemua += item.jumlah || 0;
                 });
                 
                 const tahunList = [2022, 2023, 2024, 2025, 2026];
-                const baseValue = Math.round(total2026 / 12);
+                const baseValue = capaian.length > 0 ? Math.round(totalSemua / capaian.length) : 0;
                 
                 const values = tahunList.map((t, index) => {
-                    if (t === 2026) return total2026;
+                    if (t === 2026) return totalSemua;
                     const growthFactor = 1 + (index * 0.15);
-                    return Math.round(baseValue * 6 * growthFactor);
+                    return Math.round(baseValue * 12 * growthFactor * (0.7 + (index * 0.075)));
                 });
                 
                 return { labels: tahunList.map(t => String(t)), values: values };
@@ -1540,10 +1478,6 @@
                 dataList = (data.ruangData || []).filter(item => item.tanggal === today);
                 headers = ['No', 'Kegiatan', 'Ruangan', 'Waktu', 'Kapasitas', 'PIC'];
                 titleText = `🏢 Semua Pemakaian Ruang - ${formatTanggal(today)}`;
-            } else if (jenis === 'balai') {
-                dataList = (data.balaiData || []).filter(item => item.tanggal === today);
-                headers = ['No', 'Kegiatan', 'Jenis', 'Waktu', 'Ruangan', 'PIC'];
-                titleText = `🏛️ Semua Balai BRI - ${formatTanggal(today)}`;
             } else if (jenis === 'program') {
                 dataList = (data.programData || []).filter(item => item.tanggal === today);
                 headers = ['No', 'Program', 'Kegiatan', 'Waktu', 'Lokasi', 'PIC'];
@@ -1575,12 +1509,6 @@
                         bodyHtml += `<td>${item.ruangan || '-'}</td>`;
                         bodyHtml += `<td>${item.waktu || '-'}</td>`;
                         bodyHtml += `<td>${item.kapasitas || 0} orang</td>`;
-                        bodyHtml += `<td>${item.pic || '-'}</td>`;
-                    } else if (jenis === 'balai') {
-                        bodyHtml += `<td><strong>${item.kegiatan || '-'}</strong></td>`;
-                        bodyHtml += `<td>${item.jenis || '-'}</td>`;
-                        bodyHtml += `<td>${item.waktu || '-'}</td>`;
-                        bodyHtml += `<td>${item.ruangan || '-'}</td>`;
                         bodyHtml += `<td>${item.pic || '-'}</td>`;
                     } else if (jenis === 'program') {
                         bodyHtml += `<td><strong>${item.program || '-'}</strong></td>`;
@@ -1623,6 +1551,29 @@
         setInterval(refreshData, 3000);
 
         // ============================================
+        // REFRESH MANUAL
+        // ============================================
+        function refreshDataManual() {
+            const btn = document.querySelector('button[onclick="refreshDataManual()"]');
+            btn.textContent = '⏳ Loading...';
+            btn.disabled = true;
+            
+            data = getDataFromStorage();
+            renderCalendar(currentMonth, currentYear);
+            renderRingkasan();
+            setCurrentDate();
+            updateAllCharts();
+            
+            btn.textContent = '✅ Refresh';
+            setTimeout(() => {
+                btn.textContent = '🔄 Refresh';
+                btn.disabled = false;
+            }, 1000);
+            
+            console.log('✅ Data direfresh manual!');
+        }
+
+        // ============================================
         // INIT
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
@@ -1637,37 +1588,11 @@
 
         // Listen perubahan localStorage dari tab lain
         window.addEventListener('storage', function(e) {
-            if (e.key === 'kunjunganData' || e.key === 'ruangData' || e.key === 'balaiData' || e.key === 'programData' || e.key === 'capaianData') {
+            const keys = ['kunjunganData', 'ruangData', 'programData', 'capaianData'];
+            if (keys.includes(e.key)) {
                 refreshData();
             }
         });
-
-        // ============================================
-// REFRESH MANUAL
-// ============================================
-function refreshDataManual() {
-    const btn = document.querySelector('button[onclick="refreshDataManual()"]');
-    btn.textContent = '⏳ Loading...';
-    btn.disabled = true;
-    
-    data = getDataFromStorage();
-    renderCalendar(currentMonth, currentYear);
-    renderRingkasan();
-    setCurrentDate();
-    updateAllCharts();
-    
-    btn.textContent = '✅ Refresh';
-    setTimeout(() => {
-        btn.textContent = '🔄 Refresh';
-        btn.disabled = false;
-    }, 1000);
-    
-    console.log('✅ Data direfresh manual!');
-}window.addEventListener('storage', function(e) {
-    if (e.key === 'kunjunganData' || e.key === 'ruangData' || e.key === 'balaiData' || e.key === 'programData' || e.key === 'capaianData') {
-        refreshData();
-    }
-});
     </script>
 
 </body>
