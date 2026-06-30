@@ -303,10 +303,8 @@ function muatSemuaData() {
 // SINKRONISASI JADWAL KE KALENDER
 // ============================================
 function sinkronkanJadwalKeKalender() {
-    // Hapus event lama yang berasal dari jadwal
     eventData = eventData.filter(e => !e.dariJadwal);
 
-    // Kunjungan
     kunjunganData.forEach(item => {
         if (item.tanggal) {
             const parts = item.tanggal.split('-');
@@ -330,7 +328,6 @@ function sinkronkanJadwalKeKalender() {
         }
     });
 
-    // Ruang
     ruangData.forEach(item => {
         if (item.tanggal) {
             const parts = item.tanggal.split('-');
@@ -354,7 +351,6 @@ function sinkronkanJadwalKeKalender() {
         }
     });
 
-    // Balai
     balaiData.forEach(item => {
         if (item.tanggal) {
             const parts = item.tanggal.split('-');
@@ -378,7 +374,6 @@ function sinkronkanJadwalKeKalender() {
         }
     });
 
-    // Program
     programData.forEach(item => {
         if (item.tanggal) {
             const parts = item.tanggal.split('-');
@@ -1060,9 +1055,6 @@ function renderDashboardEvents() {
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 
-// ============================================
-// RENDER KALENDER DASHBOARD (DENGAN FILTER BULAN)
-// ============================================
 function renderCalendar(month, year) {
     const grid = document.getElementById('calendarGrid');
     const monthYear = document.getElementById('monthYear');
@@ -1076,7 +1068,6 @@ function renderCalendar(month, year) {
     const todayMonth = new Date().getMonth();
     const todayYear = new Date().getFullYear();
 
-    // FILTER EVENT BERDASARKAN BULAN DAN TAHUN
     const eventsThisMonth = eventData.filter(e => {
         return e.bulan === (month + 1) && e.tahun === year;
     });
@@ -1124,9 +1115,6 @@ document.getElementById('nextMonth').addEventListener('click', () => {
 let currentMonthFull = new Date().getMonth();
 let currentYearFull = new Date().getFullYear();
 
-// ============================================
-// RENDER KALENDER FULL (DENGAN FILTER BULAN)
-// ============================================
 function renderCalendarFull(month, year) {
     const grid = document.getElementById('calendarGridFull');
     const monthYear = document.getElementById('monthYearFull');
@@ -1141,7 +1129,6 @@ function renderCalendarFull(month, year) {
     const todayMonth = today.getMonth();
     const todayYear = today.getFullYear();
 
-    // FILTER EVENT BERDASARKAN BULAN DAN TAHUN
     const eventsThisMonth = eventData.filter(e => {
         return e.bulan === (month + 1) && e.tahun === year;
     });
@@ -1179,7 +1166,6 @@ function showEventDetail(tanggal) {
     const month = currentMonthFull + 1;
     const year = currentYearFull;
     
-    // FILTER EVENT BERDASARKAN BULAN DAN TAHUN
     const events = eventData.filter(e => {
         return e.bulan === month && e.tahun === year && e.tanggal === tanggal;
     });
@@ -1220,7 +1206,8 @@ function tambahEvent() {
     document.getElementById('eventId').value = '';
     document.getElementById('eventTanggal').value = '';
     document.getElementById('eventNama').value = '';
-    document.getElementById('eventWaktu').value = '';
+    document.getElementById('eventWaktuMulai').value = '';
+    document.getElementById('eventWaktuSelesai').value = '';
     document.getElementById('eventRuangan').value = '';
     document.getElementById('eventTempat').value = '';
     document.getElementById('eventPic').value = '';
@@ -1241,7 +1228,15 @@ function editEvent(id) {
     document.getElementById('eventId').value = event.id;
     document.getElementById('eventTanggal').value = event.tanggal;
     document.getElementById('eventNama').value = event.nama;
-    document.getElementById('eventWaktu').value = event.waktu;
+    
+    if (event.waktu) {
+        const parts = event.waktu.split(' - ');
+        if (parts.length === 2) {
+            document.getElementById('eventWaktuMulai').value = parts[0].trim();
+            document.getElementById('eventWaktuSelesai').value = parts[1].trim();
+        }
+    }
+    
     document.getElementById('eventRuangan').value = event.ruangan;
     document.getElementById('eventTempat').value = event.tempat;
     document.getElementById('eventPic').value = event.pic;
