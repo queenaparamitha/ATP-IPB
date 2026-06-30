@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - Penjadwalan & Capaian</title>
-    <link rel="stylesheet" href="../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../dashboard.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
     </script>
 </head>
@@ -363,30 +363,19 @@
                         <label>Tanggal</label>
                         <input type="date" id="fTanggal" required />
                     </div>
-                    <div class="form-group">
-                        <label>Waktu</label>
-                        <select id="fWaktu" required>
-                            <option value="">Pilih Waktu</option>
-                            <option value="07:00 - 08:00">07:00 - 08:00</option>
-                            <option value="08:00 - 09:00">08:00 - 09:00</option>
-                            <option value="08:00 - 09:30">08:00 - 09:30</option>
-                            <option value="09:00 - 10:00">09:00 - 10:00</option>
-                            <option value="09:00 - 11:00">09:00 - 11:00</option>
-                            <option value="09:00 - 12:00">09:00 - 12:00</option>
-                            <option value="10:00 - 11:00">10:00 - 11:00</option>
-                            <option value="10:00 - 12:00">10:00 - 12:00</option>
-                            <option value="10:30 - 11:30">10:30 - 11:30</option>
-                            <option value="13:00 - 14:00">13:00 - 14:00</option>
-                            <option value="13:00 - 14:30">13:00 - 14:30</option>
-                            <option value="13:00 - 15:00">13:00 - 15:00</option>
-                            <option value="13:00 - 16:00">13:00 - 16:00</option>
-                            <option value="13:30 - 15:00">13:30 - 15:00</option>
-                            <option value="14:00 - 16:00">14:00 - 16:00</option>
-                            <option value="14:30 - 16:00">14:30 - 16:00</option>
-                            <option value="16:00 - 17:00">16:00 - 17:00</option>
-                            <option value="16:30 - 18:00">16:30 - 18:00</option>
-                        </select>
+
+                    <!-- ===== WAKTU MANUAL ===== -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <div class="form-group">
+                            <label>⏰ Waktu Mulai</label>
+                            <input type="time" id="fWaktuMulai" required style="padding:10px 14px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;width:100%;" />
+                        </div>
+                        <div class="form-group">
+                            <label>⏰ Waktu Selesai</label>
+                            <input type="time" id="fWaktuSelesai" required style="padding:10px 14px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;width:100%;" />
+                        </div>
                     </div>
+
                     <div class="form-group">
                         <label>Ruangan</label>
                         <select id="fRuangan" required><option value="">Pilih Ruangan</option></select>
@@ -730,18 +719,16 @@
                     <label>Nama Kegiatan</label>
                     <input type="text" id="eventNama" required placeholder="Masukkan nama kegiatan" />
                 </div>
-                <div class="form-group">
-                    <label>Waktu</label>
-                    <select id="eventWaktu">
-                        <option value="">Pilih Waktu</option>
-                        <option value="07:00 - 08:00">07:00 - 08:00</option>
-                        <option value="08:00 - 09:00">08:00 - 09:00</option>
-                        <option value="09:00 - 10:00">09:00 - 10:00</option>
-                        <option value="10:00 - 11:00">10:00 - 11:00</option>
-                        <option value="13:00 - 14:00">13:00 - 14:00</option>
-                        <option value="14:00 - 15:00">14:00 - 15:00</option>
-                        <option value="15:00 - 16:00">15:00 - 16:00</option>
-                    </select>
+                <!-- ===== WAKTU EVENT MANUAL ===== -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div class="form-group">
+                        <label>⏰ Waktu Mulai</label>
+                        <input type="time" id="eventWaktuMulai" style="padding:10px 14px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;width:100%;" />
+                    </div>
+                    <div class="form-group">
+                        <label>⏰ Waktu Selesai</label>
+                        <input type="time" id="eventWaktuSelesai" style="padding:10px 14px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;width:100%;" />
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Ruangan</label>
@@ -848,7 +835,8 @@
             document.getElementById('fKegiatanProgram').value = '';
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('fTanggal').value = today;
-            document.getElementById('fWaktu').value = '';
+            document.getElementById('fWaktuMulai').value = '';
+            document.getElementById('fWaktuSelesai').value = '';
             document.getElementById('fRuangan').value = '';
             document.getElementById('fTempat').value = '';
             document.getElementById('fPic').value = '';
@@ -890,16 +878,24 @@
             const jenis = document.getElementById('formJenis').value;
             const isEdit = id !== '';
             const tanggal = document.getElementById('fTanggal').value;
-            const waktu = document.getElementById('fWaktu').value;
+            
+            // Ambil waktu manual
+            const waktuMulai = document.getElementById('fWaktuMulai').value;
+            const waktuSelesai = document.getElementById('fWaktuSelesai').value;
+            const waktu = waktuMulai && waktuSelesai ? `${waktuMulai} - ${waktuSelesai}` : '';
+            
             const ruangan = document.getElementById('fRuangan').value;
             const tempat = document.getElementById('fTempat').value;
             const pic = document.getElementById('fPic').value;
-            if (!tanggal || !waktu || !ruangan || !tempat || !pic) {
+            
+            if (!tanggal || !waktuMulai || !waktuSelesai || !ruangan || !tempat || !pic) {
                 alert('⚠️ Semua field wajib diisi!');
                 return;
             }
+            
             let dataBaru = { tanggal, waktu, ruangan, tempat, pic };
             let success = false, message = '';
+            
             if (jenis === 'kunjungan') {
                 const nama = document.getElementById('fNamaTamu').value.trim();
                 const instansi = document.getElementById('fInstansi').value;
@@ -949,6 +945,7 @@
                 } else { programData.push(dataBaru); success = true; message = '✅ Data program berhasil ditambahkan!'; }
                 renderProgramTable();
             }
+            
             if (success) {
                 renderRingkasanJadwal();
                 updateStats();
@@ -970,6 +967,7 @@
             let data, title;
             const modal = document.getElementById('jadwalModal');
             if (!modal) { alert('Modal tidak ditemukan!'); return; }
+            
             switch(jenis) {
                 case 'kunjungan':
                     data = kunjunganData.find(d => d.id === id);
@@ -1039,15 +1037,31 @@
                     alert('Jenis jadwal tidak dikenal!');
                     return;
             }
+            
+            // Set waktu manual
+            if (data.waktu) {
+                const parts = data.waktu.split(' - ');
+                if (parts.length === 2) {
+                    document.getElementById('fWaktuMulai').value = parts[0].trim();
+                    document.getElementById('fWaktuSelesai').value = parts[1].trim();
+                } else {
+                    document.getElementById('fWaktuMulai').value = '';
+                    document.getElementById('fWaktuSelesai').value = '';
+                }
+            } else {
+                document.getElementById('fWaktuMulai').value = '';
+                document.getElementById('fWaktuSelesai').value = '';
+            }
+            
             document.getElementById('modalJadwalTitle').textContent = title;
             document.getElementById('jadwalId').value = id;
             document.getElementById('jadwalJenis').value = jenis;
             document.getElementById('btnDeleteJadwal').style.display = 'inline-block';
             document.getElementById('fTanggal').value = data.tanggal || '';
-            document.getElementById('fWaktu').value = data.waktu || '';
             document.getElementById('fRuangan').value = data.ruangan || data.lokasi || '';
             document.getElementById('fTempat').value = data.tempat || data.lokasi || '';
             document.getElementById('fPic').value = data.pic || '';
+            
             updateDropdowns();
             ubahFormJadwal();
             modal.style.display = 'flex';
