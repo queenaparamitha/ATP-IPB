@@ -2,10 +2,10 @@
 // MASTER DATA
 // ============================================
 
-let masterRuangan = ['R. Meeting 1', 'R. Meeting 2', 'R. VIP', 'Lab. Komputer', 'Aula Utama', 'Training Center', 'Aula Lantai 2'];
-let masterTempat = ['Gedung A Lantai 2', 'Gedung B Lantai 3', 'Gedung C Lantai 2', 'Gedung A Lantai 1', 'Lapangan BRI'];
-let masterPic = ['Budi', 'Siti', 'Andi', 'Dewi', 'Rina', 'Agus'];
-let masterInstansi = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Pemerintah', 'Perusahaan Swasta', 'Lembaga Non-Profit'];
+let masterRuangan = ['R.Meeting', 'R. VIP', 'Balai Rakyat/BRI', 'Guest House'];
+let masterTempat = ['STP', 'ATP', 'TNC'];
+let masterPic = ['Novi Putri Jelita S.Pi', 'Isti Rahmani S.P', 'Winda Oktaviona S.K.Pm', 'Pandu Pamungkas S.Si'];
+let masterInstansi = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Pemerintah', 'Perusahaan Swasta', 'Siswa'];
 
 // ============================================
 // DATA JADWAL (4 Jenis)
@@ -13,14 +13,13 @@ let masterInstansi = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Peme
 
 // 1. Data Jadwal Kunjungan (dengan jumlahPengunjung)
 let kunjunganData = [
-    { id: 1, nama: 'PJ KKN', instansi: 'Mahasiswa', tanggal: '2026-06-29', waktu: '08:00 - 09:30', tujuan: 'KKN', pic: 'Nurul', jumlahPengunjung: 100 },
-    { id: 2, nama: 'IPB UNIVERSITY', instansi: 'Mahasiswa', tanggal: '2026-06-29', waktu: '10:00 - 11:00', tujuan: 'Kunjungan', pic: 'Novi', jumlahPengunjung: 100 },
+    
 ];
 let nextKunjunganId = 3;
 
 // 2. Data Jadwal Pemakaian Ruang
 let ruangData = [
-    { id: 1, kegiatan: 'Penerimaan Siswa PKL', ruangan: 'R. VIP', tanggal: '2026-06-29', waktu: '10:00 - 11:00', kapasitas: 20, pic: 'Budi' },
+    
 ];
 let nextRuangId = 2;
 
@@ -30,7 +29,7 @@ let nextBalaiId = 1;
 
 // 4. Data Jadwal Per Program
 let programData = [
-    { id: 1, program: 'MBG', kegiatan: 'Program MBG', tanggal: '2026-06-29', waktu: '10:00 - 12:00', lokasi: 'ATP IPB', pic: 'Andi' },
+    
 ];
 let nextProgramId = 2;
 
@@ -233,7 +232,7 @@ function updateCapaianBulanan() {
 }
 
 // ============================================
-// LOCALSTORAGE
+// LOCALSTORAGE - DENGAN CEK DATA MASTER
 // ============================================
 function simpanSemuaData() {
     try {
@@ -853,7 +852,7 @@ function tambahMasterInstansiCepat() {
 }
 
 // ============================================
-// MASTER DATA CRUD
+// MASTER DATA CRUD - DENGAN AUTO REFRESH
 // ============================================
 function bukaMasterData() {
     document.getElementById('masterModal').classList.add('active');
@@ -1007,6 +1006,25 @@ function hapusMaster(jenis, value) {
     updateDropdowns();
     simpanSemuaData();
     alert('✅ Data master berhasil dihapus!');
+}
+
+// ============================================
+// RESET MASTER DATA - UNTUK YANG DI JS
+// ============================================
+function resetMasterData() {
+    if (confirm('⚠️ Reset semua master data ke default?')) {
+        masterRuangan = ['R.Meeting', 'R. VIP', 'Balai Rakyat/BRI', 'Guest House'];
+        masterTempat = ['STP', 'ATP', 'TNC'];
+        masterPic = ['Novi Putri Jelita S.Pi', 'Isti Rahmani S.P', 'Winda Oktaviona S.K.Pm', 'Pandu Pamungkas S.Si'];
+        masterInstansi = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Pemerintah', 'Perusahaan Swasta', 'Siswa'];
+        
+        simpanSemuaData();
+        updateDropdowns();
+        renderMasterData();
+        
+        alert('✅ Master data berhasil direset!');
+        location.reload();
+    }
 }
 
 // ============================================
@@ -1174,12 +1192,11 @@ function showEventDetail(tanggal) {
         if (tanggal) {
             container.innerHTML = `
                 <div style="padding:12px;background:#fff;border-radius:8px;text-align:center;color:#888;">
-                    Tidak ada event pada tanggal ${tanggal} ${month}/${year}
-                    <br><button class="btn-add" onclick="tambahEventTanggal(${tanggal})" style="margin-top:8px;">+ Tambah Event</button>
+                    📭 Tidak ada event pada tanggal ${tanggal}/${month}/${year}
                 </div>
             `;
         } else {
-            container.innerHTML = `<p style="color:#888;">Klik tanggal untuk melihat & mengelola event</p>`;
+            container.innerHTML = `<p style="color:#888;">Klik tanggal untuk melihat event</p>`;
         }
         return;
     }
@@ -2229,6 +2246,17 @@ function resetDataFromUser() {
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
     muatSemuaData();
+    
+    // CEK APAKAH MASTER DATA MASIH DEFAULT LAMA
+    if (masterRuangan.includes('R. Meeting 1') || masterRuangan.includes('Lab. Komputer')) {
+        console.log('⚠️ Master data masih default lama, mereset...');
+        masterRuangan = ['R.Meeting', 'R. VIP', 'Balai Rakyat/BRI', 'Guest House'];
+        masterTempat = ['STP', 'ATP', 'TNC'];
+        masterPic = ['Novi Putri Jelita S.Pi', 'Isti Rahmani S.P', 'Winda Oktaviona S.K.Pm', 'Pandu Pamungkas S.Si'];
+        masterInstansi = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Pemerintah', 'Perusahaan Swasta', 'Siswa'];
+        simpanSemuaData();
+    }
+    
     renderKunjunganTable();
     renderRuangTable();
     renderBalaiTable();
@@ -2268,5 +2296,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('📋 Master Instansi:', masterInstansi.length, 'data');
 });
 
+console.log('💡 Untuk reset master data, ketik: resetMasterData()');
 console.log('💡 Untuk reset data dari user.html, ketik: resetDataFromUser()');
 console.log('💡 Untuk mereset semua data, ketik: resetAllData()');
