@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Jadwal Kegiatan - User</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
     </script>
@@ -1617,7 +1620,7 @@
         // ============================================
         // AUTO REFRESH (5 detik)
         // ============================================
-        setInterval(refreshData, 5000);
+        setInterval(refreshData, 3000);
 
         // ============================================
         // INIT
@@ -1638,6 +1641,33 @@
                 refreshData();
             }
         });
+
+        // ============================================
+// REFRESH MANUAL
+// ============================================
+function refreshDataManual() {
+    const btn = document.querySelector('button[onclick="refreshDataManual()"]');
+    btn.textContent = '⏳ Loading...';
+    btn.disabled = true;
+    
+    data = getDataFromStorage();
+    renderCalendar(currentMonth, currentYear);
+    renderRingkasan();
+    setCurrentDate();
+    updateAllCharts();
+    
+    btn.textContent = '✅ Refresh';
+    setTimeout(() => {
+        btn.textContent = '🔄 Refresh';
+        btn.disabled = false;
+    }, 1000);
+    
+    console.log('✅ Data direfresh manual!');
+}window.addEventListener('storage', function(e) {
+    if (e.key === 'kunjunganData' || e.key === 'ruangData' || e.key === 'balaiData' || e.key === 'programData' || e.key === 'capaianData') {
+        refreshData();
+    }
+});
     </script>
 
 </body>
