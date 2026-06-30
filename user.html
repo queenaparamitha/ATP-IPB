@@ -794,61 +794,31 @@
     <!-- ===== SCRIPTS ===== -->
     <script>
         // ============================================
-        // DATA DEFAULT
+        // DATA DEFAULT - KOSONG (ambil dari localStorage)
         // ============================================
         const defaultData = {
-            kunjunganData: [
-                { id: 1, nama: 'Budi Santoso', instansi: 'Mahasiswa', tanggal: '2026-06-26', waktu: '09:00 - 10:00', tujuan: 'Rapat Kerjasama', pic: 'Andi', jumlahPengunjung: 50 },
-                { id: 2, nama: 'Siti Rahayu', instansi: 'Dosen', tanggal: '2026-06-26', waktu: '10:30 - 11:30', tujuan: 'Koordinasi Program', pic: 'Budi', jumlahPengunjung: 30 },
-                { id: 3, nama: 'Ahmad Fauzi', instansi: 'Masyarakat', tanggal: '2026-06-26', waktu: '13:00 - 14:30', tujuan: 'Monitoring Proyek', pic: 'Siti', jumlahPengunjung: 100 },
-                { id: 4, nama: 'Dewi Lestari', instansi: 'Instansi Pemerintah', tanggal: '2026-06-26', waktu: '14:00 - 15:00', tujuan: 'Sosialisasi Program', pic: 'Dewi', jumlahPengunjung: 25 },
-                { id: 5, nama: 'Eko Prasetyo', instansi: 'Perusahaan Swasta', tanggal: '2026-06-26', waktu: '08:00 - 09:30', tujuan: 'Presentasi', pic: 'Rina', jumlahPengunjung: 15 },
-                { id: 6, nama: 'Fitriani', instansi: 'Mahasiswa', tanggal: '2026-06-27', waktu: '09:00 - 11:00', tujuan: 'Studi Banding', pic: 'Andi', jumlahPengunjung: 40 },
-                { id: 7, nama: 'Gilang', instansi: 'Dosen', tanggal: '2026-06-28', waktu: '10:00 - 12:00', tujuan: 'Penelitian', pic: 'Budi', jumlahPengunjung: 35 },
-                { id: 8, nama: 'Hana', instansi: 'Mahasiswa', tanggal: '2026-06-29', waktu: '13:00 - 15:00', tujuan: 'Praktikum', pic: 'Siti', jumlahPengunjung: 60 },
-                { id: 9, nama: 'Irfan', instansi: 'Masyarakat', tanggal: '2026-06-30', waktu: '08:00 - 10:00', tujuan: 'Kunjungan', pic: 'Dewi', jumlahPengunjung: 45 },
-                { id: 10, nama: 'Joko', instansi: 'Instansi Pemerintah', tanggal: '2026-07-01', waktu: '09:00 - 11:00', tujuan: 'Rapat', pic: 'Rina', jumlahPengunjung: 20 },
-                { id: 11, nama: 'Kartika', instansi: 'Mahasiswa', tanggal: '2026-07-02', waktu: '10:00 - 12:00', tujuan: 'Studi Lapangan', pic: 'Andi', jumlahPengunjung: 55 },
-                { id: 12, nama: 'Lukman', instansi: 'Dosen', tanggal: '2026-07-03', waktu: '13:00 - 15:00', tujuan: 'Seminar', pic: 'Budi', jumlahPengunjung: 30 },
-            ],
-            ruangData: [
-                { id: 1, kegiatan: 'Rapat Koordinasi', ruangan: 'R. Meeting 1', tanggal: '2026-06-26', waktu: '08:00 - 09:30', kapasitas: 20, pic: 'Budi' },
-                { id: 2, kegiatan: 'Workshop UI/UX', ruangan: 'Lab. Komputer', tanggal: '2026-06-26', waktu: '10:00 - 12:00', kapasitas: 15, pic: 'Siti' },
-                { id: 3, kegiatan: 'Presentasi Client', ruangan: 'R. VIP', tanggal: '2026-06-27', waktu: '14:30 - 16:00', kapasitas: 10, pic: 'Dewi' },
-                { id: 4, kegiatan: 'Pelatihan Digital', ruangan: 'Training Center', tanggal: '2026-06-28', waktu: '09:00 - 12:00', kapasitas: 25, pic: 'Andi' },
-                { id: 5, kegiatan: 'Rapat Evaluasi', ruangan: 'R. Meeting 2', tanggal: '2026-06-29', waktu: '13:00 - 15:00', kapasitas: 12, pic: 'Rina' },
-            ],
-            balaiData: [
-                { id: 1, kegiatan: 'Rapat Direksi', jenis: 'Rapat Internal', tanggal: '2026-06-26', waktu: '09:00 - 11:00', ruangan: 'Aula Utama', pic: 'Andi' },
-                { id: 2, kegiatan: 'Pelatihan Karyawan', jenis: 'Pelatihan', tanggal: '2026-06-27', waktu: '13:00 - 16:00', ruangan: 'Training Center', pic: 'Siti' },
-                { id: 3, kegiatan: 'Sosialisasi Program', jenis: 'Sosialisasi', tanggal: '2026-06-28', waktu: '10:00 - 12:00', ruangan: 'Aula Lantai 2', pic: 'Budi' },
-                { id: 4, kegiatan: 'Workshop Komunitas', jenis: 'Workshop', tanggal: '2026-06-29', waktu: '14:00 - 17:00', ruangan: 'Aula Utama', pic: 'Dewi' },
-            ],
-            programData: [
-                { id: 1, program: 'Pemberdayaan UMKM', kegiatan: 'Pelatihan Digital Marketing', tanggal: '2026-06-26', waktu: '09:00 - 12:00', lokasi: 'Aula Utama', pic: 'Dewi' },
-                { id: 2, program: 'Program Kesehatan', kegiatan: 'Screening Kesehatan Gratis', tanggal: '2026-06-27', waktu: '08:00 - 14:00', lokasi: 'Lapangan BRI', pic: 'Andi' },
-                { id: 3, program: 'Program Pendidikan', kegiatan: 'Beasiswa Prestasi', tanggal: '2026-06-28', waktu: '10:00 - 11:30', lokasi: 'R. VIP', pic: 'Siti' },
-                { id: 4, program: 'Program Lingkungan', kegiatan: 'Penanaman Pohon', tanggal: '2026-06-29', waktu: '07:00 - 10:00', lokasi: 'Lapangan BRI', pic: 'Budi' },
-                { id: 5, program: 'Program Sosial', kegiatan: 'Bakti Sosial', tanggal: '2026-06-30', waktu: '08:00 - 12:00', lokasi: 'Aula Utama', pic: 'Rina' },
-            ],
+            kunjunganData: [],
+            ruangData: [],
+            balaiData: [],
+            programData: [],
             capaianData: [
-                { bulan: 'Jan', jumlah: 120, target: 200, mahasiswa: 54, dosen: 30, umum: 24, instansi: 12 },
-                { bulan: 'Feb', jumlah: 150, target: 200, mahasiswa: 67, dosen: 37, umum: 30, instansi: 16 },
-                { bulan: 'Mar', jumlah: 180, target: 200, mahasiswa: 81, dosen: 45, umum: 36, instansi: 18 },
-                { bulan: 'Apr', jumlah: 170, target: 200, mahasiswa: 76, dosen: 42, umum: 34, instansi: 18 },
-                { bulan: 'Mei', jumlah: 200, target: 200, mahasiswa: 90, dosen: 50, umum: 40, instansi: 20 },
-                { bulan: 'Jun', jumlah: 220, target: 200, mahasiswa: 99, dosen: 55, umum: 44, instansi: 22 },
-                { bulan: 'Jul', jumlah: 190, target: 200, mahasiswa: 85, dosen: 47, umum: 38, instansi: 20 },
-                { bulan: 'Agu', jumlah: 210, target: 200, mahasiswa: 94, dosen: 52, umum: 42, instansi: 22 },
-                { bulan: 'Sep', jumlah: 240, target: 200, mahasiswa: 108, dosen: 60, umum: 48, instansi: 24 },
-                { bulan: 'Okt', jumlah: 260, target: 200, mahasiswa: 117, dosen: 65, umum: 52, instansi: 26 },
-                { bulan: 'Nov', jumlah: 230, target: 200, mahasiswa: 103, dosen: 57, umum: 46, instansi: 24 },
-                { bulan: 'Des', jumlah: 280, target: 200, mahasiswa: 126, dosen: 70, umum: 56, instansi: 28 },
+                { bulan: 'Jan', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
+                { bulan: 'Feb', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
+                { bulan: 'Mar', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
+                { bulan: 'Apr', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
+                { bulan: 'Mei', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
+                { bulan: 'Jun', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
+                { bulan: 'Jul', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
+                { bulan: 'Agu', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
+                { bulan: 'Sep', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
+                { bulan: 'Okt', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
+                { bulan: 'Nov', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
+                { bulan: 'Des', jumlah: 0, target: 200, mahasiswa: 0, dosen: 0, umum: 0, instansi: 0 },
             ]
         };
 
         // ============================================
-        // AMBIL DATA DARI LOCALSTORAGE (TERMASUK CAPAIAN)
+        // AMBIL DATA DARI LOCALSTORAGE
         // ============================================
         function getDataFromStorage() {
             try {
@@ -874,8 +844,8 @@
         // STATE
         // ============================================
         let data = getDataFromStorage();
-        let currentMonth = 5;
-        let currentYear = 2026;
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
         let currentChartPeriod = 'mingguan';
 
         // ============================================
@@ -1267,12 +1237,11 @@
         });
 
         // ============================================
-        // GRAFIK FUNGSI - MENGGUNAKAN DATA CAPAIAN DARI LOCALSTORAGE
+        // GRAFIK FUNGSI
         // ============================================
         let barChartInstance = null;
         let pieChartInstance = null;
 
-        // --- FUNGSI UNTUK PIE CHART (dari capaianData) ---
         function getPieDataUser() {
             const capaian = data.capaianData || [];
             
@@ -1299,12 +1268,10 @@
             };
         }
 
-        // --- FUNGSI UNTUK BAR CHART (dari capaianData) ---
         function getBarDataUser(period) {
             const capaian = data.capaianData || [];
             
             if (period === 'mingguan') {
-                // Data mingguan dari kunjunganData (sinkron dari admin)
                 const weekLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
                 const weekValues = [0, 0, 0, 0, 0, 0, 0];
                 
@@ -1331,11 +1298,9 @@
                 return { labels: weekLabels, values: weekValues };
                 
             } else if (period === 'bulanan') {
-                // Data bulanan dari capaianData (SAMA DENGAN ADMIN)
                 const bulanNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
                 const bulanValues = capaian.map(item => item.jumlah || 0);
                 
-                // Pastikan ada 12 bulan
                 while (bulanValues.length < 12) {
                     bulanValues.push(0);
                 }
@@ -1343,7 +1308,6 @@
                 return { labels: bulanNames, values: bulanValues };
                 
             } else if (period === 'tahunan') {
-                // Data tahunan dari capaianData (SAMA DENGAN ADMIN)
                 let total2026 = 0;
                 capaian.forEach(item => {
                     total2026 += item.jumlah || 0;
@@ -1364,7 +1328,6 @@
             return { labels: [], values: [] };
         }
 
-        // --- INIT BAR CHART ---
         function initBarChartUser(period) {
             const ctx = document.getElementById('barChartUser').getContext('2d');
             if (barChartInstance) barChartInstance.destroy();
@@ -1381,7 +1344,6 @@
                 'tahunan': '#ffca28'
             };
 
-            // Cek apakah ada data
             const hasData = dataChart.values.some(v => v > 0);
 
             if (!hasData) {
@@ -1446,7 +1408,6 @@
             });
         }
 
-        // --- INIT PIE CHART ---
         function initPieChartUser() {
             const ctx = document.getElementById('pieChartUser').getContext('2d');
             if (pieChartInstance) pieChartInstance.destroy();
@@ -1651,7 +1612,7 @@
         });
 
         // ============================================
-        // AUTO REFRESH
+        // AUTO REFRESH (5 detik)
         // ============================================
         setInterval(refreshData, 5000);
 
@@ -1665,9 +1626,10 @@
                 initPieChartUser();
             }, 300);
             console.log('✅ Halaman User siap!');
-            console.log('📊 Data capaian dari localStorage:', data.capaianData);
+            console.log('📊 Data dari localStorage:', data);
         });
 
+        // Listen perubahan localStorage dari tab lain
         window.addEventListener('storage', function(e) {
             if (e.key === 'kunjunganData' || e.key === 'ruangData' || e.key === 'balaiData' || e.key === 'programData' || e.key === 'capaianData') {
                 refreshData();
