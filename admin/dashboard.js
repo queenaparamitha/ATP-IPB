@@ -5,7 +5,7 @@
 // Data master DEFAULT (akan selalu di-reset)
 const DEFAULT_MASTER_RUANGAN = ['R.Meeting', 'R. VIP', 'Balai Rakyat/BRI', 'Guest House'];
 const DEFAULT_MASTER_TEMPAT = ['STP', 'ATP', 'TNC'];
-const DEFAULT_MASTER_PIC = ['Novia Putri Jelita S.Pi', 'Isti Rahmani S.P', 'Winda Oktaviona S.K.Pm', 'Pandu Pamungkas S.Si'];
+const DEFAULT_MASTER_PIC = ['Novi Putri Jelita S.Pi', 'Isti Rahmani S.P', 'Winda Oktaviona S.K.Pm', 'Pandu Pamungkas S.Si'];
 const DEFAULT_MASTER_INSTANSI = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Pemerintah', 'Perusahaan Swasta', 'Siswa'];
 
 let masterRuangan = [...DEFAULT_MASTER_RUANGAN];
@@ -14,7 +14,7 @@ let masterPic = [...DEFAULT_MASTER_PIC];
 let masterInstansi = [...DEFAULT_MASTER_INSTANSI];
 
 // ============================================
-// DATA JADWAL (4 Jenis)
+// DATA JADWAL (3 Jenis)
 // ============================================
 
 // 1. Data Jadwal Kunjungan (dengan jumlahPengunjung)
@@ -29,11 +29,7 @@ let ruangData = [
 ];
 let nextRuangId = 1;
 
-// 3. Data Jadwal Balai BRI
-let balaiData = [];
-let nextBalaiId = 1;
-
-// 4. Data Jadwal Per Program
+// 3. Data Jadwal Kegiatan Harian (dulu Per Program)
 let programData = [
     
 ];
@@ -46,7 +42,7 @@ let eventData = [];
 let nextEventId = 1;
 
 // ============================================
-// DATA CAPAIAN PENGUNJUNG (Dengan Kategori)
+// DATA CAPAIAN
 // ============================================
 let capaianData = [
     { bulan: 'Jan', jumlah: 120, target: 200, mahasiswa: 54, dosen: 30, umum: 24, instansi: 12 },
@@ -64,48 +60,567 @@ let capaianData = [
 ];
 
 // ============================================
-// DATA CAPAIAN MINGGUAN (Dari Jadwal Kunjungan)
+// FUNGSI CAPAIAN - RENDER TABEL
 // ============================================
-let capaianMingguanData = [];
+function renderCapaianTable() {
+    const tbody = document.getElementById('capaianTableBody');
+    if (!tbody) return;
+    
+    if (!capaianData || capaianData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#888;padding:20px;">Belum ada data capaian</td></tr>`;
+        return;
+    }
 
-// ============================================
-// FUNGSI UNTUK GRAFIK
-// ============================================
-function getMonthlyData() {
-    return {
-        labels: capaianData.map(d => d.bulan),
-        values: capaianData.map(d => d.jumlah)
-    };
+    tbody.innerHTML = capaianData.map((d, i) => {
+        const persentase = d.target > 0 ? Math.round((d.jumlah / d.target) * 100) : 0;
+        let status = '';
+        let statusClass = '';
+        
+        if (persentase >= 100) {
+            status = '✅ Tercapai';
+            statusClass = 'status-success';
+        } else if (persentase >= 75) {
+            status = '⚠️ Mendekati';
+            statusClass = 'status-warning';
+        } else {
+            status = '❌ Kurang';
+            statusClass = 'status-danger';
+        }
+
+        return `
+            <tr>
+                <td>${i + 1}</td>
+                <td><strong>${d.bulan}</strong></td>
+                <td><span class="jumlah-badge">${d.jumlah}</span></td>
+                <td>${d.target}</td>
+                <td>${persentase}%</td>
+                <td><span class="${statusClass}">${status}</span></td>
+                <td>
+                    <button class="btn-edit" onclick="editCapaian(${i})">✏️ Edit</button>
+                    <button class="btn-delete" style="padding:4px 10px;font-size:11px;" onclick="hapusCapaianData(${i})">🗑️</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
 }
 
-function getWeeklyData() {
-    const weekLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-    const weekValues = [0, 0, 0, 0, 0, 0, 0];
+// ============================================
+// FUNGSI CAPAIAN - CRUD
+// ============================================
+function tambahCapaian() {
+    const modal = document.getElementById('capaianModal');
+    if (!modal) return;
     
-    const now = new Date();
-    const startOfWeek = new Date(now);
-    const day = now.getDay() || 7;
-    startOfWeek.setDate(now.getDate() - day + 1);
-    startOfWeek.setHours(0, 0, 0, 0);
+    document.getElementById('modalCapaianTitle').textContent = 'Tambah Data Capaian';
+    document.getElementById('capaianIndex').value = '';
+    document.getElementById('capaianBulan').value = 'Jan';
+    document.getElementById('capaianJumlah').value = '';
+    document.getElementById('capaianTarget').value = '200';
+    document.getElementById('capaianMahasiswa').value = '';
+    document.getElementById('capaianDosen').value = '';
+    document.getElementById('capaianUmum').value = '';
+    document.getElementById('capaianInstansi').value = '';
+    document.getElementById('btnDeleteCapaian').style.display = 'none';
     
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(endOfWeek.getDate() + 6);
-    endOfWeek.setHours(23, 59, 59, 999);
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+}
+
+function editCapaian(index) {
+    const data = capaianData[index];
+    if (!data) return;
     
-    capaianMingguanData.forEach(item => {
-        const date = new Date(item.tanggal);
-        if (date >= startOfWeek && date <= endOfWeek) {
-            const dayIndex = date.getDay() || 7;
-            weekValues[dayIndex - 1] += item.jumlah;
+    const modal = document.getElementById('capaianModal');
+    if (!modal) return;
+    
+    document.getElementById('modalCapaianTitle').textContent = 'Edit Data Capaian';
+    document.getElementById('capaianIndex').value = index;
+    document.getElementById('capaianBulan').value = data.bulan;
+    document.getElementById('capaianJumlah').value = data.jumlah;
+    document.getElementById('capaianTarget').value = data.target;
+    document.getElementById('capaianMahasiswa').value = data.mahasiswa || 0;
+    document.getElementById('capaianDosen').value = data.dosen || 0;
+    document.getElementById('capaianUmum').value = data.umum || 0;
+    document.getElementById('capaianInstansi').value = data.instansi || 0;
+    document.getElementById('btnDeleteCapaian').style.display = 'inline-block';
+    
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+}
+
+function simpanCapaian() {
+    const index = document.getElementById('capaianIndex').value;
+    const bulan = document.getElementById('capaianBulan').value;
+    const jumlah = parseInt(document.getElementById('capaianJumlah').value) || 0;
+    const target = parseInt(document.getElementById('capaianTarget').value) || 0;
+    const mahasiswa = parseInt(document.getElementById('capaianMahasiswa').value) || 0;
+    const dosen = parseInt(document.getElementById('capaianDosen').value) || 0;
+    const umum = parseInt(document.getElementById('capaianUmum').value) || 0;
+    const instansi = parseInt(document.getElementById('capaianInstansi').value) || 0;
+    
+    if (!bulan) { alert('⚠️ Bulan harus dipilih!'); return; }
+    if (jumlah <= 0) { alert('⚠️ Jumlah Pengunjung harus diisi dan lebih dari 0!'); return; }
+    if (target <= 0) { alert('⚠️ Target harus diisi dan lebih dari 0!'); return; }
+    
+    const dataBaru = { bulan, jumlah, target, mahasiswa, dosen, umum, instansi };
+    
+    if (index === '') {
+        // Cek duplikat
+        if (capaianData.some(d => d.bulan === bulan)) {
+            alert(`⚠️ Data untuk bulan ${bulan} sudah ada!`);
+            return;
+        }
+        capaianData.push(dataBaru);
+        alert('✅ Data capaian berhasil ditambahkan!');
+    } else {
+        // Cek duplikat selain index yang sedang diedit
+        if (capaianData.some((d, i) => d.bulan === bulan && i !== parseInt(index))) {
+            alert(`⚠️ Data untuk bulan ${bulan} sudah ada!`);
+            return;
+        }
+        capaianData[parseInt(index)] = dataBaru;
+        alert('✅ Data capaian berhasil diupdate!');
+    }
+    
+    closeCapaianModal();
+    renderCapaianTable();
+    updateCapaianCharts();
+    simpanSemuaData();
+}
+
+function hapusCapaianData(index) {
+    if (!confirm('Apakah Anda yakin ingin menghapus data capaian ini?')) return;
+    capaianData.splice(index, 1);
+    renderCapaianTable();
+    updateCapaianCharts();
+    simpanSemuaData();
+    alert('✅ Data capaian berhasil dihapus!');
+}
+
+function hapusCapaian() {
+    const index = document.getElementById('capaianIndex').value;
+    if (index !== '') {
+        closeCapaianModal();
+        hapusCapaianData(parseInt(index));
+    }
+}
+
+function closeCapaianModal() {
+    const modal = document.getElementById('capaianModal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+    }
+}
+
+function refreshCapaian() {
+    renderCapaianTable();
+    updateCapaianCharts();
+    alert('🔄 Data capaian berhasil direfresh!');
+}
+
+// ============================================
+// CHART CAPAIAN - BAR CHART
+// ============================================
+let barChartFullInstance = null;
+
+function initBarChartFull(period) {
+    const canvas = document.getElementById('barChartFull');
+    if (!canvas) {
+        console.warn('Canvas barChartFull tidak ditemukan!');
+        return;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    // Hancurkan instance lama jika ada
+    if (barChartFullInstance) {
+        barChartFullInstance.destroy();
+        barChartFullInstance = null;
+    }
+    
+    // Ambil data berdasarkan period
+    let labels = [];
+    let data = [];
+    let targetData = [];
+    
+    if (period === 'mingguan') {
+        // Data mingguan dari capaianMingguanData
+        const dayMap = {};
+        const dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        capaianMingguanData.forEach(item => {
+            if (item.tanggal) {
+                const date = new Date(item.tanggal);
+                const dayIndex = date.getDay() || 7;
+                const dayName = dayNames[dayIndex - 1];
+                if (!dayMap[dayName]) dayMap[dayName] = 0;
+                dayMap[dayName] += item.jumlah || 0;
+            }
+        });
+        labels = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        data = labels.map(day => dayMap[day] || 0);
+        targetData = data.map(() => Math.max(...data, 1) * 1.2);
+    } else if (period === 'bulanan') {
+        labels = capaianData.map(d => d.bulan);
+        data = capaianData.map(d => d.jumlah);
+        targetData = capaianData.map(d => d.target);
+    } else if (period === 'tahunan') {
+        const yearlyData = getYearlyData();
+        labels = yearlyData.labels;
+        data = yearlyData.values;
+        targetData = data.map(() => Math.max(...data, 1) * 1.2);
+    }
+    
+    const labelMap = {
+        'mingguan': 'Pengunjung per Hari (Minggu Ini)',
+        'bulanan': 'Jumlah Pengunjung per Bulan',
+        'tahunan': 'Jumlah Pengunjung per Tahun'
+    };
+    const colorMap = {
+        'mingguan': '#ff9800',
+        'bulanan': '#1a237e',
+        'tahunan': '#ffca28'
+    };
+    
+    // Tentukan apakah menggunakan target atau tidak
+    const hasTarget = period === 'bulanan';
+    
+    let datasets = [];
+    
+    // Dataset Pengunjung
+    datasets.push({
+        label: 'Pengunjung',
+        data: data,
+        backgroundColor: colorMap[period] || '#1a237e',
+        borderColor: period === 'bulanan' ? '#0d1445' : '#e6b800',
+        borderWidth: 1,
+        borderRadius: 4
+    });
+    
+    // Dataset Target (hanya untuk bulanan)
+    if (hasTarget) {
+        datasets.push({
+            label: 'Target',
+            data: targetData,
+            backgroundColor: 'rgba(255, 152, 0, 0.5)',
+            borderColor: '#ff9800',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            borderRadius: 4,
+            type: 'line'
+        });
+    }
+    
+    barChartFullInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        padding: 16
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#eee' }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
         }
     });
     
-    return {
-        labels: weekLabels,
-        values: weekValues
-    };
+    console.log('✅ Bar Chart Full diinisialisasi dengan period:', period);
 }
 
+// ============================================
+// CHART CAPAIAN - PIE CHART
+// ============================================
+let pieChartFullInstance = null;
+
+function initPieChartFull() {
+    const canvas = document.getElementById('pieChartFull');
+    if (!canvas) {
+        console.warn('Canvas pieChartFull tidak ditemukan!');
+        return;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    if (pieChartFullInstance) {
+        pieChartFullInstance.destroy();
+        pieChartFullInstance = null;
+    }
+    
+    let totalMahasiswa = 0, totalDosen = 0, totalUmum = 0, totalInstansi = 0;
+    capaianData.forEach(d => {
+        totalMahasiswa += d.mahasiswa || 0;
+        totalDosen += d.dosen || 0;
+        totalUmum += d.umum || 0;
+        totalInstansi += d.instansi || 0;
+    });
+    
+    const total = totalMahasiswa + totalDosen + totalUmum + totalInstansi;
+    
+    let labels = [];
+    let data = [];
+    let colors = [];
+    
+    if (total === 0) {
+        labels = ['Belum ada data'];
+        data = [1];
+        colors = ['#e0e0e0'];
+    } else {
+        const categories = [
+            { name: 'Mahasiswa', value: totalMahasiswa, color: '#1a237e' },
+            { name: 'Dosen', value: totalDosen, color: '#ffca28' },
+            { name: 'Umum', value: totalUmum, color: '#4caf50' },
+            { name: 'Instansi', value: totalInstansi, color: '#ff9800' }
+        ];
+        categories.forEach(c => {
+            if (c.value > 0) {
+                labels.push(c.name);
+                data.push(c.value);
+                colors.push(c.color);
+            }
+        });
+    }
+    
+    pieChartFullInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 14,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: { size: 13 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed || 0;
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                            return `${label}: ${percentage}% (${value} orang)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    console.log('✅ Pie Chart Full diinisialisasi');
+}
+
+// ============================================
+// UPDATE CAPAIAN CHARTS
+// ============================================
+function updateCapaianCharts() {
+    const period = currentPeriodFull || 'bulanan';
+    console.log('🔄 Update Capaian Charts dengan period:', period);
+    initBarChartFull(period);
+    initPieChartFull();
+}
+
+// ============================================
+// UB AH GRAFIK CAPAIAN
+// ============================================
+function ubahGrafikCapaian(period) {
+    console.log('🔄 ubahGrafikCapaian dipanggil dengan period:', period);
+    currentPeriodFull = period;
+    
+    // Update active button
+    document.querySelectorAll('#page-capaian .chart-filter .filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.period === period) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Update filter dropdown
+    const filterSelect = document.getElementById('capaianFilter');
+    if (filterSelect) {
+        filterSelect.value = period;
+    }
+    
+    // Update title
+    const titleMap = {
+        'mingguan': '📋 Detail Capaian Mingguan',
+        'bulanan': '📋 Detail Capaian Bulanan',
+        'tahunan': '📋 Detail Capaian Tahunan'
+    };
+    const titleEl = document.getElementById('capaianTableTitle');
+    if (titleEl) {
+        titleEl.textContent = titleMap[period] || '📋 Detail Capaian';
+    }
+    
+    // Render table dan charts
+    renderCapaianTableByPeriod(period);
+    initBarChartFull(period);
+    initPieChartFull();
+}
+
+function renderCapaianTableByPeriod(period) {
+    const tbody = document.getElementById('capaianTableBody');
+    if (!tbody) return;
+    
+    if (period === 'mingguan') {
+        const data = capaianMingguanData || [];
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#888;padding:20px;">Belum ada data capaian mingguan</td></tr>`;
+            return;
+        }
+        
+        const dayMap = {};
+        const dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        data.forEach(item => {
+            if (item.tanggal) {
+                const date = new Date(item.tanggal);
+                const dayIndex = date.getDay() || 7;
+                const dayName = dayNames[dayIndex - 1];
+                if (!dayMap[dayName]) dayMap[dayName] = 0;
+                dayMap[dayName] += item.jumlah || 0;
+            }
+        });
+        
+        const dayList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        const maxVal = Math.max(...Object.values(dayMap), 1);
+        
+        tbody.innerHTML = dayList.map((day, index) => {
+            const val = dayMap[day] || 0;
+            const persentase = Math.round((val / maxVal) * 100);
+            return `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${day}</strong></td>
+                    <td>${val}</td>
+                    <td>-</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="flex:1;background:#e0e0e0;border-radius:10px;height:8px;max-width:100px;">
+                                <div style="width:${persentase}%;background:#ff9800;border-radius:10px;height:8px;transition:width 0.5s;"></div>
+                            </div>
+                            <span style="font-weight:700;color:#1a237e;min-width:45px;font-size:14px;">${persentase}%</span>
+                        </div>
+                    </td>
+                    <td>${val > 0 ? '✅ Ada Kegiatan' : '⬜ Kosong'}</td>
+                </tr>
+            `;
+        }).join('');
+        return;
+    }
+    
+    if (period === 'bulanan') {
+        const data = capaianData || [];
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#888;padding:20px;">Belum ada data capaian bulanan</td></tr>`;
+            return;
+        }
+        
+        tbody.innerHTML = data.map((item, index) => {
+            const persentase = Math.round((item.jumlah / item.target) * 100);
+            let status = '', statusClass = '';
+            if (persentase >= 100) { status = '✅ Tercapai'; statusClass = 'status-success'; }
+            else if (persentase >= 75) { status = '⚠️ Mendekati'; statusClass = 'status-warning'; }
+            else { status = '❌ Belum Tercapai'; statusClass = 'status-danger'; }
+            
+            const progressWidth = Math.min(persentase, 100);
+            let barColor = '#f44336';
+            if (persentase >= 75) barColor = '#ff9800';
+            if (persentase >= 100) barColor = '#4caf50';
+            
+            return `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${item.bulan}</strong></td>
+                    <td>${item.jumlah}</td>
+                    <td>${item.target}</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="flex:1;background:#e0e0e0;border-radius:10px;height:8px;max-width:100px;">
+                                <div style="width:${progressWidth}%;background:${barColor};border-radius:10px;height:8px;transition:width 0.5s;"></div>
+                            </div>
+                            <span style="font-weight:700;color:#1a237e;min-width:45px;font-size:14px;">${persentase}%</span>
+                        </div>
+                    </td>
+                    <td><span class="${statusClass}">${status}</span></td>
+                    <td>
+                        <button class="btn-edit" onclick="editCapaian(${index})">✏️ Edit</button>
+                        <button style="background:#f44336;color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;" onclick="hapusCapaianData(${index})">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+        return;
+    }
+    
+    if (period === 'tahunan') {
+        const data = getYearlyData();
+        if (!data || data.values.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#888;padding:20px;">Belum ada data capaian tahunan</td></tr>`;
+            return;
+        }
+        
+        const maxVal = Math.max(...data.values, 1);
+        
+        tbody.innerHTML = data.labels.map((year, index) => {
+            const val = data.values[index] || 0;
+            const persentase = Math.round((val / maxVal) * 100);
+            return `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${year}</strong></td>
+                    <td>${val}</td>
+                    <td>-</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="flex:1;background:#e0e0e0;border-radius:10px;height:8px;max-width:100px;">
+                                <div style="width:${persentase}%;background:#ffca28;border-radius:10px;height:8px;transition:width 0.5s;"></div>
+                            </div>
+                            <span style="font-weight:700;color:#1a237e;min-width:45px;font-size:14px;">${persentase}%</span>
+                        </div>
+                    </td>
+                    <td>${val > 0 ? '📈 Ada Data' : '📭 Kosong'}</td>
+                </tr>
+            `;
+        }).join('');
+        return;
+    }
+}
+
+// ============================================
+// FUNGSI LAINNYA YANG DIPERLUKAN
+// ============================================
 function getYearlyData() {
     const tahunData = {
         labels: ['2022', '2023', '2024', '2025', '2026'],
@@ -128,53 +643,25 @@ function getYearlyData() {
         return Math.round(baseValue * 6 * growthFactor);
     });
     
-    console.log('📊 Data Tahunan:', tahunData);
     return tahunData;
 }
 
-function getDataByPeriod(period) {
-    console.log('📊 Get data period:', period);
-    switch(period) {
-        case 'mingguan': return getWeeklyData();
-        case 'bulanan': return getMonthlyData();
-        case 'tahunan': return getYearlyData();
-        default: return getMonthlyData();
-    }
+// ============================================
+// UPDATE ALL CHARTS
+// ============================================
+function updateAllCharts() {
+    updateCapaianCharts();
+    // Update chart dashboard lainnya jika diperlukan
+    initBarChart(currentPeriod || 'mingguan');
+    initPieChart();
+    initBarChartLaporan(currentLaporanPeriod || 'mingguan');
+    initPieChartLaporan();
 }
 
 // ============================================
-// DATA UNTUK GRAFIK PIE
+// VARIABEL GLOBAL UNTUK PERIOD
 // ============================================
-function getPieData() {
-    let totalMahasiswa = 0, totalDosen = 0, totalUmum = 0, totalInstansi = 0;
-    capaianData.forEach(item => {
-        totalMahasiswa += item.mahasiswa || 0;
-        totalDosen += item.dosen || 0;
-        totalUmum += item.umum || 0;
-        totalInstansi += item.instansi || 0;
-    });
-    const total = totalMahasiswa + totalDosen + totalUmum + totalInstansi;
-    if (total === 0) {
-        return { labels: ['Belum ada data'], values: [1], colors: ['#e0e0e0'] };
-    }
-    const labels = ['Mahasiswa', 'Dosen', 'Umum', 'Instansi'];
-    const values = [totalMahasiswa, totalDosen, totalUmum, totalInstansi];
-    const colors = ['#1a237e', '#3949ab', '#5c6bc0', '#9fa8da'];
-    const filteredLabels = [], filteredValues = [], filteredColors = [];
-    for (let i = 0; i < labels.length; i++) {
-        if (values[i] > 0) {
-            filteredLabels.push(labels[i]);
-            filteredValues.push(values[i]);
-            filteredColors.push(colors[i]);
-        }
-    }
-    return {
-        labels: filteredLabels.length > 0 ? filteredLabels : ['Belum ada data'],
-        values: filteredLabels.length > 0 ? filteredValues : [1],
-        colors: filteredLabels.length > 0 ? filteredColors : ['#e0e0e0'],
-        total: total
-    };
-}
+let currentPeriodFull = 'bulanan';
 
 // ============================================
 // SINKRONISASI KUNJUNGAN KE CAPAIAN MINGGUAN
@@ -197,7 +684,8 @@ function sinkronkanKunjunganKeCapaian() {
         }
     });
     updateCapaianBulanan();
-    updateAllCharts();
+    updateCapaianCharts();
+    renderCapaianTable();
 }
 
 function updateCapaianBulanan() {
@@ -272,14 +760,12 @@ function simpanSemuaData() {
         localStorage.setItem('masterInstansi', JSON.stringify(masterInstansi));
         localStorage.setItem('kunjunganData', JSON.stringify(kunjunganData));
         localStorage.setItem('ruangData', JSON.stringify(ruangData));
-        localStorage.setItem('balaiData', JSON.stringify(balaiData));
         localStorage.setItem('programData', JSON.stringify(programData));
         localStorage.setItem('eventData', JSON.stringify(eventData));
         localStorage.setItem('capaianData', JSON.stringify(capaianData));
         localStorage.setItem('capaianMingguanData', JSON.stringify(capaianMingguanData));
         localStorage.setItem('nextKunjunganId', String(nextKunjunganId));
         localStorage.setItem('nextRuangId', String(nextRuangId));
-        localStorage.setItem('nextBalaiId', String(nextBalaiId));
         localStorage.setItem('nextProgramId', String(nextProgramId));
         localStorage.setItem('nextEventId', String(nextEventId));
         console.log('💾 Data disimpan ke localStorage');
@@ -296,31 +782,26 @@ function muatSemuaData() {
         const savedInstansi = localStorage.getItem('masterInstansi');
         const savedKunjungan = localStorage.getItem('kunjunganData');
         const savedRuang = localStorage.getItem('ruangData');
-        const savedBalai = localStorage.getItem('balaiData');
         const savedProgram = localStorage.getItem('programData');
         const savedEvent = localStorage.getItem('eventData');
         const savedCapaian = localStorage.getItem('capaianData');
         const savedCapaianMingguan = localStorage.getItem('capaianMingguanData');
         const savedNextKunjunganId = localStorage.getItem('nextKunjunganId');
         const savedNextRuangId = localStorage.getItem('nextRuangId');
-        const savedNextBalaiId = localStorage.getItem('nextBalaiId');
         const savedNextProgramId = localStorage.getItem('nextProgramId');
         const savedNextEventId = localStorage.getItem('nextEventId');
 
         // Muat master data dari localStorage jika ada, tapi selalu override dengan default
-        // Ini memastikan data master selalu sesuai dengan file
         forceResetMasterData();
         
         if (savedKunjungan) kunjunganData = JSON.parse(savedKunjungan);
         if (savedRuang) ruangData = JSON.parse(savedRuang);
-        if (savedBalai) balaiData = JSON.parse(savedBalai);
         if (savedProgram) programData = JSON.parse(savedProgram);
         if (savedEvent) eventData = JSON.parse(savedEvent);
         if (savedCapaian) capaianData = JSON.parse(savedCapaian);
         if (savedCapaianMingguan) capaianMingguanData = JSON.parse(savedCapaianMingguan);
         if (savedNextKunjunganId) nextKunjunganId = parseInt(savedNextKunjunganId) || 1;
         if (savedNextRuangId) nextRuangId = parseInt(savedNextRuangId) || 1;
-        if (savedNextBalaiId) nextBalaiId = parseInt(savedNextBalaiId) || 1;
         if (savedNextProgramId) nextProgramId = parseInt(savedNextProgramId) || 1;
         if (savedNextEventId) nextEventId = parseInt(savedNextEventId) || 1;
     } catch (e) {
@@ -381,29 +862,6 @@ function sinkronkanJadwalKeKalender() {
         }
     });
 
-    balaiData.forEach(item => {
-        if (item.tanggal) {
-            const parts = item.tanggal.split('-');
-            const tgl = parseInt(parts[2]);
-            const bln = parseInt(parts[1]);
-            const thn = parseInt(parts[0]);
-            eventData.push({
-                id: nextEventId++,
-                tanggal: tgl,
-                bulan: bln,
-                tahun: thn,
-                nama: `🏛️ ${item.kegiatan}`,
-                waktu: item.waktu,
-                ruangan: item.ruangan,
-                tempat: item.ruangan,
-                pic: item.pic,
-                dariJadwal: true,
-                sumber: 'Balai BRI',
-                sumberId: item.id
-            });
-        }
-    });
-
     programData.forEach(item => {
         if (item.tanggal) {
             const parts = item.tanggal.split('-');
@@ -415,13 +873,13 @@ function sinkronkanJadwalKeKalender() {
                 tanggal: tgl,
                 bulan: bln,
                 tahun: thn,
-                nama: `📊 ${item.program}`,
+                nama: `📊 ${item.kegiatan}`,
                 waktu: item.waktu,
                 ruangan: item.lokasi || '-',
                 tempat: item.lokasi || '-',
                 pic: item.pic,
                 dariJadwal: true,
-                sumber: 'Per Program',
+                sumber: 'Kegiatan Harian',
                 sumberId: item.id
             });
         }
@@ -534,7 +992,6 @@ document.querySelectorAll('.menu a').forEach(link => {
         if (page === 'jadwal') {
             renderKunjunganTable();
             renderRuangTable();
-            renderBalaiTable();
             renderProgramTable();
             updateDropdowns();
         }
@@ -628,7 +1085,6 @@ function renderJadwalTab(tab) {
     switch(tab) {
         case 'kunjungan': renderKunjunganTable(); break;
         case 'ruang': renderRuangTable(); break;
-        case 'balai': renderBalaiTable(); break;
         case 'program': renderProgramTable(); break;
         default: break;
     }
@@ -685,41 +1141,24 @@ function renderRuangTable() {
 }
 
 // ============================================
-// RENDER TABEL BALAI BRI
-// ============================================
-function renderBalaiTable() {
-    const tbody = document.getElementById('balaiTableBody');
-    tbody.innerHTML = balaiData.map((item, index) => `
-        <tr>
-            <td>${index + 1}</td>
-            <td><strong>${item.kegiatan}</strong></td>
-            <td>${item.jenis}</td>
-            <td>${item.tanggal}</td>
-            <td>${item.waktu}</td>
-            <td>${item.ruangan}</td>
-            <td>${item.pic}</td>
-            <td>
-                <button class="btn-edit" onclick="editJadwal('balai', ${item.id})">✏️</button>
-                <button style="background:#f44336;color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;" onclick="hapusJadwal('balai', ${item.id})">🗑️</button>
-            </td>
-        </tr>
-    `).join('');
-}
-
-// ============================================
-// RENDER TABEL PER PROGRAM
+// RENDER TABEL KEGIATAN HARIAN (dulu Per Program)
 // ============================================
 function renderProgramTable() {
     const tbody = document.getElementById('programTableBody');
+    if (!tbody) return;
+    if (programData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#888;padding:20px;">Belum ada data kegiatan harian</td></tr>`;
+        return;
+    }
     tbody.innerHTML = programData.map((item, index) => `
         <tr>
             <td>${index + 1}</td>
-            <td><strong>${item.program}</strong></td>
-            <td>${item.kegiatan}</td>
-            <td>${item.tanggal}</td>
-            <td>${item.waktu}</td>
-            <td>${item.lokasi}</td>
-            <td>${item.pic}</td>
+            <td><strong>${item.kegiatan || '-'}</strong></td>
+            <td>${item.deskripsi || '-'}</td>
+            <td>${item.tanggal || '-'}</td>
+            <td>${item.waktu || '-'}</td>
+            <td>${item.lokasi || '-'}</td>
+            <td>${item.pic || '-'}</td>
             <td>
                 <button class="btn-edit" onclick="editJadwal('program', ${item.id})">✏️</button>
                 <button style="background:#f44336;color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;" onclick="hapusJadwal('program', ${item.id})">🗑️</button>
@@ -729,7 +1168,7 @@ function renderProgramTable() {
 }
 
 // ============================================
-// RINGKASAN 4 JADWAL DI BERANDA
+// RINGKASAN 3 JADWAL DI BERANDA
 // ============================================
 function renderRingkasanJadwal() {
     const today = new Date().toISOString().split('T')[0];
@@ -769,33 +1208,16 @@ function renderRingkasanJadwal() {
         }
     }
 
-    const balaiHariIni = balaiData.filter(item => item.tanggal === today);
-    const tbodyBalai = document.getElementById('ringkasanBalai');
-    if (tbodyBalai) {
-        if (balaiHariIni.length === 0) {
-            tbodyBalai.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:10px;">Tidak ada kegiatan Balai BRI hari ini</td></tr>`;
-        } else {
-            tbodyBalai.innerHTML = balaiHariIni.map((item, index) => `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td><strong>${item.kegiatan || '-'}</strong></td>
-                    <td>${item.waktu || '-'}</td>
-                    <td>${item.ruangan || '-'}</td>
-                </tr>
-            `).join('');
-        }
-    }
-
     const programHariIni = programData.filter(item => item.tanggal === today);
     const tbodyProgram = document.getElementById('ringkasanProgram');
     if (tbodyProgram) {
         if (programHariIni.length === 0) {
-            tbodyProgram.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:10px;">Tidak ada kegiatan program hari ini</td></tr>`;
+            tbodyProgram.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:10px;">Tidak ada kegiatan harian hari ini</td></tr>`;
         } else {
             tbodyProgram.innerHTML = programHariIni.map((item, index) => `
                 <tr>
                     <td>${index + 1}</td>
-                    <td><strong>${item.program || '-'}</strong></td>
+                    <td><strong>${item.kegiatan || '-'}</strong></td>
                     <td>${item.waktu || '-'}</td>
                     <td>${item.lokasi || '-'}</td>
                 </tr>
@@ -813,7 +1235,6 @@ function hapusJadwal(jenis, id) {
         switch(jenis) {
             case 'kunjungan': kunjunganData = kunjunganData.filter(d => d.id !== id); renderKunjunganTable(); break;
             case 'ruang': ruangData = ruangData.filter(d => d.id !== id); renderRuangTable(); break;
-            case 'balai': balaiData = balaiData.filter(d => d.id !== id); renderBalaiTable(); break;
             case 'program': programData = programData.filter(d => d.id !== id); renderProgramTable(); break;
             default: return;
         }
@@ -883,7 +1304,7 @@ function tambahMasterInstansiCepat() {
 }
 
 // ============================================
-// MASTER DATA CRUD - DENGAN AUTO REFRESH
+// MASTER DATA CRUD
 // ============================================
 function bukaMasterData() {
     document.getElementById('masterModal').classList.add('active');
@@ -1040,7 +1461,7 @@ function hapusMaster(jenis, value) {
 }
 
 // ============================================
-// RESET MASTER DATA - UNTUK YANG DI JS
+// RESET MASTER DATA
 // ============================================
 function resetMasterData() {
     if (confirm('⚠️ Reset semua master data ke default?')) {
@@ -1535,25 +1956,21 @@ function renderCapaianTable() {
 function updateStats() {
     const totalKunjungan = kunjunganData ? kunjunganData.length : 0;
     const totalRuang = ruangData ? ruangData.length : 0;
-    const totalBalai = balaiData ? balaiData.length : 0;
     const totalProgram = programData ? programData.length : 0;
     
     document.getElementById('totalKunjungan').textContent = totalKunjungan;
     document.getElementById('totalRuang').textContent = totalRuang;
-    document.getElementById('totalBalai').textContent = totalBalai;
     document.getElementById('totalProgram').textContent = totalProgram;
     
     const lapKunjungan = document.getElementById('lapTotalKunjungan');
     const lapRuang = document.getElementById('lapTotalRuang');
-    const lapBalai = document.getElementById('lapTotalBalai');
     const lapProgram = document.getElementById('lapTotalProgram');
     
     if (lapKunjungan) lapKunjungan.textContent = totalKunjungan;
     if (lapRuang) lapRuang.textContent = totalRuang;
-    if (lapBalai) lapBalai.textContent = totalBalai;
     if (lapProgram) lapProgram.textContent = totalProgram;
     
-    console.log('📊 Stats diupdate - Kunjungan:', totalKunjungan, 'Ruang:', totalRuang, 'Balai:', totalBalai, 'Program:', totalProgram);
+    console.log('📊 Stats diupdate - Kunjungan:', totalKunjungan, 'Ruang:', totalRuang, 'Program:', totalProgram);
 }
 
 // ============================================
@@ -1830,7 +2247,6 @@ window.generateLaporanJS = function() {
     
     document.getElementById('lapTotalKunjungan').textContent = kunjunganData ? kunjunganData.length : 0;
     document.getElementById('lapTotalRuang').textContent = ruangData ? ruangData.length : 0;
-    document.getElementById('lapTotalBalai').textContent = balaiData ? balaiData.length : 0;
     document.getElementById('lapTotalProgram').textContent = programData ? programData.length : 0;
     
     const now = new Date();
@@ -1849,7 +2265,6 @@ window.generateLaporanJS = function() {
     let totalData = 0;
     if (jenis === 'all' || jenis === 'kunjungan') totalData += kunjunganData.length;
     if (jenis === 'all' || jenis === 'ruang') totalData += ruangData.length;
-    if (jenis === 'all' || jenis === 'balai') totalData += balaiData.length;
     if (jenis === 'all' || jenis === 'program') totalData += programData.length;
     if (jenis === 'all' || jenis === 'capaian') totalData += capaianData.length;
     if (jenis === 'all' || jenis === 'kalender') totalData += eventData.length;
@@ -1992,53 +2407,7 @@ function renderLaporanTable(jenis) {
         });
     }
     
-    // === DATA BALAI BRI PER BULAN ===
-    if (jenis === 'all' || jenis === 'balai') {
-        const balaiBulanan = {};
-        balaiData.forEach(item => {
-            const bulan = getBulanFromDate(item.tanggal);
-            const tahun = getTahunFromDate(item.tanggal);
-            const key = bulan ? `${tahun}-${bulan}` : 'unknown';
-            if (!balaiBulanan[key]) {
-                balaiBulanan[key] = { bulan: bulan, tahun: tahun, count: 0, jenis: {} };
-            }
-            balaiBulanan[key].count += 1;
-            const jenisKeg = item.jenis || 'Lainnya';
-            if (!balaiBulanan[key].jenis[jenisKeg]) {
-                balaiBulanan[key].jenis[jenisKeg] = 0;
-            }
-            balaiBulanan[key].jenis[jenisKeg] += 1;
-        });
-        
-        if (headers.length === 0) {
-            headers = ['No', 'Bulan', 'Jumlah Kegiatan', 'Jenis Terbanyak'];
-        }
-        
-        Object.keys(balaiBulanan).sort().forEach((key, index) => {
-            const data = balaiBulanan[key];
-            const bulanDisplay = data.bulan ? bulanFull[bulanNames.indexOf(data.bulan)] + ' ' + data.tahun : 'Tidak Diketahui';
-            
-            let maxJenis = 'Tidak Ada';
-            let maxVal = 0;
-            Object.keys(data.jenis).forEach(j => {
-                if (data.jenis[j] > maxVal) {
-                    maxVal = data.jenis[j];
-                    maxJenis = j;
-                }
-            });
-            
-            rows.push({
-                no: rows.length + 1,
-                bulan: bulanDisplay,
-                total: data.count,
-                count: '-',
-                rata: '-',
-                instansi: `${maxJenis} (${maxVal}x)`
-            });
-        });
-    }
-    
-    // === DATA PER PROGRAM PER BULAN ===
+    // === DATA KEGIATAN HARIAN PER BULAN ===
     if (jenis === 'all' || jenis === 'program') {
         const programBulanan = {};
         programData.forEach(item => {
@@ -2046,32 +2415,18 @@ function renderLaporanTable(jenis) {
             const tahun = getTahunFromDate(item.tanggal);
             const key = bulan ? `${tahun}-${bulan}` : 'unknown';
             if (!programBulanan[key]) {
-                programBulanan[key] = { bulan: bulan, tahun: tahun, count: 0, program: {} };
+                programBulanan[key] = { bulan: bulan, tahun: tahun, count: 0 };
             }
             programBulanan[key].count += 1;
-            const prog = item.program || 'Program Lainnya';
-            if (!programBulanan[key].program[prog]) {
-                programBulanan[key].program[prog] = 0;
-            }
-            programBulanan[key].program[prog] += 1;
         });
         
         if (headers.length === 0) {
-            headers = ['No', 'Bulan', 'Jumlah Kegiatan', 'Program Terbanyak'];
+            headers = ['No', 'Bulan', 'Jumlah Kegiatan', 'Kegiatan Terbanyak'];
         }
         
         Object.keys(programBulanan).sort().forEach((key, index) => {
             const data = programBulanan[key];
             const bulanDisplay = data.bulan ? bulanFull[bulanNames.indexOf(data.bulan)] + ' ' + data.tahun : 'Tidak Diketahui';
-            
-            let maxProg = 'Tidak Ada';
-            let maxVal = 0;
-            Object.keys(data.program).forEach(p => {
-                if (data.program[p] > maxVal) {
-                    maxVal = data.program[p];
-                    maxProg = p;
-                }
-            });
             
             rows.push({
                 no: rows.length + 1,
@@ -2079,7 +2434,7 @@ function renderLaporanTable(jenis) {
                 total: data.count,
                 count: '-',
                 rata: '-',
-                instansi: `${maxProg} (${maxVal}x)`
+                instansi: `${data.count} kegiatan`
             });
         });
     }
@@ -2246,11 +2601,8 @@ function resetDataFromUser() {
     ];
     nextRuangId = 2;
     
-    balaiData = [];
-    nextBalaiId = 1;
-    
     programData = [
-        { id: 1, program: 'MBG', kegiatan: 'Program MBG', tanggal: '2026-06-29', waktu: '10:00 - 12:00', lokasi: 'ATP IPB', pic: 'Andi' },
+        { id: 1, kegiatan: 'MBG', deskripsi: 'Program MBG', tanggal: '2026-06-29', waktu: '10:00 - 12:00', lokasi: 'ATP IPB', pic: 'Andi' },
     ];
     nextProgramId = 2;
     
@@ -2258,7 +2610,6 @@ function resetDataFromUser() {
     
     renderKunjunganTable();
     renderRuangTable();
-    renderBalaiTable();
     renderProgramTable();
     renderRingkasanJadwal();
     updateStats();
@@ -2271,14 +2622,12 @@ function resetDataFromUser() {
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
     // FORCE RESET MASTER DATA SETIAP LOAD
-    // Ini memastikan data master selalu sesuai dengan yang ada di file
     forceResetMasterData();
     
     muatSemuaData();
     
     renderKunjunganTable();
     renderRuangTable();
-    renderBalaiTable();
     renderProgramTable();
     renderRingkasanJadwal();
     renderCalendar(currentMonth, currentYear);
@@ -2304,8 +2653,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Data berhasil dimuat dari localStorage!');
     console.log('📋 Kunjungan:', kunjunganData.length, 'data');
     console.log('🏢 Ruang:', ruangData.length, 'data');
-    console.log('🏛️ Balai:', balaiData.length, 'data');
-    console.log('📊 Program:', programData.length, 'data');
+    console.log('📊 Kegiatan Harian:', programData.length, 'data');
     console.log('📅 Event:', eventData.length, 'data');
     console.log('📊 Capaian:', capaianData.length, 'data');
     console.log('📊 Capaian Mingguan:', capaianMingguanData.length, 'data');
@@ -2314,6 +2662,311 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('📋 Master PIC:', masterPic);
     console.log('📋 Master Instansi:', masterInstansi);
 });
+
+    // ============================================
+    // DATA CAPAIAN
+    // ============================================
+    let capaianData = [
+        { bulan: 'Jan', jumlah: 120, target: 100, mahasiswa: 40, dosen: 30, umum: 30, instansi: 20 },
+        { bulan: 'Feb', jumlah: 150, target: 120, mahasiswa: 50, dosen: 35, umum: 40, instansi: 25 },
+        { bulan: 'Mar', jumlah: 180, target: 150, mahasiswa: 60, dosen: 40, umum: 45, instansi: 35 },
+        { bulan: 'Apr', jumlah: 200, target: 180, mahasiswa: 70, dosen: 50, umum: 50, instansi: 30 },
+        { bulan: 'Mei', jumlah: 160, target: 200, mahasiswa: 55, dosen: 35, umum: 40, instansi: 30 },
+        { bulan: 'Jun', jumlah: 220, target: 200, mahasiswa: 80, dosen: 55, umum: 50, instansi: 35 }
+    ];
+
+    // ============================================
+    // RENDER TABEL CAPAIAN
+    // ============================================
+    function renderCapaianTable() {
+        const tbody = document.getElementById('capaianTableBody');
+        if (!tbody) return;
+        
+        if (capaianData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#888;padding:20px;">Belum ada data capaian</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = capaianData.map((d, i) => {
+            const persentase = d.target > 0 ? Math.round((d.jumlah / d.target) * 100) : 0;
+            let status = '';
+            let statusClass = '';
+            
+            if (persentase >= 100) {
+                status = '✅ Tercapai';
+                statusClass = 'status-success';
+            } else if (persentase >= 75) {
+                status = '⚠️ Mendekati';
+                statusClass = 'status-warning';
+            } else {
+                status = '❌ Kurang';
+                statusClass = 'status-danger';
+            }
+
+            return `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td><strong>${d.bulan}</strong></td>
+                    <td><span class="jumlah-badge">${d.jumlah}</span></td>
+                    <td>${d.target}</td>
+                    <td>${persentase}%</td>
+                    <td><span class="${statusClass}">${status}</span></td>
+                    <td>
+                        <button class="btn-edit" onclick="editCapaian(${i})">✏️ Edit</button>
+                        <button class="btn-delete" style="padding:4px 10px;font-size:11px;" onclick="hapusCapaianData(${i})">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // ============================================
+    // FUNGSI CAPAIAN
+    // ============================================
+    function tambahCapaian() {
+        const modal = document.getElementById('capaianModal');
+        if (!modal) return;
+        
+        document.getElementById('modalCapaianTitle').textContent = 'Tambah Data Capaian';
+        document.getElementById('capaianIndex').value = '';
+        document.getElementById('capaianBulan').value = 'Jan';
+        document.getElementById('capaianJumlah').value = '';
+        document.getElementById('capaianTarget').value = '';
+        document.getElementById('capaianMahasiswa').value = '';
+        document.getElementById('capaianDosen').value = '';
+        document.getElementById('capaianUmum').value = '';
+        document.getElementById('capaianInstansi').value = '';
+        document.getElementById('btnDeleteCapaian').style.display = 'none';
+        
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+    }
+
+    function editCapaian(index) {
+        const data = capaianData[index];
+        if (!data) return;
+        
+        const modal = document.getElementById('capaianModal');
+        if (!modal) return;
+        
+        document.getElementById('modalCapaianTitle').textContent = 'Edit Data Capaian';
+        document.getElementById('capaianIndex').value = index;
+        document.getElementById('capaianBulan').value = data.bulan;
+        document.getElementById('capaianJumlah').value = data.jumlah;
+        document.getElementById('capaianTarget').value = data.target;
+        document.getElementById('capaianMahasiswa').value = data.mahasiswa || 0;
+        document.getElementById('capaianDosen').value = data.dosen || 0;
+        document.getElementById('capaianUmum').value = data.umum || 0;
+        document.getElementById('capaianInstansi').value = data.instansi || 0;
+        document.getElementById('btnDeleteCapaian').style.display = 'inline-block';
+        
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+    }
+
+    function simpanCapaian() {
+        const index = document.getElementById('capaianIndex').value;
+        const bulan = document.getElementById('capaianBulan').value;
+        const jumlah = parseInt(document.getElementById('capaianJumlah').value) || 0;
+        const target = parseInt(document.getElementById('capaianTarget').value) || 0;
+        const mahasiswa = parseInt(document.getElementById('capaianMahasiswa').value) || 0;
+        const dosen = parseInt(document.getElementById('capaianDosen').value) || 0;
+        const umum = parseInt(document.getElementById('capaianUmum').value) || 0;
+        const instansi = parseInt(document.getElementById('capaianInstansi').value) || 0;
+        
+        if (!bulan) { alert('⚠️ Bulan harus dipilih!'); return; }
+        if (jumlah <= 0) { alert('⚠️ Jumlah Pengunjung harus diisi dan lebih dari 0!'); return; }
+        if (target <= 0) { alert('⚠️ Target harus diisi dan lebih dari 0!'); return; }
+        
+        const dataBaru = { bulan, jumlah, target, mahasiswa, dosen, umum, instansi };
+        
+        if (index === '') {
+            // Cek duplikat
+            if (capaianData.some(d => d.bulan === bulan)) {
+                alert(`⚠️ Data untuk bulan ${bulan} sudah ada!`);
+                return;
+            }
+            capaianData.push(dataBaru);
+            alert('✅ Data capaian berhasil ditambahkan!');
+        } else {
+            // Cek duplikat selain index yang sedang diedit
+            if (capaianData.some((d, i) => d.bulan === bulan && i !== parseInt(index))) {
+                alert(`⚠️ Data untuk bulan ${bulan} sudah ada!`);
+                return;
+            }
+            capaianData[parseInt(index)] = dataBaru;
+            alert('✅ Data capaian berhasil diupdate!');
+        }
+        
+        closeCapaianModal();
+        renderCapaianTable();
+        updateCharts();
+        simpanSemuaData();
+    }
+
+    function hapusCapaianData(index) {
+        if (!confirm('Apakah Anda yakin ingin menghapus data capaian ini?')) return;
+        capaianData.splice(index, 1);
+        renderCapaianTable();
+        updateCharts();
+        simpanSemuaData();
+        alert('✅ Data capaian berhasil dihapus!');
+    }
+
+    function hapusCapaian() {
+        const index = document.getElementById('capaianIndex').value;
+        if (index !== '') {
+            closeCapaianModal();
+            hapusCapaianData(parseInt(index));
+        }
+    }
+
+    function closeCapaianModal() {
+        const modal = document.getElementById('capaianModal');
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+        }
+    }
+
+    function refreshCapaian() {
+        renderCapaianTable();
+        updateCharts();
+        alert('🔄 Data capaian berhasil direfresh!');
+    }
+
+    function ubahFilterCapaian() {
+        const val = document.getElementById('capaianFilter').value;
+        console.log('Filter capaian:', val);
+        // Update chart berdasarkan filter
+        updateCharts();
+    }
+
+    // ============================================
+    // UPDATE CHART CAPAIAN
+    // ============================================
+    let barChartFull = null;
+    let pieChartFull = null;
+
+    function updateCharts() {
+        // Bar Chart
+        const ctx1 = document.getElementById('barChartFull');
+        if (ctx1) {
+            const labels = capaianData.map(d => d.bulan);
+            const data = capaianData.map(d => d.jumlah);
+            const targetData = capaianData.map(d => d.target);
+            
+            if (barChartFull) {
+                barChartFull.data.labels = labels;
+                barChartFull.data.datasets[0].data = data;
+                barChartFull.data.datasets[1].data = targetData;
+                barChartFull.update();
+            } else {
+                barChartFull = new Chart(ctx1.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Pengunjung',
+                                data: data,
+                                backgroundColor: '#1a237e',
+                                borderColor: '#1a237e',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Target',
+                                data: targetData,
+                                backgroundColor: '#ff9800',
+                                borderColor: '#ff9800',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Pie Chart
+        const ctx2 = document.getElementById('pieChartFull');
+        if (ctx2) {
+            // Hitung total kategori dari semua data
+            let totalMahasiswa = 0, totalDosen = 0, totalUmum = 0, totalInstansi = 0;
+            capaianData.forEach(d => {
+                totalMahasiswa += d.mahasiswa || 0;
+                totalDosen += d.dosen || 0;
+                totalUmum += d.umum || 0;
+                totalInstansi += d.instansi || 0;
+            });
+            
+            const total = totalMahasiswa + totalDosen + totalUmum + totalInstansi;
+            const dataPie = total > 0 ? [totalMahasiswa, totalDosen, totalUmum, totalInstansi] : [1, 1, 1, 1];
+            
+            if (pieChartFull) {
+                pieChartFull.data.datasets[0].data = dataPie;
+                pieChartFull.update();
+            } else {
+                pieChartFull = new Chart(ctx2.getContext('2d'), {
+                    type: 'pie',
+                    data: {
+                        labels: ['Mahasiswa', 'Dosen', 'Umum', 'Instansi'],
+                        datasets: [{
+                            data: dataPie,
+                            backgroundColor: ['#1a237e', '#ffca28', '#4caf50', '#ff9800'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    // ============================================
+    // FUNGSI CAPAIAN LAINNYA
+    // ============================================
+    function ubahGrafikCapaian(period) {
+        // Update active button
+        document.querySelectorAll('#page-capaian .chart-filter .filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`#page-capaian .chart-filter .filter-btn[data-period="${period}"]`)?.classList.add('active');
+        
+        // Update chart berdasarkan period
+        // Untuk demo, kita hanya update data
+        console.log('Grafik capaian period:', period);
+        updateCharts();
+    }
+
+    function ubahGrafikLaporan(period) {
+        document.querySelectorAll('#page-laporan .chart-filter .filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`#page-laporan .chart-filter .filter-btn[data-period="${period}"]`)?.classList.add('active');
+        console.log('Grafik laporan period:', period);
+    }
 
 console.log('💡 Master data akan selalu direset ke default setiap load halaman.');
 console.log('💡 Untuk reset master data manual, ketik: resetMasterData()');
