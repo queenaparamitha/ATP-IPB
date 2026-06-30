@@ -448,32 +448,32 @@
             </div>
         </div>
 
-       <!-- ========================================== -->
-<!-- HALAMAN: KALENDER -->
-<!-- ========================================== -->
-<div id="page-kalender" class="page-content">
-    <div class="card" style="padding:24px;">
-        <div class="card-header">
-            <h3>📅 Kalender Kegiatan</h3>
-            <button class="btn-print" onclick="refreshKalenderFull()">🔄 Refresh</button>
+        <!-- ========================================== -->
+        <!-- HALAMAN: KALENDER -->
+        <!-- ========================================== -->
+        <div id="page-kalender" class="page-content">
+            <div class="card" style="padding:24px;">
+                <div class="card-header">
+                    <h3>📅 Kalender Kegiatan</h3>
+                    <button class="btn-print" onclick="refreshKalenderFull()">🔄 Refresh</button>
+                </div>
+                <div class="calendar-nav" style="justify-content:center;margin-bottom:12px;">
+                    <button id="prevMonthFull">◀</button>
+                    <span id="monthYearFull"></span>
+                    <button id="nextMonthFull">▶</button>
+                </div>
+                <div class="calendar-grid-full" id="calendarGridFull"></div>
+                <div class="calendar-legend">
+                    <span><span class="dot" style="background:#1a237e;"></span> Ada Event</span>
+                    <span><span class="dot" style="background:#ff9800;"></span> Hari Ini</span>
+                    <span><span class="dot" style="background:#e0e0e0;"></span> Kosong</span>
+                </div>
+                <div style="margin-top:20px;padding:16px;background:#f8f9fc;border-radius:10px;">
+                    <h4 style="color:#1a237e;margin-bottom:10px;">📌 Daftar Event Bulan Ini</h4>
+                    <div id="eventListFull"><p style="color:#888;">Klik tanggal untuk melihat event</p></div>
+                </div>
+            </div>
         </div>
-        <div class="calendar-nav" style="justify-content:center;margin-bottom:12px;">
-            <button id="prevMonthFull">◀</button>
-            <span id="monthYearFull"></span>
-            <button id="nextMonthFull">▶</button>
-        </div>
-        <div class="calendar-grid-full" id="calendarGridFull"></div>
-        <div class="calendar-legend">
-            <span><span class="dot" style="background:#1a237e;"></span> Ada Event</span>
-            <span><span class="dot" style="background:#ff9800;"></span> Hari Ini</span>
-            <span><span class="dot" style="background:#e0e0e0;"></span> Kosong</span>
-        </div>
-        <div style="margin-top:20px;padding:16px;background:#f8f9fc;border-radius:10px;">
-            <h4 style="color:#1a237e;margin-bottom:10px;">📌 Daftar Event Bulan Ini</h4>
-            <div id="eventListFull"><p style="color:#888;">Klik tanggal untuk melihat event</p></div>
-        </div>
-    </div>
-</div>
 
         <!-- ========================================== -->
         <!-- HALAMAN: CAPAIAN -->
@@ -747,7 +747,7 @@
         </div>
     </div>
 
-   <script src="admin/dashboard.js"></script>
+   <script src="dashboard.js"></script>
 
 <!-- ===== SCRIPT OVERRIDE UNTUK FIX ===== -->
 <script>
