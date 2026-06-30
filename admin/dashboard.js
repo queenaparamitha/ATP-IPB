@@ -5,7 +5,7 @@
 // Data master DEFAULT (akan selalu di-reset)
 const DEFAULT_MASTER_RUANGAN = ['R.Meeting', 'R. VIP', 'Balai Rakyat/BRI', 'Guest House'];
 const DEFAULT_MASTER_TEMPAT = ['STP', 'ATP', 'TNC'];
-const DEFAULT_MASTER_PIC = ['Novi Putri Jelita S.Pi', 'Isti Rahmani S.P', 'Winda Oktaviona S.K.Pm', 'Pandu Pamungkas S.Si'];
+const DEFAULT_MASTER_PIC = ['Novia Putri Jelita S.Pi', 'Isti Rahmani S.P', 'Winda Oktaviona S.K.Pm', 'Pandu Pamungkas S.Si'];
 const DEFAULT_MASTER_INSTANSI = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Pemerintah', 'Perusahaan Swasta', 'Siswa'];
 
 let masterRuangan = [...DEFAULT_MASTER_RUANGAN];
