@@ -1,11 +1,17 @@
 // ============================================
-// MASTER DATA
+// MASTER DATA - FORCE RESET SETIAP LOAD
 // ============================================
 
-let masterRuangan = ['R.Meeting', 'R. VIP', 'Balai Rakyat/BRI', 'Guest House'];
-let masterTempat = ['STP', 'ATP', 'TNC'];
-let masterPic = ['Novi Putri Jelita S.Pi', 'Isti Rahmani S.P', 'Winda Oktaviona S.K.Pm', 'Pandu Pamungkas S.Si'];
-let masterInstansi = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Pemerintah', 'Perusahaan Swasta', 'Siswa'];
+// Data master DEFAULT (akan selalu di-reset)
+const DEFAULT_MASTER_RUANGAN = ['R.Meeting', 'R. VIP', 'Balai Rakyat/BRI', 'Guest House'];
+const DEFAULT_MASTER_TEMPAT = ['STP', 'ATP', 'TNC'];
+const DEFAULT_MASTER_PIC = ['Novi Putri Jelita S.Pi', 'Isti Rahmani S.P', 'Winda Oktaviona S.K.Pm', 'Pandu Pamungkas S.Si'];
+const DEFAULT_MASTER_INSTANSI = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Pemerintah', 'Perusahaan Swasta', 'Siswa'];
+
+let masterRuangan = [...DEFAULT_MASTER_RUANGAN];
+let masterTempat = [...DEFAULT_MASTER_TEMPAT];
+let masterPic = [...DEFAULT_MASTER_PIC];
+let masterInstansi = [...DEFAULT_MASTER_INSTANSI];
 
 // ============================================
 // DATA JADWAL (4 Jenis)
@@ -15,13 +21,13 @@ let masterInstansi = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Peme
 let kunjunganData = [
     
 ];
-let nextKunjunganId = 3;
+let nextKunjunganId = 1;
 
 // 2. Data Jadwal Pemakaian Ruang
 let ruangData = [
     
 ];
-let nextRuangId = 2;
+let nextRuangId = 1;
 
 // 3. Data Jadwal Balai BRI
 let balaiData = [];
@@ -31,7 +37,7 @@ let nextBalaiId = 1;
 let programData = [
     
 ];
-let nextProgramId = 2;
+let nextProgramId = 1;
 
 // ============================================
 // DATA EVENT KALENDER
@@ -232,7 +238,31 @@ function updateCapaianBulanan() {
 }
 
 // ============================================
-// LOCALSTORAGE - DENGAN CEK DATA MASTER
+// FORCE RESET MASTER DATA SETIAP LOAD
+// ============================================
+function forceResetMasterData() {
+    console.log('🔄 Force reset master data ke default...');
+    masterRuangan = [...DEFAULT_MASTER_RUANGAN];
+    masterTempat = [...DEFAULT_MASTER_TEMPAT];
+    masterPic = [...DEFAULT_MASTER_PIC];
+    masterInstansi = [...DEFAULT_MASTER_INSTANSI];
+    
+    // Simpan ke localStorage
+    localStorage.setItem('masterRuangan', JSON.stringify(masterRuangan));
+    localStorage.setItem('masterTempat', JSON.stringify(masterTempat));
+    localStorage.setItem('masterPic', JSON.stringify(masterPic));
+    localStorage.setItem('masterInstansi', JSON.stringify(masterInstansi));
+    
+    console.log('✅ Master data direset:', {
+        ruangan: masterRuangan,
+        tempat: masterTempat,
+        pic: masterPic,
+        instansi: masterInstansi
+    });
+}
+
+// ============================================
+// LOCALSTORAGE
 // ============================================
 function simpanSemuaData() {
     try {
@@ -277,10 +307,10 @@ function muatSemuaData() {
         const savedNextProgramId = localStorage.getItem('nextProgramId');
         const savedNextEventId = localStorage.getItem('nextEventId');
 
-        if (savedRuangan) masterRuangan = JSON.parse(savedRuangan);
-        if (savedTempat) masterTempat = JSON.parse(savedTempat);
-        if (savedPic) masterPic = JSON.parse(savedPic);
-        if (savedInstansi) masterInstansi = JSON.parse(savedInstansi);
+        // Muat master data dari localStorage jika ada, tapi selalu override dengan default
+        // Ini memastikan data master selalu sesuai dengan file
+        forceResetMasterData();
+        
         if (savedKunjungan) kunjunganData = JSON.parse(savedKunjungan);
         if (savedRuang) ruangData = JSON.parse(savedRuang);
         if (savedBalai) balaiData = JSON.parse(savedBalai);
@@ -288,13 +318,14 @@ function muatSemuaData() {
         if (savedEvent) eventData = JSON.parse(savedEvent);
         if (savedCapaian) capaianData = JSON.parse(savedCapaian);
         if (savedCapaianMingguan) capaianMingguanData = JSON.parse(savedCapaianMingguan);
-        if (savedNextKunjunganId) nextKunjunganId = parseInt(savedNextKunjunganId) || 3;
-        if (savedNextRuangId) nextRuangId = parseInt(savedNextRuangId) || 2;
+        if (savedNextKunjunganId) nextKunjunganId = parseInt(savedNextKunjunganId) || 1;
+        if (savedNextRuangId) nextRuangId = parseInt(savedNextRuangId) || 1;
         if (savedNextBalaiId) nextBalaiId = parseInt(savedNextBalaiId) || 1;
-        if (savedNextProgramId) nextProgramId = parseInt(savedNextProgramId) || 2;
+        if (savedNextProgramId) nextProgramId = parseInt(savedNextProgramId) || 1;
         if (savedNextEventId) nextEventId = parseInt(savedNextEventId) || 1;
     } catch (e) {
         console.log('Gagal memuat data:', e);
+        forceResetMasterData();
     }
 }
 
@@ -1013,15 +1044,9 @@ function hapusMaster(jenis, value) {
 // ============================================
 function resetMasterData() {
     if (confirm('⚠️ Reset semua master data ke default?')) {
-        masterRuangan = ['R.Meeting', 'R. VIP', 'Balai Rakyat/BRI', 'Guest House'];
-        masterTempat = ['STP', 'ATP', 'TNC'];
-        masterPic = ['Novi Putri Jelita S.Pi', 'Isti Rahmani S.P', 'Winda Oktaviona S.K.Pm', 'Pandu Pamungkas S.Si'];
-        masterInstansi = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Pemerintah', 'Perusahaan Swasta', 'Siswa'];
-        
-        simpanSemuaData();
+        forceResetMasterData();
         updateDropdowns();
         renderMasterData();
-        
         alert('✅ Master data berhasil direset!');
         location.reload();
     }
@@ -2245,17 +2270,11 @@ function resetDataFromUser() {
 // INIT
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
-    muatSemuaData();
+    // FORCE RESET MASTER DATA SETIAP LOAD
+    // Ini memastikan data master selalu sesuai dengan yang ada di file
+    forceResetMasterData();
     
-    // CEK APAKAH MASTER DATA MASIH DEFAULT LAMA
-    if (masterRuangan.includes('R. Meeting 1') || masterRuangan.includes('Lab. Komputer')) {
-        console.log('⚠️ Master data masih default lama, mereset...');
-        masterRuangan = ['R.Meeting', 'R. VIP', 'Balai Rakyat/BRI', 'Guest House'];
-        masterTempat = ['STP', 'ATP', 'TNC'];
-        masterPic = ['Novi Putri Jelita S.Pi', 'Isti Rahmani S.P', 'Winda Oktaviona S.K.Pm', 'Pandu Pamungkas S.Si'];
-        masterInstansi = ['Mahasiswa', 'Guru', 'Dosen', 'Masyarakat', 'Instansi Pemerintah', 'Perusahaan Swasta', 'Siswa'];
-        simpanSemuaData();
-    }
+    muatSemuaData();
     
     renderKunjunganTable();
     renderRuangTable();
@@ -2290,12 +2309,13 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('📅 Event:', eventData.length, 'data');
     console.log('📊 Capaian:', capaianData.length, 'data');
     console.log('📊 Capaian Mingguan:', capaianMingguanData.length, 'data');
-    console.log('📋 Master Ruangan:', masterRuangan.length, 'data');
-    console.log('📋 Master Tempat:', masterTempat.length, 'data');
-    console.log('📋 Master PIC:', masterPic.length, 'data');
-    console.log('📋 Master Instansi:', masterInstansi.length, 'data');
+    console.log('📋 Master Ruangan:', masterRuangan);
+    console.log('📋 Master Tempat:', masterTempat);
+    console.log('📋 Master PIC:', masterPic);
+    console.log('📋 Master Instansi:', masterInstansi);
 });
 
-console.log('💡 Untuk reset master data, ketik: resetMasterData()');
+console.log('💡 Master data akan selalu direset ke default setiap load halaman.');
+console.log('💡 Untuk reset master data manual, ketik: resetMasterData()');
 console.log('💡 Untuk reset data dari user.html, ketik: resetDataFromUser()');
 console.log('💡 Untuk mereset semua data, ketik: resetAllData()');
