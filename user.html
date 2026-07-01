@@ -87,7 +87,7 @@
 
         .jadwal-grid-3 {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 20px;
             margin-bottom: 24px;
         }
@@ -97,6 +97,8 @@
             border-radius: 14px;
             padding: 16px 18px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
         }
 
         .jadwal-card .card-header {
@@ -119,8 +121,9 @@
         }
 
         .jadwal-card .table-wrapper {
-            max-height: 160px;
+            max-height: 200px;
             overflow-y: auto;
+            flex: 1;
         }
         .jadwal-card .table-wrapper::-webkit-scrollbar {
             width: 4px;
@@ -138,13 +141,16 @@
         .jadwal-card thead th {
             background: #f0f2f7;
             color: #333;
-            padding: 4px 8px;
+            padding: 6px 8px;
             text-align: left;
             font-weight: 600;
             font-size: 11px;
+            position: sticky;
+            top: 0;
+            z-index: 2;
         }
         .jadwal-card tbody td {
-            padding: 4px 8px;
+            padding: 6px 8px;
             border-bottom: 1px solid #eee;
             font-size: 11px;
         }
@@ -154,8 +160,10 @@
 
         .jadwal-card .lihat-semua {
             text-align: right;
-            margin-top: 6px;
+            margin-top: 8px;
             font-size: 11px;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
         }
         .jadwal-card .lihat-semua a {
             color: #1a237e;
@@ -167,12 +175,18 @@
             text-decoration: underline;
         }
 
+        .calendar-event-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
         .calendar-section {
             background: #fff;
             border-radius: 16px;
             padding: 24px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            margin-bottom: 24px;
         }
 
         .calendar-section .section-title {
@@ -285,7 +299,8 @@
             border-radius: 16px;
             padding: 24px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
         }
 
         .event-section .section-title {
@@ -308,9 +323,19 @@
         }
 
         .event-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+            overflow-y: auto;
+            max-height: 450px;
+        }
+        .event-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .event-list::-webkit-scrollbar-thumb {
+            background: #1a237e;
+            border-radius: 10px;
         }
 
         .event-item {
@@ -376,7 +401,6 @@
             margin-bottom: 12px;
         }
 
-        /* ===== GRAFIK SECTION ===== */
         .chart-section {
             background: #fff;
             border-radius: 16px;
@@ -466,7 +490,7 @@
             border-radius: 16px;
             padding: 28px;
             width: 100%;
-            max-width: 850px;
+            max-width: 900px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -535,7 +559,10 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             .jadwal-grid-3 {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr 1fr;
+            }
+            .calendar-event-grid {
+                grid-template-columns: 1fr;
             }
             .chart-row-2 {
                 grid-template-columns: 1fr;
@@ -563,6 +590,10 @@
                 grid-template-columns: 1fr;
                 gap: 12px;
             }
+            .calendar-event-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
             .calendar-section {
                 padding: 16px;
             }
@@ -570,7 +601,7 @@
                 padding: 16px;
             }
             .event-list {
-                grid-template-columns: 1fr;
+                max-height: 300px;
             }
             .calendar-grid .day {
                 padding: 6px 0;
@@ -644,7 +675,7 @@
         <div class="stat-card">
             <span class="icon">📊</span>
             <div class="info">
-                <div class="label">Per Program</div>
+                <div class="label">Kegiatan Harian</div>
                 <div class="value" id="totalProgram">0</div>
             </div>
         </div>
@@ -658,7 +689,7 @@
             </div>
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th>No</th><th>Nama</th><th>Waktu</th><th>PIC</th></tr></thead>
+                    <thead><tr><th>No</th><th>Nama</th><th>Instansi</th><th>Waktu</th><th>Jumlah</th><th>PIC</th></tr></thead>
                     <tbody id="ringkasanKunjungan"></tbody>
                 </table>
             </div>
@@ -674,7 +705,7 @@
             </div>
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th>No</th><th>Kegiatan</th><th>Waktu</th><th>Ruangan</th></tr></thead>
+                    <thead><tr><th>No</th><th>Kegiatan</th><th>Ruangan</th><th>Waktu</th><th>Kapasitas</th><th>PIC</th></tr></thead>
                     <tbody id="ringkasanRuang"></tbody>
                 </table>
             </div>
@@ -685,12 +716,12 @@
 
         <div class="jadwal-card">
             <div class="card-header">
-                <h3>📊 Per Program</h3>
+                <h3>📊 Kegiatan Harian</h3>
                 <span class="badge">Hari Ini</span>
             </div>
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th>No</th><th>Program</th><th>Waktu</th><th>Lokasi</th></tr></thead>
+                    <thead><tr><th>No</th><th>Kegiatan</th><th>Deskripsi</th><th>Waktu</th><th>Ruangan</th><th>Tempat</th><th>PIC</th></tr></thead>
                     <tbody id="ringkasanProgram"></tbody>
                 </table>
             </div>
@@ -700,37 +731,38 @@
         </div>
     </section>
 
-    <section class="calendar-section">
-        <div class="section-title">
-            <span>📅 Kalender Kegiatan</span>
-            <div class="calendar-nav">
-                <button id="prevMonth">◀</button>
-                <span class="month-year" id="monthYear"></span>
-                <button id="nextMonth">▶</button>
+    <section class="calendar-event-grid">
+        <div class="calendar-section">
+            <div class="section-title">
+                <span>📅 Kalender Kegiatan</span>
+                <div class="calendar-nav">
+                    <button id="prevMonth">◀</button>
+                    <span class="month-year" id="monthYear"></span>
+                    <button id="nextMonth">▶</button>
+                </div>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <div class="calendar-legend">
+                <span><span class="dot" style="background:#1a237e;"></span> Ada Event</span>
+                <span><span class="dot" style="background:#ff9800;"></span> Hari Ini</span>
+                <span><span class="dot" style="background:#f5f5f5;border:1px solid #ddd;"></span> Kosong</span>
             </div>
         </div>
-        <div class="calendar-grid" id="calendarGrid"></div>
-        <div class="calendar-legend">
-            <span><span class="dot" style="background:#1a237e;"></span> Ada Event</span>
-            <span><span class="dot" style="background:#ff9800;"></span> Hari Ini</span>
-            <span><span class="dot" style="background:#f5f5f5;border:1px solid #ddd;"></span> Kosong</span>
+
+        <div class="event-section">
+            <div class="section-title">
+                <span>📌 Kegiatan Bulan Ini</span>
+                <span class="badge" id="eventCount">0 Kegiatan</span>
+            </div>
+            <div class="event-list" id="eventList">
+                <div class="no-event">
+                    <span class="icon">📭</span>
+                    <p>Belum ada kegiatan bulan ini</p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="event-section">
-        <div class="section-title">
-            <span>📌 Kegiatan Bulan Ini</span>
-            <span class="badge" id="eventCount">0 Kegiatan</span>
-        </div>
-        <div class="event-list" id="eventList">
-            <div class="no-event">
-                <span class="icon">📭</span>
-                <p>Belum ada kegiatan bulan ini</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== GRAFIK SECTION ===== -->
     <section class="chart-section">
         <div class="section-title">
             <span>📊 Grafik Capaian Pengunjung</span>
@@ -774,11 +806,7 @@
         </div>
     </div>
 
-    <!-- ===== SCRIPTS ===== -->
     <script>
-        // ============================================
-        // DATA KEYS UNTUK LOCALSTORAGE - SAMA DENGAN ADMIN
-        // ============================================
         const STORAGE_KEYS = {
             kunjungan: 'kunjunganData',
             ruang: 'ruangData',
@@ -786,9 +814,6 @@
             capaian: 'capaianData'
         };
 
-        // ============================================
-        // DATA DEFAULT
-        // ============================================
         const defaultData = {
             kunjunganData: [],
             ruangData: [],
@@ -809,9 +834,6 @@
             ]
         };
 
-        // ============================================
-        // AMBIL DATA DARI LOCALSTORAGE - SAMA DENGAN ADMIN
-        // ============================================
         function getDataFromStorage() {
             try {
                 const kunjungan = localStorage.getItem(STORAGE_KEYS.kunjungan);
@@ -831,17 +853,11 @@
             }
         }
 
-        // ============================================
-        // STATE
-        // ============================================
         let data = getDataFromStorage();
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         let currentChartPeriod = 'mingguan';
 
-        // ============================================
-        // HELPER
-        // ============================================
         function getToday() {
             return new Date().toISOString().split('T')[0];
         }
@@ -853,79 +869,74 @@
             return `${parseInt(parts[2])} ${bulanNames[parseInt(parts[1]) - 1]} ${parts[0]}`;
         }
 
-        // ============================================
-        // RENDER STATS
-        // ============================================
         function renderStats() {
             document.getElementById('totalKunjungan').textContent = (data.kunjunganData || []).length;
             document.getElementById('totalRuang').textContent = (data.ruangData || []).length;
             document.getElementById('totalProgram').textContent = (data.programData || []).length;
         }
 
-        // ============================================
-        // RENDER RINGKASAN 3 TABEL
-        // ============================================
         function renderRingkasan() {
             const today = getToday();
             
-            // Kunjungan
             const kunjunganHariIni = (data.kunjunganData || []).filter(item => item.tanggal === today);
             const tbodyKunjungan = document.getElementById('ringkasanKunjungan');
             if (tbodyKunjungan) {
                 if (kunjunganHariIni.length === 0) {
-                    tbodyKunjungan.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:8px;">Tidak ada kunjungan hari ini</td></tr>`;
+                    tbodyKunjungan.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#888;padding:12px;">Tidak ada kunjungan hari ini</td></tr>`;
                 } else {
-                    tbodyKunjungan.innerHTML = kunjunganHariIni.slice(0, 5).map((item, index) => `
+                    tbodyKunjungan.innerHTML = kunjunganHariIni.slice(0, 10).map((item, index) => `
                         <tr>
                             <td>${index + 1}</td>
                             <td><strong>${item.nama || '-'}</strong></td>
+                            <td>${item.instansi || '-'}</td>
                             <td>${item.waktu || '-'}</td>
+                            <td>${item.jumlahPengunjung || 0}</td>
                             <td>${item.pic || '-'}</td>
                         </tr>
                     `).join('');
                 }
             }
 
-            // Ruang
             const ruangHariIni = (data.ruangData || []).filter(item => item.tanggal === today);
             const tbodyRuang = document.getElementById('ringkasanRuang');
             if (tbodyRuang) {
                 if (ruangHariIni.length === 0) {
-                    tbodyRuang.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:8px;">Tidak ada pemakaian ruang hari ini</td></tr>`;
+                    tbodyRuang.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#888;padding:12px;">Tidak ada pemakaian ruang hari ini</td></tr>`;
                 } else {
-                    tbodyRuang.innerHTML = ruangHariIni.slice(0, 5).map((item, index) => `
+                    tbodyRuang.innerHTML = ruangHariIni.slice(0, 10).map((item, index) => `
                         <tr>
                             <td>${index + 1}</td>
                             <td><strong>${item.kegiatan || '-'}</strong></td>
-                            <td>${item.waktu || '-'}</td>
                             <td>${item.ruangan || '-'}</td>
+                            <td>${item.waktu || '-'}</td>
+                            <td>${item.kapasitas || 0}</td>
+                            <td>${item.pic || '-'}</td>
                         </tr>
                     `).join('');
                 }
             }
 
-            // Program
             const programHariIni = (data.programData || []).filter(item => item.tanggal === today);
             const tbodyProgram = document.getElementById('ringkasanProgram');
             if (tbodyProgram) {
                 if (programHariIni.length === 0) {
-                    tbodyProgram.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:8px;">Tidak ada kegiatan program hari ini</td></tr>`;
+                    tbodyProgram.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#888;padding:12px;">Tidak ada kegiatan harian hari ini</td></tr>`;
                 } else {
-                    tbodyProgram.innerHTML = programHariIni.slice(0, 5).map((item, index) => `
+                    tbodyProgram.innerHTML = programHariIni.slice(0, 10).map((item, index) => `
                         <tr>
                             <td>${index + 1}</td>
-                            <td><strong>${item.program || item.kegiatan || '-'}</strong></td>
+                            <td><strong>${item.kegiatan || item.program || '-'}</strong></td>
+                            <td>${item.deskripsi || item.keterangan || '-'}</td>
                             <td>${item.waktu || '-'}</td>
-                            <td>${item.lokasi || '-'}</td>
+                            <td>${item.ruangan || '-'}</td>
+                            <td>${item.lokasi || item.tempat || '-'}</td>
+                            <td>${item.pic || '-'}</td>
                         </tr>
                     `).join('');
                 }
             }
         }
 
-        // ============================================
-        // RENDER KALENDER
-        // ============================================
         function renderCalendar(month, year) {
             const grid = document.getElementById('calendarGrid');
             const monthYear = document.getElementById('monthYear');
@@ -999,9 +1010,6 @@
             renderStats();
         }
 
-        // ============================================
-        // RENDER EVENT LIST
-        // ============================================
         function renderEventList(month, year) {
             const container = document.getElementById('eventList');
             const badge = document.getElementById('eventCount');
@@ -1015,7 +1023,14 @@
                     const bln = parseInt(parts[1]);
                     const thn = parseInt(parts[0]);
                     if (bln === month + 1 && thn === year) {
-                        eventDetails.push({ tanggal: tgl, nama: item.nama, jenis: 'Kunjungan', waktu: item.waktu, pic: item.pic, instansi: item.instansi });
+                        eventDetails.push({ 
+                            tanggal: tgl, 
+                            nama: item.nama, 
+                            jenis: 'Kunjungan', 
+                            waktu: item.waktu, 
+                            pic: item.pic,
+                            lokasi: null 
+                        });
                     }
                 }
             });
@@ -1026,7 +1041,14 @@
                     const bln = parseInt(parts[1]);
                     const thn = parseInt(parts[0]);
                     if (bln === month + 1 && thn === year) {
-                        eventDetails.push({ tanggal: tgl, nama: item.kegiatan, jenis: 'Pemakaian Ruang', waktu: item.waktu, pic: item.pic, ruangan: item.ruangan });
+                        eventDetails.push({ 
+                            tanggal: tgl, 
+                            nama: item.kegiatan, 
+                            jenis: 'Pemakaian Ruang', 
+                            waktu: item.waktu, 
+                            pic: item.pic,
+                            lokasi: item.ruangan || '-' 
+                        });
                     }
                 }
             });
@@ -1037,7 +1059,14 @@
                     const bln = parseInt(parts[1]);
                     const thn = parseInt(parts[0]);
                     if (bln === month + 1 && thn === year) {
-                        eventDetails.push({ tanggal: tgl, nama: item.program || item.kegiatan, jenis: 'Program', waktu: item.waktu, pic: item.pic, lokasi: item.lokasi });
+                        eventDetails.push({ 
+                            tanggal: tgl, 
+                            nama: item.kegiatan || item.program, 
+                            jenis: 'Kegiatan Harian', 
+                            waktu: item.waktu, 
+                            pic: item.pic,
+                            lokasi: item.ruangan || item.lokasi || item.tempat || '-' 
+                        });
                     }
                 }
             });
@@ -1066,8 +1095,6 @@
                         <div class="event-name">${event.nama}</div>
                         <div class="event-detail">
                             <span>🕐 ${event.waktu || '--:--'}</span>
-                            ${event.instansi ? `<span>🏛️ ${event.instansi}</span>` : ''}
-                            ${event.ruangan ? `<span>🏢 ${event.ruangan}</span>` : ''}
                             ${event.lokasi ? `<span>📍 ${event.lokasi}</span>` : ''}
                         </div>
                         <div class="event-pic">👤 PIC: <strong>${event.pic || '-'}</strong></div>
@@ -1079,9 +1106,6 @@
             container.innerHTML = html;
         }
 
-        // ============================================
-        // SHOW EVENT DETAIL
-        // ============================================
         function showEventDetail(tanggal) {
             const month = currentMonth;
             const year = currentYear;
@@ -1095,7 +1119,7 @@
                     const bln = parseInt(parts[1]);
                     const thn = parseInt(parts[0]);
                     if (tgl === tanggal && bln === month + 1 && thn === year) {
-                        eventDetails.push({ nama: item.nama, jenis: 'Kunjungan', waktu: item.waktu, pic: item.pic, instansi: item.instansi });
+                        eventDetails.push({ nama: item.nama, jenis: 'Kunjungan', waktu: item.waktu, pic: item.pic, lokasi: null });
                     }
                 }
             });
@@ -1106,7 +1130,7 @@
                     const bln = parseInt(parts[1]);
                     const thn = parseInt(parts[0]);
                     if (tgl === tanggal && bln === month + 1 && thn === year) {
-                        eventDetails.push({ nama: item.kegiatan, jenis: 'Pemakaian Ruang', waktu: item.waktu, pic: item.pic, ruangan: item.ruangan });
+                        eventDetails.push({ nama: item.kegiatan, jenis: 'Pemakaian Ruang', waktu: item.waktu, pic: item.pic, lokasi: item.ruangan });
                     }
                 }
             });
@@ -1117,7 +1141,13 @@
                     const bln = parseInt(parts[1]);
                     const thn = parseInt(parts[0]);
                     if (tgl === tanggal && bln === month + 1 && thn === year) {
-                        eventDetails.push({ nama: item.program || item.kegiatan, jenis: 'Program', waktu: item.waktu, pic: item.pic, lokasi: item.lokasi });
+                        eventDetails.push({ 
+                            nama: item.kegiatan || item.program, 
+                            jenis: 'Kegiatan Harian', 
+                            waktu: item.waktu, 
+                            pic: item.pic, 
+                            lokasi: item.ruangan || item.lokasi || item.tempat 
+                        });
                     }
                 }
             });
@@ -1133,17 +1163,12 @@
                 msg += `   📌 ${e.jenis}\n`;
                 msg += `   ⏰ ${e.waktu || '--:--'}\n`;
                 msg += `   👤 ${e.pic || '-'}\n`;
-                if (e.instansi) msg += `   🏛️ ${e.instansi}\n`;
-                if (e.ruangan) msg += `   🏢 ${e.ruangan}\n`;
                 if (e.lokasi) msg += `   📍 ${e.lokasi}\n`;
                 msg += `\n`;
             });
             alert(msg);
         }
 
-        // ============================================
-        // SET CURRENT DATE
-        // ============================================
         function setCurrentDate() {
             const now = new Date();
             document.getElementById('currentDate').textContent = now.toLocaleDateString('id-ID', {
@@ -1154,9 +1179,6 @@
             });
         }
 
-        // ============================================
-        // REFRESH DATA
-        // ============================================
         function refreshData() {
             data = getDataFromStorage();
             renderCalendar(currentMonth, currentYear);
@@ -1165,9 +1187,6 @@
             updateAllCharts();
         }
 
-        // ============================================
-        // NAVIGASI KALENDER
-        // ============================================
         document.getElementById('prevMonth').addEventListener('click', () => {
             currentMonth--;
             if (currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -1180,9 +1199,6 @@
             renderCalendar(currentMonth, currentYear);
         });
 
-        // ============================================
-        // GRAFIK FUNGSI
-        // ============================================
         let barChartInstance = null;
         let pieChartInstance = null;
 
@@ -1454,9 +1470,6 @@
             initPieChartUser();
         }
 
-        // ============================================
-        // LIHAT SEMUA LENGKAP
-        // ============================================
         function lihatSemuaLengkap(jenis) {
             const today = getToday();
             
@@ -1472,16 +1485,16 @@
 
             if (jenis === 'kunjungan') {
                 dataList = (data.kunjunganData || []).filter(item => item.tanggal === today);
-                headers = ['No', 'Nama Tamu', 'Instansi', 'Waktu', 'Jumlah', 'Tujuan', 'PIC'];
+                headers = ['No', 'Nama Tamu', 'Instansi', 'Tanggal', 'Waktu', 'Jumlah', 'PIC'];
                 titleText = `📋 Semua Kunjungan - ${formatTanggal(today)}`;
             } else if (jenis === 'ruang') {
                 dataList = (data.ruangData || []).filter(item => item.tanggal === today);
-                headers = ['No', 'Kegiatan', 'Ruangan', 'Waktu', 'Kapasitas', 'PIC'];
+                headers = ['No', 'Kegiatan', 'Ruangan', 'Tanggal', 'Waktu', 'Kapasitas', 'PIC'];
                 titleText = `🏢 Semua Pemakaian Ruang - ${formatTanggal(today)}`;
             } else if (jenis === 'program') {
                 dataList = (data.programData || []).filter(item => item.tanggal === today);
-                headers = ['No', 'Program', 'Kegiatan', 'Waktu', 'Lokasi', 'PIC'];
-                titleText = `📊 Semua Per Program - ${formatTanggal(today)}`;
+                headers = ['No', 'Kegiatan', 'Deskripsi', 'Tanggal', 'Waktu', 'Ruangan', 'Tempat', 'PIC'];
+                titleText = `📊 Semua Kegiatan Harian - ${formatTanggal(today)}`;
             }
 
             let headerHtml = '<tr>';
@@ -1500,21 +1513,24 @@
                     if (jenis === 'kunjungan') {
                         bodyHtml += `<td><strong>${item.nama || '-'}</strong></td>`;
                         bodyHtml += `<td>${item.instansi || '-'}</td>`;
+                        bodyHtml += `<td>${item.tanggal || '-'}</td>`;
                         bodyHtml += `<td>${item.waktu || '-'}</td>`;
                         bodyHtml += `<td>${item.jumlahPengunjung || 0}</td>`;
-                        bodyHtml += `<td>${item.tujuan || '-'}</td>`;
                         bodyHtml += `<td>${item.pic || '-'}</td>`;
                     } else if (jenis === 'ruang') {
                         bodyHtml += `<td><strong>${item.kegiatan || '-'}</strong></td>`;
                         bodyHtml += `<td>${item.ruangan || '-'}</td>`;
+                        bodyHtml += `<td>${item.tanggal || '-'}</td>`;
                         bodyHtml += `<td>${item.waktu || '-'}</td>`;
-                        bodyHtml += `<td>${item.kapasitas || 0} orang</td>`;
+                        bodyHtml += `<td>${item.kapasitas || 0}</td>`;
                         bodyHtml += `<td>${item.pic || '-'}</td>`;
                     } else if (jenis === 'program') {
-                        bodyHtml += `<td><strong>${item.program || '-'}</strong></td>`;
-                        bodyHtml += `<td>${item.kegiatan || '-'}</td>`;
+                        bodyHtml += `<td><strong>${item.kegiatan || item.program || '-'}</strong></td>`;
+                        bodyHtml += `<td>${item.deskripsi || item.keterangan || '-'}</td>`;
+                        bodyHtml += `<td>${item.tanggal || '-'}</td>`;
                         bodyHtml += `<td>${item.waktu || '-'}</td>`;
-                        bodyHtml += `<td>${item.lokasi || '-'}</td>`;
+                        bodyHtml += `<td>${item.ruangan || '-'}</td>`;
+                        bodyHtml += `<td>${item.lokasi || item.tempat || '-'}</td>`;
                         bodyHtml += `<td>${item.pic || '-'}</td>`;
                     }
                     
@@ -1529,9 +1545,6 @@
             modal.style.display = 'flex';
         }
 
-        // ============================================
-        // CLOSE MODAL
-        // ============================================
         function closeModalLihatSemua() {
             const modal = document.getElementById('modalLihatSemua');
             modal.classList.remove('active');
@@ -1545,14 +1558,8 @@
             }
         });
 
-        // ============================================
-        // AUTO REFRESH (5 detik)
-        // ============================================
         setInterval(refreshData, 3000);
 
-        // ============================================
-        // REFRESH MANUAL
-        // ============================================
         function refreshDataManual() {
             const btn = document.querySelector('button[onclick="refreshDataManual()"]');
             btn.textContent = '⏳ Loading...';
@@ -1573,9 +1580,6 @@
             console.log('✅ Data direfresh manual!');
         }
 
-        // ============================================
-        // INIT
-        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             refreshData();
             setTimeout(() => {
@@ -1586,7 +1590,6 @@
             console.log('📊 Data dari localStorage:', data);
         });
 
-        // Listen perubahan localStorage dari tab lain
         window.addEventListener('storage', function(e) {
             const keys = ['kunjunganData', 'ruangData', 'programData', 'capaianData'];
             if (keys.includes(e.key)) {
